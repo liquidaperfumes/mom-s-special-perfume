@@ -45,7 +45,7 @@ export function Hero() {
             </motion.span>
           </div>
 
-          <h1 className="font-display text-5xl font-light leading-[0.9] text-balance sm:text-7xl lg:text-8xl">
+          <h1 className="font-display text-4xl font-light leading-[0.9] text-balance sm:text-6xl lg:text-8xl">
             O presente que <br />
             <em className="italic text-rose-tea font-normal">eterniza</em> <br />
             o <span className="text-white font-medium">sentimento.</span>

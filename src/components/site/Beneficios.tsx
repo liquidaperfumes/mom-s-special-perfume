@@ -16,9 +16,9 @@ export function Beneficios() {
         <div className="mb-10 text-center">
           <h2 className="font-display text-3xl font-medium sm:text-4xl">Tudo pensado para você presentear sem preocupação.</h2>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-6">
           {items.map(({ icon: Icon, t, d }) => (
-            <div key={t} className="flex flex-col items-center rounded-3xl bg-background p-6 text-center shadow-soft transition-premium hover:-translate-y-2 hover:shadow-premium">
+            <div key={t} className="flex flex-col items-center rounded-3xl bg-background p-4 sm:p-6 text-center shadow-soft transition-premium hover:-translate-y-2 hover:shadow-premium">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/5 text-primary">
                 <Icon className="h-6 w-6" />
               </div>

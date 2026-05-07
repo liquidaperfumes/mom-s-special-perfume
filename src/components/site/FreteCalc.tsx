@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BAIRROS_DISPONIVEIS, calcularFrete, type FreteResult } from "@/lib/frete";
 import { formatBRL } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
-import { Truck, MapPin, Store, MessageCircle } from "lucide-react";
+import { Truck, MapPin, Store } from "lucide-react";
 
 export function FreteCalc() {
   const { total } = useCart();

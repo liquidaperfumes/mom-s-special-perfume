@@ -3,9 +3,11 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, parcelas } from "@/lib/kits";
 import { calcularFrete, BAIRROS_DISPONIVEIS } from "@/lib/frete";
-import { ArrowLeft, Check, MessageCircle, Store, Truck, MessageSquare, Smartphone, Clock } from "lucide-react";
+import { ArrowLeft, Check, MessageCircle, Store, Truck, MapPin, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import logoImg from "@/assets/logo-liquida.jpg";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({

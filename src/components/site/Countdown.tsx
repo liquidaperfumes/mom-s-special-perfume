@@ -27,7 +27,7 @@ export function Countdown({ light = false }: { light?: boolean }) {
       {items.map((it, i) => (
         <div
           key={i}
-          className={`flex min-w-[60px] flex-col items-center rounded-xl px-3 py-2 ${
+          className={`flex min-w-[52px] sm:min-w-[60px] flex-col items-center rounded-xl px-2 py-2 sm:px-3 ${
             light ? "bg-background/15 text-primary-foreground backdrop-blur-md" : "bg-card text-foreground shadow-soft"
           }`}
         >
