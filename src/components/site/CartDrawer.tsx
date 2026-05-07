@@ -104,5 +104,3 @@ export function CartDrawer() {
     </AnimatePresence>
   );
 }
-  );
-}
