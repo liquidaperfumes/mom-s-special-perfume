@@ -1,8 +1,10 @@
 import { KITS, formatBRL, parcelas, type Kit } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
-import { Plus, Check } from "lucide-react";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { Plus, Check, ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+type SortOption = "relevancia" | "menor" | "maior";
 
 function KitCard({ kit }: { kit: Kit }) {
   const { add, setOpen } = useCart();
@@ -18,6 +20,7 @@ function KitCard({ kit }: { kit: Kit }) {
 
   return (
     <motion.article
+      layout
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -75,7 +78,32 @@ function KitCard({ kit }: { kit: Kit }) {
   );
 }
 
+function SortButton({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] transition-premium ${
+        active
+          ? "bg-primary text-white shadow-soft"
+          : "bg-background border border-border text-muted-foreground hover:border-primary/30 hover:text-primary"
+      }`}
+    >
+      {icon}
+      <span className="hidden sm:inline">{label}</span>
+    </button>
+  );
+}
+
 export function KitsGrid() {
+  const [sort, setSort] = useState<SortOption>("relevancia");
+
+  const sorted = useMemo(() => {
+    const list = [...KITS];
+    if (sort === "menor") list.sort((a, b) => a.preco - b.preco);
+    if (sort === "maior") list.sort((a, b) => b.preco - a.preco);
+    return list;
+  }, [sort]);
+
   return (
     <section id="kits" className="relative bg-background py-16 sm:py-24">
       <div className="pattern-l absolute inset-0 opacity-60" />
@@ -91,9 +119,33 @@ export function KitsGrid() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {KITS.map((k) => <KitCard key={k.id} kit={k} />)}
+        {/* Sort Filter */}
+        <div className="mb-8 flex items-center justify-center gap-2 sm:gap-3">
+          <SortButton
+            active={sort === "relevancia"}
+            onClick={() => setSort("relevancia")}
+            icon={<ArrowUpDown className="h-3.5 w-3.5" />}
+            label="Relevância"
+          />
+          <SortButton
+            active={sort === "menor"}
+            onClick={() => setSort("menor")}
+            icon={<ArrowUpNarrowWide className="h-3.5 w-3.5" />}
+            label="Menor preço"
+          />
+          <SortButton
+            active={sort === "maior"}
+            onClick={() => setSort("maior")}
+            icon={<ArrowDownNarrowWide className="h-3.5 w-3.5" />}
+            label="Maior preço"
+          />
         </div>
+
+        <motion.div layout className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <AnimatePresence mode="popLayout">
+            {sorted.map((k) => <KitCard key={k.id} kit={k} />)}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );
