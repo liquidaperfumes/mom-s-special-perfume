@@ -56,6 +56,8 @@ function buildWhatsAppMessage(
     `*TOTAL: ${formatBRL(totalFinal)}*`,
     ``,
     `Parcelamento em até 12x`,
+    ``,
+    `Ainda está disponível?`,
   ].filter(Boolean).join("\n");
   return msg;
 }
