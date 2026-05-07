@@ -8,7 +8,6 @@ import { FreteCalc } from "@/components/site/FreteCalc";
 import { Loja } from "@/components/site/Loja";
 import { Depoimentos } from "@/components/site/Depoimentos";
 import { Footer } from "@/components/site/Footer";
-import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
