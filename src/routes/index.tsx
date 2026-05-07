@@ -1,26 +1,59 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/site/Header";
+import { Hero } from "@/components/site/Hero";
+import { KitsGrid } from "@/components/site/KitsGrid";
+import { Emocional } from "@/components/site/Emocional";
+import { Beneficios } from "@/components/site/Beneficios";
+import { FreteCalc } from "@/components/site/FreteCalc";
+import { Loja } from "@/components/site/Loja";
+import { Depoimentos } from "@/components/site/Depoimentos";
+import { FAQ } from "@/components/site/FAQ";
+import { Footer } from "@/components/site/Footer";
+import { StickyCTA } from "@/components/site/StickyCTA";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Líquida Perfumes — Kits Dia das Mães 2026 · Frete Recife" },
+      { name: "description", content: "Kits especiais de Dia das Mães com perfumes originais. Frete rápido em Recife/Olinda, retirada na loja e pagamento em até 10x. Garanta o presente perfeito." },
+      { property: "og:title", content: "Transforme carinho em memória · Kits Dia das Mães" },
+      { property: "og:description", content: "16 kits premium para presentear sua mãe. Originais, com embalagem pronta para presente. Entrega rápida em todo Grande Recife." },
+      { property: "og:type", content: "website" },
+    ],
+  }),
+  component: Landing,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Landing() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main>
+        <Hero />
+        <div className="bg-foreground py-3 text-center text-xs font-semibold uppercase tracking-widest text-background">
+          ⚡ Estoque limitado · Compre até 04/05 e receba antes do Dia das Mães
+        </div>
+        <KitsGrid />
+        <Emocional />
+        <Beneficios />
+        <FreteCalc />
+        <Loja />
+        <Depoimentos />
+        <FAQ />
+        <section className="bg-gradient-rose py-16 text-center text-primary-foreground">
+          <div className="mx-auto max-w-2xl px-4">
+            <h2 className="font-display text-4xl font-medium sm:text-5xl">Faça o Dia das Mães inesquecível.</h2>
+            <p className="mx-auto mt-4 max-w-md text-base text-primary-foreground/90">
+              Escolha o kit perfeito agora e garanta a entrega antes do domingo mais especial do ano.
+            </p>
+            <a href="#kits" className="mt-7 inline-flex rounded-full bg-background px-8 py-4 text-sm font-bold uppercase tracking-wider text-primary shadow-elegant transition hover:scale-[1.03]">
+              Quero presentear →
+            </a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+      <StickyCTA />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
