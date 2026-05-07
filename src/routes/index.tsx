@@ -8,7 +8,7 @@ import { FreteCalc } from "@/components/site/FreteCalc";
 import { Loja } from "@/components/site/Loja";
 import { Depoimentos } from "@/components/site/Depoimentos";
 import { Footer } from "@/components/site/Footer";
-import { StickyCTA } from "@/components/site/StickyCTA";
+import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -51,7 +51,6 @@ function Landing() {
         </section>
       </main>
       <Footer />
-      <StickyCTA />
     </div>
   );
 }
