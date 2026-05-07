@@ -7,7 +7,6 @@ import { Beneficios } from "@/components/site/Beneficios";
 import { FreteCalc } from "@/components/site/FreteCalc";
 import { Loja } from "@/components/site/Loja";
 import { Depoimentos } from "@/components/site/Depoimentos";
-import { FAQ } from "@/components/site/FAQ";
 import { Footer } from "@/components/site/Footer";
 import { StickyCTA } from "@/components/site/StickyCTA";
 
@@ -31,7 +30,7 @@ function Landing() {
       <main>
         <Hero />
         <div className="bg-foreground py-3 text-center text-xs font-semibold uppercase tracking-widest text-background">
-          ⚡ Estoque limitado · Compre até 04/05 e receba antes do Dia das Mães
+          ⚡ Estoque limitado · Compre até 08/05 e receba antes do Dia das Mães
         </div>
         <KitsGrid />
         <Emocional />
@@ -39,7 +38,6 @@ function Landing() {
         <FreteCalc />
         <Loja />
         <Depoimentos />
-        <FAQ />
         <section className="bg-gradient-rose py-16 text-center text-primary-foreground">
           <div className="mx-auto max-w-2xl px-4">
             <h2 className="font-display text-4xl font-medium sm:text-5xl">Faça o Dia das Mães inesquecível.</h2>

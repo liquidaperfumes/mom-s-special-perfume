@@ -79,12 +79,9 @@ export function FreteCalc() {
                 <div className="space-y-3 text-center">
                   <p className="text-sm font-semibold">Seu bairro não está na nossa rota fixa 😢</p>
                   <p className="text-xs text-muted-foreground">Mas a gente te atende! Escolha uma das opções:</p>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-                    <a href="#loja" className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-background">
+                  <div className="flex flex-col gap-2 justify-center">
+                    <a href="#loja" className="inline-flex items-center justify-center gap-3 rounded-full bg-foreground px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-background shadow-soft transition-premium active:scale-95">
                       <Store className="h-4 w-4" /> Retirar na loja
-                    </a>
-                    <a href={wa} target="_blank" rel="noopener" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white">
-                      <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
                     </a>
                   </div>
                 </div>

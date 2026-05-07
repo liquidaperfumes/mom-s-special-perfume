@@ -1,80 +1,100 @@
 import heroImg from "@/assets/hero-maes.jpg";
+import logoImg from "@/assets/logo-liquida.jpg";
 import { Countdown } from "./Countdown";
 import { ShieldCheck, Truck, Store } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-hero text-primary-foreground">
+    <section className="relative min-h-[90vh] overflow-hidden bg-gradient-hero text-primary-foreground flex items-center">
       <div
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-30 scale-105 animate-pulse"
         style={{
           backgroundImage: `url(${heroImg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           mixBlendMode: "overlay",
+          filter: "blur(20px)"
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[oklch(0.18_0.05_350)]/95" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[oklch(0.18_0.05_350)]/40 to-[oklch(0.18_0.05_350)]" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-16 pt-10 sm:pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-24">
+      <div className="relative mx-auto grid max-w-7xl gap-16 px-4 pb-20 pt-10 sm:pt-20 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="flex flex-col gap-6"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-8"
         >
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur">
-            ✦ Edição Dia das Mães 2026
-          </span>
+          <div className="flex items-center gap-4">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 12, delay: 0.2 }}
+              className="h-20 w-20 overflow-hidden rounded-full border-4 border-white/20 shadow-premium bg-white"
+            >
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
+            </motion.div>
+            <motion.span 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-white/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-md"
+            >
+              Edição Especial 2026
+            </motion.span>
+          </div>
 
-          <h1 className="font-display text-5xl font-medium leading-[0.95] text-balance sm:text-6xl lg:text-7xl">
-            Transforme<br />
-            <em className="italic text-[oklch(0.92_0.05_15)]">carinho</em> em<br />
-            <span className="text-[oklch(0.95_0.04_15)]">memória.</span>
+          <h1 className="font-display text-5xl font-light leading-[0.9] text-balance sm:text-7xl lg:text-8xl">
+            O presente que <br />
+            <em className="italic text-rose-tea font-normal">eterniza</em> <br />
+            o <span className="text-white font-medium">sentimento.</span>
           </h1>
 
-          <p className="max-w-xl text-base text-primary-foreground/85 sm:text-lg">
-            Kits especiais com os perfumes preferidos de quem cuidou de você a vida inteira.
-            <strong className="font-semibold text-primary-foreground"> Originais, prontos para presentear</strong> e
-            entregues no tempo certo.
+          <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">
+            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>, prontos para emocionar quem você mais ama.
           </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <a
               href="#kits"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary-foreground px-7 py-4 text-sm font-bold uppercase tracking-wider text-primary shadow-elegant transition hover:scale-[1.02]"
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-8 py-5 text-sm font-bold uppercase tracking-wider text-rose-deep shadow-premium transition-all hover:scale-[1.03] active:scale-[0.98]"
             >
-              Garantir meu kit →
+              <span className="absolute inset-0 bg-rose-tea/10 opacity-0 transition-opacity group-hover:opacity-100" />
+              Escolher meu presente
             </a>
             <a
-              href="#emocional"
-              className="inline-flex items-center justify-center rounded-full border border-primary-foreground/40 px-7 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-primary-foreground/10"
+              href="#frete"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-8 py-5 text-sm font-semibold uppercase tracking-wider text-white backdrop-blur-sm transition hover:bg-white/10"
             >
-              Ver história
+              Consultar Entrega
             </a>
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-4 text-xs">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> 100% Originais</span>
-            <span className="flex items-center gap-1.5"><Truck className="h-4 w-4" /> Entrega Rápida</span>
-            <span className="flex items-center gap-1.5"><Store className="h-4 w-4" /> Retirada em Olinda</span>
+          <div className="mt-4 flex flex-wrap gap-6 text-[11px] font-medium uppercase tracking-widest text-white/70">
+            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-rose-tea" /> 100% Originais</span>
+            <span className="flex items-center gap-2"><Truck className="h-4 w-4 text-rose-tea" /> Entrega em 3h</span>
+            <span className="flex items-center gap-2"><Store className="h-4 w-4 text-rose-tea" /> Retirada Hoje</span>
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-col items-start gap-4 rounded-3xl border border-primary-foreground/20 bg-primary-foreground/8 p-6 backdrop-blur-md sm:p-8"
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="relative"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary-foreground/80">
-            ⏱ Faltam para o Dia das Mães
-          </p>
-          <Countdown light />
-          <p className="text-sm text-primary-foreground/80">
-            Compre até <strong>04/05</strong> para garantir entrega antes do domingo de presentear.
-          </p>
+          <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-tr from-rose-deep/20 to-gold/20 blur-2xl" />
+          <div className="relative flex flex-col items-center gap-6 rounded-[2rem] border border-white/20 bg-white/5 p-8 backdrop-blur-2xl shadow-premium sm:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/60">
+              Contagem Regressiva
+            </p>
+            <Countdown light />
+            <div className="h-px w-full bg-white/10" />
+            <p className="text-center text-sm font-light leading-relaxed text-white/80">
+              Garanta seu kit agora para receber a tempo de <strong className="font-semibold text-white">presentear com amor.</strong>
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -62,4 +62,4 @@ export function calcularFrete(bairroInput: string): FreteResult {
   return { disponivel: true, valor: entry.valor, prazo: entry.prazo!, bairro: original };
 }
 
-export const FRETE_GRATIS_ACIMA_DE = 250;
+export const FRETE_GRATIS_ACIMA_DE = 999999; // Desativado conforme solicitado

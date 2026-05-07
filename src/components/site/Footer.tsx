@@ -1,13 +1,14 @@
 import { Instagram, MessageCircle } from "lucide-react";
+import logoImg from "@/assets/logo-liquida.jpg";
 
 export function Footer() {
   return (
     <footer className="bg-foreground text-background">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-rose text-primary-foreground">
-              <span className="font-display text-2xl leading-none">L</span>
+          <div className="flex items-center gap-3">
+            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 shadow-soft bg-white">
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
             </div>
             <div>
               <div className="text-sm font-bold tracking-[0.25em]">LIQUIDA</div>

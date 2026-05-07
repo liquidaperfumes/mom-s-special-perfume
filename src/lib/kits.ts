@@ -51,6 +51,5 @@ export const formatBRL = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export const parcelas = (preco: number) => {
-  const x = Math.min(12, Math.max(1, Math.floor(preco / 10)));
-  return { vezes: x, valor: preco / x };
+  return { vezes: 12, valor: preco / 12 };
 };

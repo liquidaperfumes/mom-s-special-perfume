@@ -21,49 +21,54 @@ function KitCard({ kit }: { kit: Kit }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-elegant"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-premium hover:-translate-y-2 hover:shadow-premium"
     >
       {kit.badge && (
-        <span className={`absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider shadow-soft ${
+        <span className={`absolute left-4 top-4 z-10 rounded-full px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] shadow-soft backdrop-blur-md ${
           kit.badge === "Mais Vendido"
-            ? "bg-foreground text-background"
-            : "bg-gradient-rose text-primary-foreground"
+            ? "bg-foreground/90 text-background"
+            : "bg-rose-deep/90 text-white"
         }`}>
           {kit.badge}
         </span>
       )}
 
-      <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-secondary to-muted">
+      <div className="relative aspect-[4/5] overflow-hidden bg-secondary/50">
         <img
           src={kit.imagem}
           alt={kit.nome}
           loading="lazy"
-          className="h-full w-full object-contain p-4 transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-contain p-8 transition-transform duration-1000 ease-out group-hover:scale-110"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-4 p-6 sm:p-8">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{kit.marca}</p>
-          <h3 className="mt-1 text-base font-semibold leading-tight text-foreground">{kit.nome}</h3>
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-rose-deep/60">{kit.marca}</p>
+          <h3 className="mt-2 text-lg font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">{kit.nome}</h3>
         </div>
-        <p className="text-xs leading-relaxed text-muted-foreground line-clamp-2">{kit.descricao}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground/80 line-clamp-2 font-light">{kit.descricao}</p>
 
-        <div className="mt-auto pt-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary">{formatBRL(kit.preco)}</span>
+        <div className="mt-auto pt-4 border-t border-border/50">
+          <div className="flex items-baseline justify-between">
+            <div>
+              <span className="text-2xl font-bold text-foreground">{formatBRL(kit.preco)}</span>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                ou {p.vezes}x de <strong className="text-rose-deep font-bold">{formatBRL(p.valor)}</strong>
+              </p>
+            </div>
+            
+            <button
+              onClick={onAdd}
+              className={`flex h-12 w-12 items-center justify-center rounded-full transition-premium ${
+                added ? "bg-emerald-500 text-white" : "bg-primary text-white hover:scale-110 active:scale-95 shadow-soft"
+              }`}
+            >
+              {added ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+            </button>
           </div>
-          <p className="text-[11px] text-muted-foreground">
-            ou {p.vezes}x de <strong className="text-foreground">{formatBRL(p.valor)}</strong> sem juros
-          </p>
-
-          <button
-            onClick={onAdd}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary-glow hover:shadow-soft"
-          >
-            {added ? <><Check className="h-4 w-4" /> Adicionado</> : <><Plus className="h-4 w-4" /> Comprar</>}
-          </button>
         </div>
       </div>
     </motion.article>

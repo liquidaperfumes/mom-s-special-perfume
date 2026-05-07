@@ -3,7 +3,9 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, parcelas } from "@/lib/kits";
 import { calcularFrete, BAIRROS_DISPONIVEIS } from "@/lib/frete";
-import { ArrowLeft, Check, MessageCircle, Store, Truck, CreditCard, Smartphone, Clock } from "lucide-react";
+import { ArrowLeft, Check, MessageCircle, Store, Truck, MessageSquare, Smartphone, Clock } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -20,7 +22,6 @@ const WHATSAPP_CONSULTORA = "5581995811306";
 const WHATSAPP_DISPLAY = "(81) 99581-1306";
 
 type EntregaModo = "entrega" | "retirada";
-type FinalizarModo = "online" | "whatsapp";
 
 function buildWhatsAppMessage(
   items: { kit: { nome: string; preco: number }; qtd: number }[],
@@ -78,7 +79,7 @@ function Checkout() {
   const [buscandoCep, setBuscandoCep] = useState(false);
 
   // step 3
-  const [finalizarModo, setFinalizarModo] = useState<FinalizarModo>("online");
+  const [loading, setLoading] = useState(false);
 
   const fr = modo === "entrega" && bairro ? calcularFrete(bairro) : null;
   const freteValor = useMemo(() => {
@@ -117,42 +118,44 @@ function Checkout() {
     );
   }
 
-  const finalizarWhatsApp = () => {
-    const msg = buildWhatsAppMessage(
-      items, nome, whatsapp, modo,
-      { rua, num, comp, bairro, cidade, uf, cep },
-      total, freteValor,
-    );
-    const url = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msg)}`;
-    window.open(url, "_blank");
-    setTimeout(() => {
+  const finalizar = async () => {
+    setLoading(true);
+    try {
+      const enderecoObj = { rua, num, comp, bairro, cidade, uf, cep };
+      const msg = buildWhatsAppMessage(
+        items, nome, whatsapp, modo,
+        enderecoObj,
+        total, freteValor,
+      );
+
+      // Save to Supabase
+      const { error } = await supabase.from("pedidos").insert({
+        cliente_nome: nome,
+        cliente_whatsapp: whatsapp,
+        itens: items,
+        tipo_entrega: modo,
+        endereco: enderecoObj,
+        total: totalFinal,
+        status: "pendente",
+      });
+
+      if (error) {
+        console.error("Erro ao salvar pedido:", error);
+        toast.error("Houve um erro ao processar seu pedido. Tente novamente.");
+        setLoading(false);
+        return;
+      }
+
+      const url = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msg)}`;
+      window.open(url, "_blank");
+      
       clear();
       navigate({ to: "/sucesso" });
-    }, 600);
-  };
-
-  const finalizarOnline = () => {
-    // TODO: Integrar com Pagar.me API
-    // Por enquanto, direciona ao WhatsApp com detalhes do pagamento online
-    const msg = buildWhatsAppMessage(
-      items, nome, whatsapp, modo,
-      { rua, num, comp, bairro, cidade, uf, cep },
-      total, freteValor,
-    );
-    const msgOnline = msg + "\n\n_💳 Cliente optou por pagamento online (Pagar.me)_";
-    const url = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msgOnline)}`;
-    window.open(url, "_blank");
-    setTimeout(() => {
-      clear();
-      navigate({ to: "/sucesso" });
-    }, 600);
-  };
-
-  const finalizar = () => {
-    if (finalizarModo === "whatsapp") {
-      finalizarWhatsApp();
-    } else {
-      finalizarOnline();
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro inesperado. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,75 +165,82 @@ function Checkout() {
   const p = parcelas(totalFinal);
 
   return (
-    <div className="min-h-screen bg-secondary">
-      <header className="border-b border-border bg-background">
+    <div className="min-h-screen bg-secondary/30">
+      <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-30">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link to="/" className="flex items-center gap-2 text-sm font-semibold"><ArrowLeft className="h-4 w-4" /> Continuar comprando</Link>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-rose text-primary-foreground">
-              <span className="font-display text-lg leading-none">L</span>
+          <Link to="/" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"><ArrowLeft className="h-4 w-4" /> Voltar</Link>
+          <div className="flex items-center gap-3">
+            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 shadow-soft bg-white">
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
             </div>
-            <span className="text-xs font-bold tracking-[0.25em]">LIQUIDA</span>
+            <div className="leading-tight">
+              <div className="text-[10px] font-bold tracking-[0.3em] text-primary">LIQUIDA</div>
+              <div className="text-[8px] font-medium tracking-[0.4em] text-muted-foreground/60">PERFUMES</div>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* WhatsApp CTA Banner */}
-      <div className="bg-[#25D366] py-2.5 text-center">
-        <a
-          href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
-          target="_blank"
-          rel="noopener"
-          className="inline-flex items-center gap-2 text-xs font-bold text-white sm:text-sm"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Prefere finalizar com uma consultora? Envie seu pedido pelo WhatsApp: {WHATSAPP_DISPLAY}
-        </a>
-      </div>
 
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1.4fr_1fr]">
-        <div>
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[1.3fr_1fr]">
+        <div className="space-y-8">
           {/* Stepper */}
-          <ol className="mb-6 flex items-center gap-2 text-xs font-semibold">
+          <nav className="flex items-center justify-between gap-4 max-w-md mx-auto sm:mx-0">
             {["Identificação", "Entrega", "Finalização"].map((s, i) => (
-              <li key={s} className="flex flex-1 items-center gap-2">
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] ${
-                  step > i + 1 ? "bg-primary text-primary-foreground" : step === i + 1 ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
-                }`}>{step > i + 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}</span>
-                <span className={step === i + 1 ? "text-foreground" : "text-muted-foreground"}>{s}</span>
-                {i < 2 && <span className="ml-1 h-px flex-1 bg-border" />}
-              </li>
-            ))}
-          </ol>
-
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-7">
-            {step === 1 && (
-              <div className="space-y-4">
-                <h2 className="font-display text-2xl">Quem está presenteando?</h2>
-                <Field label="Nome completo"><input className={inp} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Maria Silva" /></Field>
-                <Field label="WhatsApp">
-                  <input className={inp} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(81) 9.9999-9999" />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Usaremos apenas para contato sobre seu pedido.</p>
-                </Field>
-                <button disabled={!canNext1} onClick={() => setStep(2)} className={btnPrimary}>Continuar →</button>
+              <div key={s} className="flex flex-1 flex-col items-center gap-2 group">
+                <div className={`flex h-1 w-full rounded-full transition-premium ${
+                  step >= i + 1 ? "bg-primary" : "bg-border"
+                }`} />
+                <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${
+                  step >= i + 1 ? "text-primary" : "text-muted-foreground/50"
+                }`}>{s}</span>
               </div>
+            ))}
+          </nav>
+
+          <motion.div 
+            layout
+            className="rounded-[2rem] border border-border bg-card p-6 shadow-soft sm:p-10"
+          >
+            {step === 1 && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <div className="space-y-1">
+                  <h2 className="font-display text-3xl">Quem está presenteando?</h2>
+                  <p className="text-sm text-muted-foreground font-light">Precisamos apenas do seu nome e WhatsApp para contato.</p>
+                </div>
+                
+                <div className="space-y-4">
+                  <Field label="Nome completo"><input className={inp} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Como podemos te chamar?" /></Field>
+                  <Field label="WhatsApp">
+                    <input className={inp} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(81) 9.9999-9999" />
+                  </Field>
+                </div>
+                
+                <button disabled={!canNext1} onClick={() => setStep(2)} className={btnPrimary}>Continuar para entrega →</button>
+              </motion.div>
             )}
 
             {step === 2 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Como você quer receber?</h2>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega no endereço" desc="Receba em até 3 horas" highlight>
-                    <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-primary"><Clock className="h-3 w-3" /> Entrega expressa</span>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <div className="space-y-1">
+                  <h2 className="font-display text-3xl">Como você quer receber?</h2>
+                  <p className="text-sm text-muted-foreground font-light">Escolha entre entrega expressa ou retirada gratuita.</p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega expressa" desc="Em até 3 horas" highlight>
+                    <span className="mt-2 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-primary"><Clock className="h-3 w-3" /> Receba hoje</span>
                   </ModoCard>
-                  <ModoCard active={modo === "retirada"} onClick={() => setModo("retirada")} icon={<Store className="h-5 w-5" />} title="Retirar na loja" desc="Olinda · Grátis · pronto em 2h" />
+                  <ModoCard active={modo === "retirada"} onClick={() => setModo("retirada")} icon={<Store className="h-5 w-5" />} title="Retirar na loja" desc="Grátis · Olinda" />
                 </div>
 
                 {modo === "entrega" && (
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-500">
                     <Field label="CEP">
-                      <input className={inp} value={cep} onChange={(e) => buscarCep(e.target.value)} placeholder="00000-000" maxLength={9} />
-                      {buscandoCep && <p className="mt-1 text-xs text-muted-foreground">Buscando endereço…</p>}
+                      <div className="relative">
+                        <input className={inp} value={cep} onChange={(e) => buscarCep(e.target.value)} placeholder="00000-000" maxLength={9} />
+                        {buscandoCep && <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />}
+                      </div>
                     </Field>
                     <Field label="Bairro">
                       <input list="bairros" className={inp} value={bairro} onChange={(e) => setBairro(e.target.value)} />
@@ -239,23 +249,24 @@ function Checkout() {
                     <div className="sm:col-span-2"><Field label="Rua / Logradouro"><input className={inp} value={rua} onChange={(e) => setRua(e.target.value)} /></Field></div>
                     <Field label="Número"><input className={inp} value={num} onChange={(e) => setNum(e.target.value)} /></Field>
                     <Field label="Complemento (opcional)"><input className={inp} value={comp} onChange={(e) => setComp(e.target.value)} /></Field>
-                    <Field label="Cidade"><input className={inp} value={cidade} onChange={(e) => setCidade(e.target.value)} /></Field>
-                    <Field label="UF"><input className={inp} value={uf} onChange={(e) => setUf(e.target.value)} maxLength={2} /></Field>
-
-                    {modo === "entrega" && (
-                      <div className="sm:col-span-2 rounded-xl bg-primary/5 border border-primary/20 p-3 text-sm">
-                        <p className="flex items-center gap-2 font-semibold text-primary"><Clock className="h-4 w-4" /> Entrega em até 3 horas</p>
-                        <p className="mt-1 text-xs text-muted-foreground">Após a confirmação do pagamento, seu pedido será entregue rapidamente.</p>
+                    
+                    <div className="sm:col-span-2 rounded-2xl bg-primary/5 border border-primary/10 p-4 flex items-center gap-4">
+                      <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Clock className="h-5 w-5" />
                       </div>
-                    )}
+                      <div className="text-xs">
+                        <p className="font-bold uppercase tracking-widest text-primary mb-0.5">Entrega em até 3 horas</p>
+                        <p className="text-muted-foreground font-light">Após a confirmação, seu presente chega rapidinho.</p>
+                      </div>
+                    </div>
 
                     {fr && !fr.disponivel && (
-                      <div className="sm:col-span-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm">
-                        <p className="font-semibold">Bairro fora da nossa rota fixa.</p>
-                        <p className="mt-1 text-muted-foreground">Você pode escolher retirada na loja ou falar com nossa consultora no WhatsApp para combinarmos a entrega.</p>
-                        <div className="mt-3 flex gap-2">
-                          <button onClick={() => setModo("retirada")} className="rounded-full bg-foreground px-4 py-2 text-xs font-bold text-background">Retirar na loja</button>
-                          <a href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Meu bairro é " + bairro + " e gostaria de combinar entrega.")}`} target="_blank" rel="noopener" className="inline-flex items-center gap-1 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white"><MessageCircle className="h-3 w-3" /> WhatsApp</a>
+                      <div className="sm:col-span-2 rounded-2xl border border-destructive/20 bg-destructive/5 p-5">
+                        <p className="font-bold text-sm">Bairro fora da nossa rota fixa.</p>
+                        <p className="mt-1 text-xs text-muted-foreground font-light">Fale com nossa consultora para combinarmos a entrega especial ou escolha retirada.</p>
+                        <div className="mt-4 flex gap-2">
+                          <button onClick={() => setModo("retirada")} className="rounded-full bg-foreground px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-background">Retirar na loja</button>
+                          <a href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Meu bairro é " + bairro + " e gostaria de combinar entrega.")}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-white"><MessageCircle className="h-3 w-3" /> WhatsApp</a>
                         </div>
                       </div>
                     )}
@@ -263,109 +274,90 @@ function Checkout() {
                 )}
 
                 {modo === "retirada" && (
-                  <div className="rounded-xl bg-secondary p-4 text-sm">
-                    <p className="font-semibold">📍 Estrada do Caenga, 235</p>
-                    <p className="text-muted-foreground">São Benedito · Olinda – PE · Seg–Sáb 9h-19h</p>
-                    <p className="mt-2 text-xs text-primary">✓ Pronto para retirada em até 2 horas após a confirmação.</p>
+                  <div className="rounded-2xl bg-secondary/50 p-6 flex items-start gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                    <MapPin className="h-6 w-6 text-primary shrink-0 mt-1" />
+                    <div className="text-sm">
+                      <p className="font-bold">📍 Estrada do Caenga, 235</p>
+                      <p className="text-muted-foreground font-light mt-1">São Benedito · Olinda – PE · Seg–Sáb 9h-19h</p>
+                      <p className="mt-3 text-xs font-bold text-primary uppercase tracking-widest">✓ Disponível hoje para você</p>
+                    </div>
                   </div>
                 )}
 
-                <div className="flex gap-3">
-                  <button onClick={() => setStep(1)} className={btnGhost}>Voltar</button>
-                  <button disabled={!canNext2} onClick={() => setStep(3)} className={btnPrimary}>Continuar →</button>
+                <div className="flex flex-col gap-3">
+                  <button disabled={!canNext2} onClick={() => setStep(3)} className={btnPrimary}>Continuar para pagamento →</button>
+                  <button onClick={() => setStep(1)} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">← Voltar para identificação</button>
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {step === 3 && (
-              <div className="space-y-5">
-                <h2 className="font-display text-2xl">Como você prefere finalizar?</h2>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <ModoCard active={finalizarModo === "online"} onClick={() => setFinalizarModo("online")} icon={<CreditCard className="h-5 w-5" />} title="Pagamento online" desc="Pix ou cartão em até 12x · Pagar.me">
-                    <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-muted-foreground"><Smartphone className="h-3 w-3" /> Aprovação imediata</span>
-                  </ModoCard>
-                  <ModoCard active={finalizarModo === "whatsapp"} onClick={() => setFinalizarModo("whatsapp")} icon={<MessageCircle className="h-5 w-5" />} title="Finalizar pelo WhatsApp" desc={`Converse com nossa consultora: ${WHATSAPP_DISPLAY}`} highlightBadge="Atendimento VIP" />
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 text-center">
+                <div className="space-y-2">
+                  <h2 className="font-display text-4xl">Finalize seu pedido</h2>
+                  <p className="text-sm text-muted-foreground font-light">Tudo pronto! Agora é só falar com a gente no WhatsApp.</p>
+                </div>
+                
+                <div className="mx-auto max-w-sm rounded-[2.5rem] bg-primary/5 border border-primary/10 p-8 shadow-soft relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-premium" />
+                  <div className="relative z-10">
+                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft group-hover:scale-110 transition-premium">
+                      <MessageCircle className="h-10 w-10" />
+                    </div>
+                    <h3 className="font-bold text-xl mb-3 tracking-tight">Finalização Garantida</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed font-light">
+                      O resumo do seu pedido será enviado automaticamente. Nossa consultora te guiará no pagamento e confirmará a entrega.
+                    </p>
+                  </div>
                 </div>
 
-                {finalizarModo === "online" && (
-                  <div className="rounded-xl bg-secondary p-4 text-xs leading-relaxed text-muted-foreground">
-                    <p>Ao finalizar, seu pedido será processado com segurança pelo <strong className="text-foreground">Pagar.me</strong>. Aceita Pix, cartão de crédito e débito.</p>
-                    <p className="mt-2 font-semibold text-foreground">Parcelamento em até 12x</p>
-                  </div>
-                )}
-
-                {finalizarModo === "whatsapp" && (
-                  <div className="rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 p-4 text-xs leading-relaxed">
-                    <p className="font-semibold text-foreground">💬 Finalize com atendimento personalizado</p>
-                    <p className="mt-1 text-muted-foreground">Ao clicar, o resumo do seu pedido será enviado automaticamente para nossa consultora no WhatsApp. Ela vai te guiar com o pagamento e confirmar a entrega.</p>
-                  </div>
-                )}
-
-                {/* WhatsApp CTA inline */}
-                {finalizarModo === "online" && (
-                  <a
-                    href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center gap-2 rounded-xl border border-[#25D366]/30 bg-[#25D366]/5 p-3 text-xs text-muted-foreground transition hover:bg-[#25D366]/10"
-                  >
-                    <MessageCircle className="h-4 w-4 shrink-0 text-[#25D366]" />
-                    <span>Prefere finalizar com uma consultora? <strong className="text-foreground">Envie seu pedido pelo WhatsApp: {WHATSAPP_DISPLAY}</strong></span>
-                  </a>
-                )}
-
-                <div className="flex gap-3">
-                  <button onClick={() => setStep(2)} className={btnGhost}>Voltar</button>
-                  <button onClick={finalizar} className={btnPrimary}>
-                    {finalizarModo === "whatsapp" ? "Enviar pedido pelo WhatsApp →" : "Finalizar pedido →"}
+                <div className="flex flex-col gap-4">
+                  <button disabled={loading} onClick={finalizar} className={`${btnPrimary} py-5 text-base`}>
+                    {loading ? "Processando..." : "Finalizar pedido no WhatsApp →"}
                   </button>
+                  <button onClick={() => setStep(2)} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">← Voltar para entrega</button>
                 </div>
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
 
         {/* Resumo */}
-        <aside className="lg:sticky lg:top-4 lg:self-start">
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Seu pedido</h3>
-            <ul className="mt-4 space-y-3 max-h-72 overflow-auto pr-1">
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="rounded-[2rem] border border-border bg-card p-6 shadow-premium sm:p-8">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 mb-6">Resumo da Sacola</h3>
+            <ul className="space-y-4 max-h-[40vh] overflow-auto pr-2 scrollbar-hide">
               {items.map(({ kit, qtd }) => (
-                <li key={kit.id} className="flex gap-3">
-                  <img src={kit.imagem} alt="" className="h-14 w-14 rounded-lg bg-secondary object-contain" />
-                  <div className="flex-1 text-xs">
-                    <p className="font-semibold">{kit.nome}</p>
-                    <p className="text-muted-foreground">{qtd}x · {formatBRL(kit.preco)}</p>
+                <li key={kit.id} className="flex gap-4 group">
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-secondary/50">
+                    <img src={kit.imagem} alt="" className="h-full w-full object-contain p-2 group-hover:scale-110 transition-premium" />
                   </div>
-                  <span className="text-xs font-bold">{formatBRL(kit.preco * qtd)}</span>
+                  <div className="flex-1 text-xs flex flex-col justify-center">
+                    <p className="font-bold text-foreground leading-tight">{kit.nome}</p>
+                    <p className="text-muted-foreground mt-1 font-light">{qtd}x · {formatBRL(kit.preco)}</p>
+                  </div>
+                  <span className="text-xs font-bold self-center">{formatBRL(kit.preco * qtd)}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
+            <div className="mt-8 space-y-3 border-t border-border pt-6 text-sm">
               <Linha label="Subtotal" v={formatBRL(total)} />
-              <Linha label="Frete" v={freteValor === null ? "—" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)} />
-              <div className="mt-3 flex items-baseline justify-between border-t border-border pt-3">
-                <span className="text-sm font-bold uppercase tracking-wider">Total</span>
-                <span className="font-display text-2xl text-primary">{formatBRL(totalFinal)}</span>
+              <Linha label="Frete" v={freteValor === null ? "—" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)} accent={freteValor === 0} />
+              
+              <div className="mt-6 flex items-baseline justify-between border-t border-border/50 pt-6">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Total do Pedido</span>
+                <span className="font-display text-4xl text-primary">{formatBRL(totalFinal)}</span>
               </div>
-              <p className="text-right text-[11px] text-muted-foreground">
-                Parcelamento em até {p.vezes}x de {formatBRL(p.valor)}
+              <p className="text-right text-[10px] font-bold uppercase tracking-widest text-rose-deep/60 mt-1">
+                Até {p.vezes}x de {formatBRL(p.valor)}
               </p>
             </div>
 
-            {/* WhatsApp CTA no resumo */}
-            <div className="mt-4 rounded-xl bg-[#25D366]/10 p-3 text-center">
-              <a
-                href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de ajuda para finalizar meu pedido.")}`}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-[#25D366] hover:underline"
-              >
-                <MessageCircle className="h-3.5 w-3.5" />
-                Finalizar pelo WhatsApp
-              </a>
-              <p className="mt-1 text-[10px] text-muted-foreground">{WHATSAPP_DISPLAY}</p>
+            <div className="mt-8 flex items-center justify-center gap-3 grayscale opacity-40">
+              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo-1.png" alt="Pix" className="h-3 object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo-1.png" alt="Visa" className="h-2.5 object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Master" className="h-4 object-contain" />
             </div>
           </div>
         </aside>
@@ -374,14 +366,14 @@ function Checkout() {
   );
 }
 
-const inp = "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none ring-primary focus:ring-2";
-const btnPrimary = "w-full rounded-full bg-primary py-3.5 text-sm font-bold uppercase tracking-wider text-primary-foreground transition hover:bg-primary-glow disabled:opacity-50";
-const btnGhost = "rounded-full border border-border px-5 py-3.5 text-sm font-semibold";
+const inp = "w-full rounded-2xl border border-border bg-background px-4 py-4 text-sm outline-none ring-primary/20 focus:ring-4 transition-premium placeholder:text-muted-foreground/30 font-light";
+const btnPrimary = "w-full rounded-full bg-primary py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition-premium hover:bg-primary-glow hover:scale-[1.02] active:scale-[0.98] shadow-soft disabled:opacity-50 disabled:scale-100";
+const btnGhost = "rounded-full border border-border px-6 py-4 text-xs font-bold uppercase tracking-widest transition-premium hover:bg-secondary";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+    <label className="block space-y-2">
+      <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">{label}</span>
       {children}
     </label>
   );
@@ -389,9 +381,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Linha({ label, v, accent }: { label: string; v: string; accent?: boolean }) {
   return (
-    <div className="flex justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className={accent ? "font-semibold text-primary" : "font-medium"}>{v}</span>
+    <div className="flex justify-between text-[11px] font-medium uppercase tracking-widest">
+      <span className="text-muted-foreground/60">{label}</span>
+      <span className={accent ? "text-emerald-500 font-bold" : "text-foreground"}>{v}</span>
     </div>
   );
 }
@@ -400,13 +392,20 @@ function ModoCard({ active, onClick, icon, title, desc, highlight, highlightBadg
   return (
     <button
       onClick={onClick}
-      className={`relative rounded-xl border-2 p-4 text-left transition ${
-        active ? "border-primary bg-primary/5" : "border-border bg-background hover:border-primary/40"
+      className={`relative rounded-[1.5rem] border-2 p-5 text-left transition-premium overflow-hidden group ${
+        active ? "border-primary bg-primary/5" : "border-border bg-background hover:border-primary/30"
       }`}
     >
-      {highlightBadge && <span className="absolute -top-2 right-3 rounded-full bg-[#25D366] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">{highlightBadge}</span>}
-      <div className="flex items-center gap-2 text-primary">{icon}<span className="text-sm font-bold text-foreground">{title}</span></div>
-      <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
+      {active && <div className="absolute top-0 right-0 p-2 text-primary animate-in zoom-in duration-300"><Check className="h-4 w-4" /></div>}
+      <div className={`flex items-center gap-3 ${active ? "text-primary" : "text-muted-foreground"}`}>
+        <div className={`h-10 w-10 flex items-center justify-center rounded-xl transition-premium ${active ? "bg-primary text-white" : "bg-secondary group-hover:bg-primary/10 group-hover:text-primary"}`}>
+          {icon}
+        </div>
+        <div>
+          <span className="block text-sm font-bold text-foreground">{title}</span>
+          <p className="text-[11px] text-muted-foreground font-light leading-tight mt-0.5">{desc}</p>
+        </div>
+      </div>
       {children}
     </button>
   );

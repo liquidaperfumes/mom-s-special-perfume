@@ -1,6 +1,7 @@
 import { useCart } from "@/lib/cart";
 import { useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, MessageCircle } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
+import { formatBRL } from "@/lib/utils";
 
 const WHATSAPP_CONSULTORA = "5581995811306";
 
@@ -8,46 +9,32 @@ export function StickyCTA() {
   const { count, total, setOpen } = useCart();
   const navigate = useNavigate();
 
-  if (count === 0) {
-    return (
-      <div className="fixed inset-x-3 bottom-3 z-30 flex flex-col gap-2 md:hidden">
-        <a
-          href="#kits"
-          className="flex items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-elegant"
-        >
-          <ShoppingBag className="h-4 w-4" /> Ver kits para mamãe
-        </a>
-        <a
-          href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de ver os kits disponíveis.")}`}
-          target="_blank"
-          rel="noopener"
-          className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-elegant"
-        >
-          <MessageCircle className="h-3.5 w-3.5" /> Falar com consultora
-        </a>
-      </div>
-    );
-  }
+export function StickyCTA() {
+  const { count, total } = useCart();
+  const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-30 flex flex-col gap-2 md:hidden">
-      <button
-        onClick={() => navigate({ to: "/checkout" })}
-        onContextMenu={(e) => { e.preventDefault(); setOpen(true); }}
-        className="flex items-center justify-between gap-3 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-elegant"
-      >
-        <span>{count} {count === 1 ? "item" : "itens"}</span>
-        <span className="uppercase tracking-wider">Finalizar →</span>
-        <span>{total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-      </button>
-      <a
-        href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
-        target="_blank"
-        rel="noopener"
-        className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-2.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-elegant"
-      >
-        <MessageCircle className="h-3 w-3" /> Ou finalize pelo WhatsApp
-      </a>
+    <div className="fixed inset-x-4 bottom-4 z-40 md:hidden">
+      {count === 0 ? (
+        <a
+          href="#kits"
+          className="flex h-14 items-center justify-center gap-3 rounded-full bg-primary text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-premium transition-premium active:scale-95"
+        >
+          <ShoppingBag className="h-4 w-4" /> Escolher presente
+        </a>
+      ) : (
+        <button
+          onClick={() => navigate({ to: "/checkout" })}
+          className="flex h-16 w-full items-center justify-between gap-4 rounded-full bg-primary px-7 text-xs font-bold text-white shadow-premium transition-premium active:scale-95"
+        >
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-[10px]">{count}</span>
+            <span className="uppercase tracking-widest">Finalizar</span>
+          </div>
+          <div className="h-4 w-px bg-white/20" />
+          <span className="font-display text-lg tracking-normal">{formatBRL(total)}</span>
+        </button>
+      )}
     </div>
   );
 }

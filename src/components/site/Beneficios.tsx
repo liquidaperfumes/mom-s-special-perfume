@@ -4,9 +4,9 @@ const items = [
   { icon: Truck, t: "Entrega em 3h", d: "Receba seu pedido em até 3 horas no Grande Recife." },
   { icon: ShieldCheck, t: "100% Originais", d: "Produtos lacrados, direto das melhores marcas." },
   { icon: Gift, t: "Embalagem Presenteável", d: "Tudo pronto para presentear, sem nenhuma fricção." },
-  { icon: Lock, t: "Até 12x sem juros", d: "Pagamento seguro via Pagar.me com Pix ou cartão." },
+  { icon: Lock, t: "Parcelamento em até 12x", d: "Pague com cartão de crédito ou Pix com total segurança." },
   { icon: Store, t: "Retire em Olinda", d: "Pegue na loja no mesmo dia, em São Benedito." },
-  { icon: Sparkles, t: "Atendimento VIP", d: "Finalize pelo WhatsApp com nossa consultora." },
+  { icon: Sparkles, t: "Atendimento VIP", d: "Finalize seu pedido com uma de nossas consultoras." },
 ];
 
 export function Beneficios() {
@@ -16,14 +16,14 @@ export function Beneficios() {
         <div className="mb-10 text-center">
           <h2 className="font-display text-3xl font-medium sm:text-4xl">Tudo pensado para você presentear sem preocupação.</h2>
         </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {items.map(({ icon: Icon, t, d }) => (
-            <div key={t} className="flex flex-col items-center rounded-2xl bg-background p-5 text-center shadow-soft transition hover:-translate-y-1">
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-rose text-primary-foreground">
-                <Icon className="h-5 w-5" />
+            <div key={t} className="flex flex-col items-center rounded-3xl bg-background p-6 text-center shadow-soft transition-premium hover:-translate-y-2 hover:shadow-premium">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/5 text-primary">
+                <Icon className="h-6 w-6" />
               </div>
-              <h3 className="text-sm font-bold">{t}</h3>
-              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{d}</p>
+              <h3 className="text-sm font-bold tracking-tight">{t}</h3>
+              <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground/70 font-light">{d}</p>
             </div>
           ))}
         </div>
