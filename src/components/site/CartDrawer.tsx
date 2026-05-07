@@ -1,7 +1,10 @@
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/kits";
-import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, MessageCircle } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+
+const WHATSAPP_CONSULTORA = "5581995811306";
+const WHATSAPP_DISPLAY = "(81) 99581-1306";
 
 export function CartDrawer() {
   const { items, open, setOpen, remove, setQtd, total } = useCart();
@@ -57,13 +60,22 @@ export function CartDrawer() {
               <span className="text-sm text-muted-foreground">Subtotal</span>
               <span className="font-display text-2xl text-primary">{formatBRL(total)}</span>
             </div>
-            {total >= 250 && <p className="text-xs font-semibold text-primary">🎉 Você ganhou frete grátis!</p>}
+            <p className="text-[11px] text-muted-foreground">Parcelamento em até 12x</p>
             <button
               onClick={() => { setOpen(false); navigate({ to: "/checkout" }); }}
               className="w-full rounded-full bg-primary py-4 text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-soft transition hover:bg-primary-glow"
             >
               Finalizar compra →
             </button>
+            <a
+              href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
+              target="_blank"
+              rel="noopener"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#1da851]"
+            >
+              <MessageCircle className="h-4 w-4" /> Finalizar pelo WhatsApp
+            </a>
+            <p className="text-center text-[10px] text-muted-foreground">Consultora: {WHATSAPP_DISPLAY}</p>
           </footer>
         )}
       </aside>

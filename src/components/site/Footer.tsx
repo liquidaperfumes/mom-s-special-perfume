@@ -22,7 +22,7 @@ export function Footer() {
           <h4 className="text-xs font-bold uppercase tracking-widest text-background/80">Contato</h4>
           <ul className="mt-4 space-y-2 text-sm text-background/70">
             <li>Estrada do Caenga, 235<br />São Benedito · Olinda – PE</li>
-            <li>(81) 9.9712-7309</li>
+            <li>(81) 9.9581-1306</li>
             <li>contato@liquidaperfumes.com.br</li>
           </ul>
         </div>
@@ -30,7 +30,7 @@ export function Footer() {
           <h4 className="text-xs font-bold uppercase tracking-widest text-background/80">Redes</h4>
           <div className="mt-4 flex gap-3">
             <a href="https://instagram.com/liquida.perfumes" target="_blank" rel="noopener" className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-primary"><Instagram className="h-4 w-4" /></a>
-            <a href="https://wa.me/5581997127309" target="_blank" rel="noopener" className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-[#25D366]"><MessageCircle className="h-4 w-4" /></a>
+            <a href="https://wa.me/5581995811306" target="_blank" rel="noopener" className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-[#25D366]"><MessageCircle className="h-4 w-4" /></a>
           </div>
         </div>
       </div>

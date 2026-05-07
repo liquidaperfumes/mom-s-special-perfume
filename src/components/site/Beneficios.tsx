@@ -1,12 +1,12 @@
 import { Truck, ShieldCheck, Gift, Lock, Store, Sparkles } from "lucide-react";
 
 const items = [
-  { icon: Truck, t: "Entrega Rápida", d: "Entregamos em todo o Grande Recife em poucos dias." },
+  { icon: Truck, t: "Entrega em 3h", d: "Receba seu pedido em até 3 horas no Grande Recife." },
   { icon: ShieldCheck, t: "100% Originais", d: "Produtos lacrados, direto das melhores marcas." },
   { icon: Gift, t: "Embalagem Presenteável", d: "Tudo pronto para presentear, sem nenhuma fricção." },
-  { icon: Lock, t: "Compra Segura", d: "Pagamento protegido com Pix, cartão e boleto." },
+  { icon: Lock, t: "Até 12x sem juros", d: "Pagamento seguro via Pagar.me com Pix ou cartão." },
   { icon: Store, t: "Retire em Olinda", d: "Pegue na loja no mesmo dia, em São Benedito." },
-  { icon: Sparkles, t: "Atendimento VIP", d: "Time pronto para te ajudar via WhatsApp." },
+  { icon: Sparkles, t: "Atendimento VIP", d: "Finalize pelo WhatsApp com nossa consultora." },
 ];
 
 export function Beneficios() {

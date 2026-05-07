@@ -2,22 +2,60 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, parcelas } from "@/lib/kits";
-import { calcularFrete, FRETE_GRATIS_ACIMA_DE, BAIRROS_DISPONIVEIS } from "@/lib/frete";
-import { ArrowLeft, Check, MessageCircle, Store, Truck, CreditCard, Smartphone } from "lucide-react";
+import { calcularFrete, BAIRROS_DISPONIVEIS } from "@/lib/frete";
+import { ArrowLeft, Check, MessageCircle, Store, Truck, CreditCard, Smartphone, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Checkout — Líquida Perfumes" },
-      { name: "description", content: "Finalize sua compra com Pix ou cartão em até 10x." },
+      { name: "description", content: "Finalize sua compra online ou pelo WhatsApp. Parcelamento em até 12x." },
       { name: "robots", content: "noindex" },
     ],
   }),
   component: Checkout,
 });
 
+const WHATSAPP_CONSULTORA = "5581995811306";
+const WHATSAPP_DISPLAY = "(81) 99581-1306";
+
 type EntregaModo = "entrega" | "retirada";
-type Pagamento = "pix" | "cartao";
+type FinalizarModo = "online" | "whatsapp";
+
+function buildWhatsAppMessage(
+  items: { kit: { nome: string; preco: number }; qtd: number }[],
+  nome: string,
+  whatsapp: string,
+  modo: EntregaModo,
+  endereco: { rua: string; num: string; comp: string; bairro: string; cidade: string; uf: string; cep: string },
+  total: number,
+  freteValor: number | null,
+) {
+  const linhas = items.map((i) => `• ${i.qtd}x ${i.kit.nome} — ${formatBRL(i.kit.preco * i.qtd)}`).join("\n");
+  const enderecoTxt = modo === "retirada"
+    ? "Retirada na loja (Estrada do Caenga, 235 - São Benedito, Olinda - PE)"
+    : `${endereco.rua}, ${endereco.num}${endereco.comp ? " - " + endereco.comp : ""} - ${endereco.bairro}, ${endereco.cidade}/${endereco.uf} - CEP ${endereco.cep}`;
+  const totalFinal = total + (freteValor ?? 0);
+  const msg = [
+    `*Novo pedido — Líquida Perfumes 💝*`,
+    ``,
+    `*Cliente:* ${nome}`,
+    `*WhatsApp:* ${whatsapp}`,
+    ``,
+    `*Itens:*`,
+    linhas,
+    ``,
+    `*Entrega:* ${enderecoTxt}`,
+    modo === "entrega" ? `*Prazo:* Entrega em até 3 horas` : "",
+    `*Frete:* ${freteValor === 0 ? "Grátis" : freteValor != null ? formatBRL(freteValor) : "A combinar"}`,
+    ``,
+    `*Subtotal:* ${formatBRL(total)}`,
+    `*TOTAL: ${formatBRL(totalFinal)}*`,
+    ``,
+    `Parcelamento em até 12x`,
+  ].filter(Boolean).join("\n");
+  return msg;
+}
 
 function Checkout() {
   const { items, total, clear } = useCart();
@@ -26,8 +64,7 @@ function Checkout() {
 
   // step 1
   const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [tel, setTel] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   // step 2
   const [modo, setModo] = useState<EntregaModo>("entrega");
@@ -41,17 +78,16 @@ function Checkout() {
   const [buscandoCep, setBuscandoCep] = useState(false);
 
   // step 3
-  const [pagamento, setPagamento] = useState<Pagamento>("pix");
+  const [finalizarModo, setFinalizarModo] = useState<FinalizarModo>("online");
 
   const fr = modo === "entrega" && bairro ? calcularFrete(bairro) : null;
   const freteValor = useMemo(() => {
     if (modo === "retirada") return 0;
     if (!fr || !fr.disponivel) return null;
-    return total >= FRETE_GRATIS_ACIMA_DE ? 0 : fr.valor;
-  }, [fr, modo, total]);
+    return fr.valor;
+  }, [fr, modo]);
 
-  const descontoPix = pagamento === "pix" ? total * 0.05 : 0;
-  const totalFinal = total - descontoPix + (freteValor ?? 0);
+  const totalFinal = total + (freteValor ?? 0);
 
   const buscarCep = async (v: string) => {
     setCep(v);
@@ -81,31 +117,13 @@ function Checkout() {
     );
   }
 
-  const finalizar = () => {
-    const linhas = items.map((i) => `• ${i.qtd}x ${i.kit.nome} — ${formatBRL(i.kit.preco * i.qtd)}`).join("%0A");
-    const enderecoTxt = modo === "retirada"
-      ? "Retirada na loja (Estrada do Caenga, 235 - São Benedito, Olinda - PE)"
-      : `${rua}, ${num}${comp ? " - " + comp : ""} - ${bairro}, ${cidade}/${uf} - CEP ${cep}`;
-    const msg = [
-      `*Novo pedido — Líquida Perfumes 💝*`,
-      ``,
-      `*Cliente:* ${nome}`,
-      `*Email:* ${email}`,
-      `*Telefone:* ${tel}`,
-      ``,
-      `*Itens:*`,
-      decodeURIComponent(linhas.replace(/%0A/g, "\n")),
-      ``,
-      `*Entrega:* ${enderecoTxt}`,
-      `*Frete:* ${freteValor === 0 ? "Grátis" : freteValor != null ? formatBRL(freteValor) : "A combinar"}`,
-      `*Pagamento:* ${pagamento === "pix" ? "Pix (5% de desconto)" : "Cartão"}`,
-      ``,
-      `*Subtotal:* ${formatBRL(total)}`,
-      pagamento === "pix" ? `*Desconto Pix:* -${formatBRL(descontoPix)}` : "",
-      `*TOTAL: ${formatBRL(totalFinal)}*`,
-    ].filter(Boolean).join("\n");
-
-    const url = `https://wa.me/5581997127309?text=${encodeURIComponent(msg)}`;
+  const finalizarWhatsApp = () => {
+    const msg = buildWhatsAppMessage(
+      items, nome, whatsapp, modo,
+      { rua, num, comp, bairro, cidade, uf, cep },
+      total, freteValor,
+    );
+    const url = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");
     setTimeout(() => {
       clear();
@@ -113,8 +131,35 @@ function Checkout() {
     }, 600);
   };
 
-  const canNext1 = nome.trim().length > 1 && /\S+@\S+\.\S+/.test(email) && tel.replace(/\D/g, "").length >= 10;
+  const finalizarOnline = () => {
+    // TODO: Integrar com Pagar.me API
+    // Por enquanto, direciona ao WhatsApp com detalhes do pagamento online
+    const msg = buildWhatsAppMessage(
+      items, nome, whatsapp, modo,
+      { rua, num, comp, bairro, cidade, uf, cep },
+      total, freteValor,
+    );
+    const msgOnline = msg + "\n\n_💳 Cliente optou por pagamento online (Pagar.me)_";
+    const url = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msgOnline)}`;
+    window.open(url, "_blank");
+    setTimeout(() => {
+      clear();
+      navigate({ to: "/sucesso" });
+    }, 600);
+  };
+
+  const finalizar = () => {
+    if (finalizarModo === "whatsapp") {
+      finalizarWhatsApp();
+    } else {
+      finalizarOnline();
+    }
+  };
+
+  const canNext1 = nome.trim().length > 1 && whatsapp.replace(/\D/g, "").length >= 10;
   const canNext2 = modo === "retirada" || (cep.replace(/\D/g, "").length === 8 && rua && num && bairro);
+
+  const p = parcelas(totalFinal);
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -130,11 +175,24 @@ function Checkout() {
         </div>
       </header>
 
+      {/* WhatsApp CTA Banner */}
+      <div className="bg-[#25D366] py-2.5 text-center">
+        <a
+          href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center gap-2 text-xs font-bold text-white sm:text-sm"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Prefere finalizar com uma consultora? Envie seu pedido pelo WhatsApp: {WHATSAPP_DISPLAY}
+        </a>
+      </div>
+
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
           {/* Stepper */}
           <ol className="mb-6 flex items-center gap-2 text-xs font-semibold">
-            {["Identificação", "Entrega", "Pagamento"].map((s, i) => (
+            {["Identificação", "Entrega", "Finalização"].map((s, i) => (
               <li key={s} className="flex flex-1 items-center gap-2">
                 <span className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] ${
                   step > i + 1 ? "bg-primary text-primary-foreground" : step === i + 1 ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
@@ -150,10 +208,10 @@ function Checkout() {
               <div className="space-y-4">
                 <h2 className="font-display text-2xl">Quem está presenteando?</h2>
                 <Field label="Nome completo"><input className={inp} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Maria Silva" /></Field>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="E-mail"><input type="email" className={inp} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@email.com" /></Field>
-                  <Field label="Telefone / WhatsApp"><input className={inp} value={tel} onChange={(e) => setTel(e.target.value)} placeholder="(81) 9.9999-9999" /></Field>
-                </div>
+                <Field label="WhatsApp">
+                  <input className={inp} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(81) 9.9999-9999" />
+                  <p className="mt-1 text-[11px] text-muted-foreground">Usaremos apenas para contato sobre seu pedido.</p>
+                </Field>
                 <button disabled={!canNext1} onClick={() => setStep(2)} className={btnPrimary}>Continuar →</button>
               </div>
             )}
@@ -162,7 +220,9 @@ function Checkout() {
               <div className="space-y-5">
                 <h2 className="font-display text-2xl">Como você quer receber?</h2>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega no endereço" desc="Receba em casa em 1-5 dias úteis" />
+                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega no endereço" desc="Receba em até 3 horas" highlight>
+                    <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-primary"><Clock className="h-3 w-3" /> Entrega expressa</span>
+                  </ModoCard>
                   <ModoCard active={modo === "retirada"} onClick={() => setModo("retirada")} icon={<Store className="h-5 w-5" />} title="Retirar na loja" desc="Olinda · Grátis · pronto em 2h" />
                 </div>
 
@@ -182,13 +242,20 @@ function Checkout() {
                     <Field label="Cidade"><input className={inp} value={cidade} onChange={(e) => setCidade(e.target.value)} /></Field>
                     <Field label="UF"><input className={inp} value={uf} onChange={(e) => setUf(e.target.value)} maxLength={2} /></Field>
 
+                    {modo === "entrega" && (
+                      <div className="sm:col-span-2 rounded-xl bg-primary/5 border border-primary/20 p-3 text-sm">
+                        <p className="flex items-center gap-2 font-semibold text-primary"><Clock className="h-4 w-4" /> Entrega em até 3 horas</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Após a confirmação do pagamento, seu pedido será entregue rapidamente.</p>
+                      </div>
+                    )}
+
                     {fr && !fr.disponivel && (
                       <div className="sm:col-span-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm">
                         <p className="font-semibold">Bairro fora da nossa rota fixa.</p>
-                        <p className="mt-1 text-muted-foreground">Você pode escolher retirada na loja ou falar conosco no WhatsApp para combinarmos a entrega.</p>
+                        <p className="mt-1 text-muted-foreground">Você pode escolher retirada na loja ou falar com nossa consultora no WhatsApp para combinarmos a entrega.</p>
                         <div className="mt-3 flex gap-2">
                           <button onClick={() => setModo("retirada")} className="rounded-full bg-foreground px-4 py-2 text-xs font-bold text-background">Retirar na loja</button>
-                          <a href={`https://wa.me/5581997127309?text=${encodeURIComponent("Olá! Meu bairro é " + bairro + " e gostaria de combinar entrega.")}`} target="_blank" rel="noopener" className="inline-flex items-center gap-1 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white"><MessageCircle className="h-3 w-3" /> WhatsApp</a>
+                          <a href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Meu bairro é " + bairro + " e gostaria de combinar entrega.")}`} target="_blank" rel="noopener" className="inline-flex items-center gap-1 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white"><MessageCircle className="h-3 w-3" /> WhatsApp</a>
                         </div>
                       </div>
                     )}
@@ -212,19 +279,46 @@ function Checkout() {
 
             {step === 3 && (
               <div className="space-y-5">
-                <h2 className="font-display text-2xl">Como você prefere pagar?</h2>
+                <h2 className="font-display text-2xl">Como você prefere finalizar?</h2>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <ModoCard active={pagamento === "pix"} onClick={() => setPagamento("pix")} icon={<Smartphone className="h-5 w-5" />} title="Pix" desc="5% de desconto · aprovação imediata" highlight />
-                  <ModoCard active={pagamento === "cartao"} onClick={() => setPagamento("cartao")} icon={<CreditCard className="h-5 w-5" />} title="Cartão de crédito" desc={`Em até ${parcelas(totalFinal).vezes}x sem juros`} />
+                  <ModoCard active={finalizarModo === "online"} onClick={() => setFinalizarModo("online")} icon={<CreditCard className="h-5 w-5" />} title="Pagamento online" desc="Pix ou cartão em até 12x · Pagar.me">
+                    <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-muted-foreground"><Smartphone className="h-3 w-3" /> Aprovação imediata</span>
+                  </ModoCard>
+                  <ModoCard active={finalizarModo === "whatsapp"} onClick={() => setFinalizarModo("whatsapp")} icon={<MessageCircle className="h-5 w-5" />} title="Finalizar pelo WhatsApp" desc={`Converse com nossa consultora: ${WHATSAPP_DISPLAY}`} highlightBadge="Atendimento VIP" />
                 </div>
 
-                <div className="rounded-xl bg-secondary p-4 text-xs leading-relaxed text-muted-foreground">
-                  Ao finalizar, você será encaminhada para o nosso atendimento no WhatsApp para confirmar o pagamento e garantir seu pedido. Pix e cartão são processados com segurança.
-                </div>
+                {finalizarModo === "online" && (
+                  <div className="rounded-xl bg-secondary p-4 text-xs leading-relaxed text-muted-foreground">
+                    <p>Ao finalizar, seu pedido será processado com segurança pelo <strong className="text-foreground">Pagar.me</strong>. Aceita Pix, cartão de crédito e débito.</p>
+                    <p className="mt-2 font-semibold text-foreground">Parcelamento em até 12x</p>
+                  </div>
+                )}
+
+                {finalizarModo === "whatsapp" && (
+                  <div className="rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 p-4 text-xs leading-relaxed">
+                    <p className="font-semibold text-foreground">💬 Finalize com atendimento personalizado</p>
+                    <p className="mt-1 text-muted-foreground">Ao clicar, o resumo do seu pedido será enviado automaticamente para nossa consultora no WhatsApp. Ela vai te guiar com o pagamento e confirmar a entrega.</p>
+                  </div>
+                )}
+
+                {/* WhatsApp CTA inline */}
+                {finalizarModo === "online" && (
+                  <a
+                    href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de finalizar meu pedido com uma consultora.")}`}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-center gap-2 rounded-xl border border-[#25D366]/30 bg-[#25D366]/5 p-3 text-xs text-muted-foreground transition hover:bg-[#25D366]/10"
+                  >
+                    <MessageCircle className="h-4 w-4 shrink-0 text-[#25D366]" />
+                    <span>Prefere finalizar com uma consultora? <strong className="text-foreground">Envie seu pedido pelo WhatsApp: {WHATSAPP_DISPLAY}</strong></span>
+                  </a>
+                )}
 
                 <div className="flex gap-3">
                   <button onClick={() => setStep(2)} className={btnGhost}>Voltar</button>
-                  <button onClick={finalizar} className={btnPrimary}>Finalizar pedido →</button>
+                  <button onClick={finalizar} className={btnPrimary}>
+                    {finalizarModo === "whatsapp" ? "Enviar pedido pelo WhatsApp →" : "Finalizar pedido →"}
+                  </button>
                 </div>
               </div>
             )}
@@ -251,14 +345,27 @@ function Checkout() {
             <div className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
               <Linha label="Subtotal" v={formatBRL(total)} />
               <Linha label="Frete" v={freteValor === null ? "—" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)} />
-              {descontoPix > 0 && <Linha label="Desconto Pix (5%)" v={`-${formatBRL(descontoPix)}`} accent />}
               <div className="mt-3 flex items-baseline justify-between border-t border-border pt-3">
                 <span className="text-sm font-bold uppercase tracking-wider">Total</span>
                 <span className="font-display text-2xl text-primary">{formatBRL(totalFinal)}</span>
               </div>
-              {pagamento === "cartao" && (
-                <p className="text-right text-[11px] text-muted-foreground">ou {parcelas(totalFinal).vezes}x de {formatBRL(parcelas(totalFinal).valor)} sem juros</p>
-              )}
+              <p className="text-right text-[11px] text-muted-foreground">
+                Parcelamento em até {p.vezes}x de {formatBRL(p.valor)}
+              </p>
+            </div>
+
+            {/* WhatsApp CTA no resumo */}
+            <div className="mt-4 rounded-xl bg-[#25D366]/10 p-3 text-center">
+              <a
+                href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Gostaria de ajuda para finalizar meu pedido.")}`}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-2 text-xs font-semibold text-[#25D366] hover:underline"
+              >
+                <MessageCircle className="h-3.5 w-3.5" />
+                Finalizar pelo WhatsApp
+              </a>
+              <p className="mt-1 text-[10px] text-muted-foreground">{WHATSAPP_DISPLAY}</p>
             </div>
           </div>
         </aside>
@@ -289,7 +396,7 @@ function Linha({ label, v, accent }: { label: string; v: string; accent?: boolea
   );
 }
 
-function ModoCard({ active, onClick, icon, title, desc, highlight }: { active: boolean; onClick: () => void; icon: React.ReactNode; title: string; desc: string; highlight?: boolean }) {
+function ModoCard({ active, onClick, icon, title, desc, highlight, highlightBadge, children }: { active: boolean; onClick: () => void; icon: React.ReactNode; title: string; desc: string; highlight?: boolean; highlightBadge?: string; children?: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
@@ -297,9 +404,10 @@ function ModoCard({ active, onClick, icon, title, desc, highlight }: { active: b
         active ? "border-primary bg-primary/5" : "border-border bg-background hover:border-primary/40"
       }`}
     >
-      {highlight && <span className="absolute -top-2 right-3 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground">5% off</span>}
+      {highlightBadge && <span className="absolute -top-2 right-3 rounded-full bg-[#25D366] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">{highlightBadge}</span>}
       <div className="flex items-center gap-2 text-primary">{icon}<span className="text-sm font-bold text-foreground">{title}</span></div>
       <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
+      {children}
     </button>
   );
 }

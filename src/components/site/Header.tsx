@@ -39,7 +39,7 @@ export function Header() {
         </button>
       </div>
       <div className="bg-foreground py-2 text-center text-[11px] font-medium tracking-wide text-background sm:text-xs">
-        <Sparkles className="mr-1 inline h-3 w-3" /> Frete grátis acima de R$ 250 · Pague em até 10x · Retire na loja em Olinda
+        <Sparkles className="mr-1 inline h-3 w-3" /> Entrega em até 3h · Parcele em até 12x · Finalize pelo WhatsApp
       </div>
     </header>
   );

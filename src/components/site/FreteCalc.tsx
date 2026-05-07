@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BAIRROS_DISPONIVEIS, calcularFrete, FRETE_GRATIS_ACIMA_DE, type FreteResult } from "@/lib/frete";
+import { BAIRROS_DISPONIVEIS, calcularFrete, type FreteResult } from "@/lib/frete";
 import { formatBRL } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
 import { Truck, MapPin, Store, MessageCircle } from "lucide-react";
@@ -18,8 +18,7 @@ export function FreteCalc() {
     setRes(calcularFrete(b));
   };
 
-  const fretGratis = total >= FRETE_GRATIS_ACIMA_DE;
-  const wa = `https://wa.me/5581997127309?text=${encodeURIComponent(
+  const wa = `https://wa.me/5581995811306?text=${encodeURIComponent(
     `Olá! Meu bairro é "${q}" e gostaria de saber sobre entrega.`
   )}`;
 
@@ -31,8 +30,7 @@ export function FreteCalc() {
             <Truck className="mx-auto h-8 w-8 text-primary" />
             <h2 className="mt-3 font-display text-3xl font-medium sm:text-4xl">Calcule seu frete</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Digite seu bairro e veja o valor da entrega na hora.
-              {fretGratis && <strong className="ml-1 text-primary">Você ganhou frete grátis! 🎉</strong>}
+              Digite seu bairro e veja o valor da entrega na hora. Entrega em até 3 horas!
             </p>
           </div>
 
@@ -73,14 +71,9 @@ export function FreteCalc() {
                 <div className="space-y-2 text-center">
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">{res.bairro}</p>
                   <p className="font-display text-3xl text-primary">
-                    {fretGratis ? "Grátis" : formatBRL(res.valor)}
+                    {formatBRL(res.valor)}
                   </p>
-                  <p className="text-sm text-muted-foreground">Prazo: {res.prazo}</p>
-                  {!fretGratis && total > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      Faltam <strong className="text-primary">{formatBRL(FRETE_GRATIS_ACIMA_DE - total)}</strong> para frete grátis.
-                    </p>
-                  )}
+                  <p className="text-sm text-muted-foreground">Entrega em até 3 horas</p>
                 </div>
               ) : (
                 <div className="space-y-3 text-center">

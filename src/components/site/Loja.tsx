@@ -32,7 +32,7 @@ export function Loja() {
               <Phone className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <p className="font-semibold">Atendimento</p>
-                <p className="text-muted-foreground">(81) 9.9712-7309 · WhatsApp</p>
+                <p className="text-muted-foreground">(81) 9.9581-1306 · WhatsApp</p>
               </div>
             </div>
           </div>
@@ -46,7 +46,7 @@ export function Loja() {
               Como chegar →
             </a>
             <a
-              href="https://wa.me/5581997127309"
+              href="https://wa.me/5581995811306"
               target="_blank" rel="noopener"
               className="inline-flex items-center justify-center rounded-full border border-foreground/20 bg-background px-6 py-3 text-sm font-bold uppercase tracking-wider"
             >
