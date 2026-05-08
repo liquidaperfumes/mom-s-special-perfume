@@ -14,6 +14,7 @@ import egeoChoc from "@/assets/kits/egeo-choc.png";
 import herCodeBody from "@/assets/kits/her-code-body-splash.png";
 import florattaRed from "@/assets/kits/floratta-red.png";
 
+// Version: 2026.05.08.01.54 - Force Sync
 export type Badge = "Mais Vendido" | "Edição Especial" | "Novidade" | "Mega Promoção" | null;
 
 export type Kit = {
