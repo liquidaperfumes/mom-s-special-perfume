@@ -1,12 +1,11 @@
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/kits";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function CartDrawer() {
   const { items, open, setOpen, remove, setQtd, total } = useCart();
-  const navigate = useNavigate();
 
   return (
     <AnimatePresence>
@@ -88,12 +87,13 @@ export function CartDrawer() {
                 </div>
                 
                 <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => { setOpen(false); navigate({ to: "/checkout" }); }}
-                    className="w-full rounded-full bg-primary py-4.5 text-xs font-bold uppercase tracking-widest text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow"
+                  <Link
+                    to="/checkout"
+                    onClick={() => setOpen(false)}
+                    className="w-full rounded-full bg-primary py-4.5 text-xs font-bold uppercase tracking-widest text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow flex items-center justify-center gap-2"
                   >
                     Finalizar pedido →
-                  </button>
+                  </Link>
                 </div>
                 <p className="text-center text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground/60">Finalize com segurança e rapidez</p>
               </footer>
