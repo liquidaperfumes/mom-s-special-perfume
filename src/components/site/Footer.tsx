@@ -1,40 +1,62 @@
-import { Instagram, MessageCircle } from "lucide-react";
+import { Instagram, MessageCircle, ShieldCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import logoImg from "@/assets/logo-liquida.png";
 
 export function Footer() {
   return (
     <footer className="bg-foreground text-background">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-3">
-        <div>
-          <div>
-            <div className="h-10 overflow-hidden">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
-            </div>
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-3">
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <img src={logoImg} alt="Liquida Perfumes" className="h-10 w-auto object-contain" />
+            <div className="h-6 w-px bg-background/20" />
+            <img 
+              src="https://logopng.com.br/logos/o-boticario-131.png" 
+              alt="O Boticário" 
+              className="h-6 w-auto object-contain brightness-0 invert opacity-40" 
+            />
           </div>
-          <p className="mt-4 max-w-xs text-sm text-background/70">
-            Conectando pessoas às fragrâncias que expressam quem elas são.
+          <p className="max-w-xs text-sm text-background/60 leading-relaxed font-light">
+            Especialistas em fragrâncias que eternizam momentos. Parceria oficial Liquida & O Boticário para este Dia das Mães.
           </p>
+          <div className="pt-4">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 mb-4">Formas de Pagamento</h4>
+            <div className="flex flex-wrap gap-4 items-center opacity-60">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_pix.png/512px-Logo_pix.png" alt="Pix" className="h-4 w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-3 w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Mastercard" className="h-5 w-auto object-contain" />
+            </div>
+            <p className="mt-4 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
+          </div>
         </div>
+
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-widest text-background/80">Contato</h4>
-          <ul className="mt-4 space-y-2 text-sm text-background/70">
-            <li>Estrada do Caenga, 235<br />São Benedito · Olinda – PE</li>
-            <li>(81) 9.9581-1306</li>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-background/80">Onde estamos</h4>
+          <ul className="mt-6 space-y-4 text-sm text-background/60 font-light">
+            <li className="leading-relaxed">Estrada do Caenga, 235<br />São Benedito · Olinda – PE</li>
+            <li className="flex items-center gap-2 text-background/90 font-medium">
+              <MessageCircle className="h-4 w-4" /> (81) 9.9581-1306
+            </li>
             <li>contato@liquidaperfumes.com.br</li>
           </ul>
         </div>
+
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-widest text-background/80">Redes</h4>
-          <div className="mt-4 flex gap-3">
-            <a href="https://instagram.com/liquida.perfumes" target="_blank" rel="noopener" className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-primary"><Instagram className="h-4 w-4" /></a>
-            <a href="https://wa.me/5581995811306" target="_blank" rel="noopener" className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-[#25D366]"><MessageCircle className="h-4 w-4" /></a>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-background/80">Conecte-se</h4>
+          <p className="mt-6 text-sm text-background/60 font-light mb-6">Siga-nos para acompanhar novidades e promoções exclusivas.</p>
+          <div className="flex gap-4">
+            <a href="https://instagram.com/liquida.perfumes" target="_blank" rel="noopener" className="flex h-12 w-12 items-center justify-center rounded-full bg-background/5 border border-background/10 hover:bg-primary transition-all duration-300"><Instagram className="h-5 w-5" /></a>
+            <a href="https://wa.me/5581995811306" target="_blank" rel="noopener" className="flex h-12 w-12 items-center justify-center rounded-full bg-background/5 border border-background/10 hover:bg-[#25D366] transition-all duration-300"><MessageCircle className="h-5 w-5" /></a>
+          </div>
+          <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-background/30">
+            <ShieldCheck className="h-4 w-4" /> Site 100% Seguro
           </div>
         </div>
       </div>
-      <div className="border-t border-background/10 py-5 text-center text-xs text-background/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+      <div className="border-t border-background/5 py-8 text-center text-[10px] text-background/30 flex flex-col sm:flex-row items-center justify-center gap-4">
         <span>© {new Date().getFullYear()} Liquida Perfumes — Todos os direitos reservados.</span>
-        <Link to="/admin" className="hover:text-primary transition-colors opacity-30 hover:opacity-100">Painel Consultoras</Link>
+        <div className="h-1 w-1 rounded-full bg-background/10 hidden sm:block" />
+        <Link to="/admin" className="hover:text-primary transition-colors hover:opacity-100">Painel Consultoras</Link>
       </div>
     </footer>
   );

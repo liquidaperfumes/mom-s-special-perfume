@@ -35,7 +35,11 @@ export function Hero() {
             >
               <img src={logoImg} alt="Liquida Perfumes" className="h-8 sm:h-10 w-auto object-contain" />
               <div className="h-6 w-px bg-white/20" />
-              <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" alt="O Boticário" className="h-5 sm:h-7 w-auto object-contain brightness-0 invert" />
+              <img 
+                src="https://logopng.com.br/logos/o-boticario-131.png" 
+                alt="O Boticário" 
+                className="h-5 sm:h-7 w-auto object-contain brightness-0 invert" 
+              />
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, y: 10 }}

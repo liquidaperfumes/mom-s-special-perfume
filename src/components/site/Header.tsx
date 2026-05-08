@@ -15,11 +15,11 @@ export function Header() {
             </div>
           </Link>
           <div className="h-6 w-px bg-border hidden sm:block" />
-          <div className="h-6 sm:h-8 opacity-40 flex items-center">
+          <div className="h-6 sm:h-8 flex items-center">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" 
+              src="https://logopng.com.br/logos/o-boticario-131.png" 
               alt="O Boticário" 
-              className="h-full w-auto object-contain grayscale" 
+              className="h-full w-auto object-contain brightness-0 opacity-40" 
             />
           </div>
         </div>

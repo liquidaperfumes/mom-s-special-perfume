@@ -3,7 +3,7 @@ import { useState, useMemo, useRef } from "react";
 import { useCart } from "@/lib/cart";
 import { formatBRL, parcelas } from "@/lib/kits";
 import { calcularFrete, BAIRROS_DISPONIVEIS } from "@/lib/frete";
-import { ArrowLeft, Check, MessageCircle, Store, Truck, MapPin, Clock } from "lucide-react";
+import { ArrowLeft, Check, MessageCircle, Store, Truck, MapPin, Clock, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -112,7 +112,6 @@ function Checkout() {
   const [buscandoCep, setBuscandoCep] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // BUG FIX: abort controller for CEP fetch to prevent stale updates
   const cepAbort = useRef<AbortController | null>(null);
 
   const fr = modo === "entrega" && bairro ? calcularFrete(bairro) : null;
@@ -130,7 +129,6 @@ function Checkout() {
     const clean = masked.replace(/\D/g, "");
     if (clean.length !== 8) return;
 
-    // Abort any previous in-flight request
     cepAbort.current?.abort();
     cepAbort.current = new AbortController();
     setBuscandoCep(true);
@@ -174,7 +172,6 @@ function Checkout() {
     const msg = buildWhatsAppMessage(items, nome, whatsapp, modo, enderecoObj, total, freteValor, formaPagamento);
 
     try {
-      // Save to Supabase — non-blocking: open WhatsApp regardless
       supabase.from("pedidos").insert({
         cliente_nome: nome,
         cliente_whatsapp: whatsapp.replace(/\D/g, ""),
@@ -201,7 +198,6 @@ function Checkout() {
   };
 
   const canNext1 = nome.trim().length > 1 && whatsapp.replace(/\D/g, "").length >= 10;
-  // BUG FIX: canNext2 — if bairro is outside route, user should still proceed (consultora handles it)
   const canNext2 = modo === "retirada" || (cep.replace(/\D/g, "").length === 8 && rua && num && bairro);
 
   const p = parcelas(totalFinal);
@@ -216,13 +212,12 @@ function Checkout() {
           <div className="h-9 sm:h-11 overflow-hidden flex items-center">
             <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
           </div>
-          <div className="w-16" /> {/* spacer */}
+          <div className="w-16" />
         </div>
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:py-10 lg:grid-cols-[1.3fr_1fr]">
         <div className="space-y-6">
-          {/* Stepper */}
           <nav className="flex items-center gap-2">
             {[["1", "Dados"], ["2", "Entrega"], ["3", "Finalizar"]].map(([n, s], i) => (
               <div key={s} className="flex flex-1 flex-col items-center gap-1.5">
@@ -247,15 +242,7 @@ function Checkout() {
                     <input className={inp} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Como podemos te chamar?" autoComplete="name" />
                   </Field>
                   <Field label="WhatsApp">
-                    {/* BUG FIX: masked input + inputMode tel for mobile keyboard */}
-                    <input
-                      className={inp}
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(maskPhone(e.target.value))}
-                      placeholder="(81) 9.9999-9999"
-                      inputMode="tel"
-                      autoComplete="tel"
-                    />
+                    <input className={inp} value={whatsapp} onChange={(e) => setWhatsapp(maskPhone(e.target.value))} placeholder="(81) 9.9999-9999" inputMode="tel" autoComplete="tel" />
                   </Field>
                 </div>
                 <button disabled={!canNext1} onClick={() => setStep(2)} className={btnPrimary}>
@@ -280,15 +267,7 @@ function Checkout() {
                   <div className="grid gap-4 sm:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-300">
                     <Field label="CEP">
                       <div className="relative">
-                        <input
-                          className={inp}
-                          value={cep}
-                          onChange={(e) => buscarCep(e.target.value)}
-                          placeholder="00000-000"
-                          inputMode="numeric"
-                          autoComplete="postal-code"
-                          maxLength={9}
-                        />
+                        <input className={inp} value={cep} onChange={(e) => buscarCep(e.target.value)} placeholder="00000-000" inputMode="numeric" autoComplete="postal-code" maxLength={9} />
                         {buscandoCep && <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />}
                       </div>
                     </Field>
@@ -308,33 +287,12 @@ function Checkout() {
                       <input className={inp} value={comp} onChange={(e) => setComp(e.target.value)} />
                     </Field>
 
-                    {/* Frete info */}
                     {fr && fr.disponivel && (
                       <div className="sm:col-span-2 rounded-xl bg-primary/5 border border-primary/10 p-3 flex items-center gap-3">
                         <Clock className="h-5 w-5 text-primary shrink-0" />
                         <div className="text-xs">
                           <p className="font-bold text-primary">Frete: {formatBRL(fr.valor)}</p>
                           <p className="text-muted-foreground mt-0.5">Após confirmação, o presente chega rapidinho.</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* BUG FIX: bairro not found — show warning but don't BLOCK proceed */}
-                    {fr && !fr.disponivel && bairro.trim().length > 2 && (
-                      <div className="sm:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
-                        <p className="font-bold text-amber-800">Bairro fora da rota fixa</p>
-                        <p className="mt-1 text-xs text-amber-700">Nossa consultora vai combinar a entrega com você pelo WhatsApp. Você pode continuar normalmente.</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <button onClick={() => setModo("retirada")} className="rounded-full bg-foreground px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-background">
-                            Retirar na loja
-                          </button>
-                          <a
-                            href={`https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent("Olá! Meu bairro é " + bairro + " e gostaria de combinar entrega.")}`}
-                            target="_blank" rel="noopener"
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white"
-                          >
-                            <MessageCircle className="h-3 w-3" /> WhatsApp
-                          </a>
                         </div>
                       </div>
                     )}
@@ -386,30 +344,32 @@ function Checkout() {
                     title="Link de Pagamento"
                     desc="Crédito em até 12x via WhatsApp"
                   />
-                  {modo === "entrega" && (
-                    <ModoCard
-                      active={formaPagamento === "cartao_entrega"}
-                      onClick={() => setFormaPagamento("cartao_entrega")}
-                      icon={<div className="font-bold text-xs">CARD</div>}
-                      title="Cartão na Entrega"
-                      desc="Pague ao receber o produto"
-                    />
-                  )}
-                </div>
+                  <ModoCard
+                    active={formaPagamento === "cartao_entrega"}
+                    onClick={() => setFormaPagamento("cartao_entrega")}
+                    icon={<div className="font-bold text-xs">CARD</div>}
+                    title="Cartão na Entrega"
+                    desc="Pague ao receber o produto"
+                  />
 
-                <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 text-center">
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Ao clicar no botão abaixo, você será redirecionado para o WhatsApp para finalizar os detalhes com nossa consultora.
-                  </p>
+                  {/* Payment Notice */}
+                  <div className="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3">
+                    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                      <AlertCircle className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-amber-900 uppercase tracking-widest">Aviso Importante</p>
+                      <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed font-medium">
+                        Para sua segurança, todos os pagamentos são realizados apenas no momento da **entrega** ou **retirada** do produto.
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-3">
                   <button disabled={loading} onClick={finalizar} className={`${btnPrimary} py-5 text-sm flex items-center justify-center gap-3`}>
                     {loading ? (
-                      <>
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Processando...
-                      </>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     ) : (
                       <>
                         <MessageCircle className="h-5 w-5" />
@@ -426,7 +386,6 @@ function Checkout() {
           </motion.div>
         </div>
 
-        {/* Resumo lateral */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-2xl sm:rounded-[2rem] border border-border bg-card p-5 shadow-premium sm:p-8">
             <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 mb-4">Resumo da Sacola</h3>
@@ -447,25 +406,23 @@ function Checkout() {
 
             <div className="mt-6 space-y-2 border-t border-border pt-4 text-sm">
               <Linha label="Subtotal" v={formatBRL(total)} />
-              <Linha
-                label="Frete"
-                v={freteValor === null ? "A combinar" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)}
-                accent={freteValor === 0}
-              />
+              <Linha label="Frete" v={freteValor === null ? "A combinar" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)} accent={freteValor === 0} />
               <div className="mt-4 flex items-baseline justify-between border-t border-border/50 pt-4">
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Total</span>
                 <span className="text-3xl font-bold text-primary">{formatBRL(totalFinal)}</span>
               </div>
-              <p className="text-right text-[10px] font-bold uppercase tracking-widest" style={{ color: '#BF355D', opacity: 0.6 }}>
+              <p className="text-right text-[10px] font-bold uppercase tracking-widest text-primary/60">
                 Até {p.vezes}x de {formatBRL(p.valor)}
               </p>
             </div>
 
-            {/* Payment logos */}
-            <div className="mt-6 flex items-center justify-center gap-3 opacity-30 grayscale">
-              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo-1.png" alt="Pix" className="h-3 object-contain" loading="lazy" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo-1.png" alt="Visa" className="h-2.5 object-contain" loading="lazy" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Master" className="h-4 object-contain" loading="lazy" />
+            <div className="mt-6 flex flex-col items-center gap-4">
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary/60 text-center">Pagamento Seguro na Entrega</p>
+              <div className="flex items-center justify-center gap-4 opacity-40 grayscale">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_pix.png/512px-Logo_pix.png" alt="Pix" className="h-3 object-contain" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-2.5 object-contain" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Master" className="h-4 object-contain" />
+              </div>
             </div>
           </div>
         </aside>
