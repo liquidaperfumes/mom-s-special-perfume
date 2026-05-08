@@ -47,10 +47,25 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"todos" | PedidoStatus>("pendente");
   const [searchTerm, setSearchTerm] = useState("");
-  const [auth, setAuth] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [isSynced, setIsSynced] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setLoadingAuth(false);
+    });
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
 
   const stats = useMemo(() => {
     const delivered = pedidos.filter(p => p.status === "entregue");
@@ -104,7 +119,7 @@ function AdminPage() {
   };
 
   const fetchPedidos = async () => {
-    if (!auth) return;
+    if (!session) return;
     setLoading(true);
 
     let query = supabase.from("pedidos").select("*").order("created_at", { ascending: false });
@@ -130,7 +145,7 @@ function AdminPage() {
   };
 
   useEffect(() => {
-    if (!auth) return;
+    if (!session) return;
     fetchPedidos();
 
     const channel = supabase
@@ -167,12 +182,21 @@ function AdminPage() {
       .subscribe((status) => setIsSynced(status === "SUBSCRIBED"));
 
     return () => { supabase.removeChannel(channel); };
-  }, [filter, auth, searchTerm]);
+  }, [filter, session, searchTerm]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pass === "liquida2026") { setAuth(true); toast.success("Acesso liberado"); }
-    else { toast.error("Senha incorreta"); }
+    const toastId = toast.loading("Autenticando...");
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: pass,
+    });
+    
+    if (error) {
+      toast.error("E-mail ou senha incorretos", { id: toastId });
+    } else {
+      toast.success("Acesso liberado", { id: toastId });
+    }
   };
 
   const updateStatus = async (id: string, newStatus: PedidoStatus) => {
@@ -195,7 +219,11 @@ function AdminPage() {
     else toast.success("Evidência anexada com sucesso!");
   };
 
-  if (!auth) {
+  if (loadingAuth) {
+    return <div className="flex min-h-screen items-center justify-center bg-secondary/30" />
+  }
+
+  if (!session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
         <div className="w-full max-sm:px-0 max-w-sm rounded-3xl border border-border bg-background p-8 shadow-premium">
@@ -206,8 +234,12 @@ function AdminPage() {
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="relative">
+              <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/40" />
+              <input type="email" required placeholder="E-mail de acesso" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-2xl border border-input bg-secondary/20 py-4 pl-12 pr-4 text-sm outline-none ring-primary transition-all focus:ring-2" />
+            </div>
+            <div className="relative">
               <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/40" />
-              <input type="password" placeholder="Senha de acesso" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full rounded-2xl border border-input bg-secondary/20 py-4 pl-12 pr-4 text-sm outline-none ring-primary transition-all focus:ring-2" />
+              <input type="password" required placeholder="Senha" value={pass} onChange={(e) => setPass(e.target.value)} className="w-full rounded-2xl border border-input bg-secondary/20 py-4 pl-12 pr-4 text-sm outline-none ring-primary transition-all focus:ring-2" />
             </div>
             <button type="submit" className="w-full rounded-2xl bg-primary py-4 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-soft transition-premium hover:bg-primary-glow hover:scale-[1.02] active:scale-[0.98]">Entrar no Sistema</button>
           </form>
@@ -234,7 +266,7 @@ function AdminPage() {
               {isSynced ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
               {isSynced ? "Sincronizado" : "Conectando..."}
             </div>
-            <button onClick={() => setAuth(false)} className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">Sair</button>
+            <button onClick={() => supabase.auth.signOut()} className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">Sair</button>
           </div>
         </div>
       </header>
