@@ -2,6 +2,8 @@ import { Instagram, MessageCircle, ShieldCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import logoImg from "@/assets/logo-liquida.png";
 
+const BOTICARIO_SVG = "https://www.boticario.com.br/on/demandware.static/-/Sites-boticario-Library/default/dw1d96096a/images/header/logo-boticario.svg";
+
 export function Footer() {
   return (
     <footer className="bg-foreground text-background">
@@ -12,9 +14,13 @@ export function Footer() {
             <div className="h-6 w-px bg-background/20" />
             <div className="flex flex-col">
               <img 
-                src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" 
+                src={BOTICARIO_SVG} 
                 alt="O Boticário" 
                 className="h-6 w-auto object-contain brightness-0 invert opacity-60" 
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerHTML += '<span class="text-[10px] font-black uppercase text-background/60">O Boticário</span>';
+                }}
               />
               <p className="text-[6px] font-black uppercase tracking-[0.15em] text-background/30 -mt-0.5">Onde tem amor tem beleza</p>
             </div>
@@ -24,12 +30,27 @@ export function Footer() {
           </p>
           <div className="pt-4">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 mb-4">Formas de Pagamento</h4>
-            <div className="flex flex-wrap gap-4 items-center opacity-80">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Pix.png/512px-Logo_Pix.png" alt="Pix" className="h-5 w-auto object-contain brightness-0 invert" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-3 w-auto object-contain brightness-0 invert" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Mastercard" className="h-5 w-auto object-contain" />
+            <div className="flex flex-wrap gap-5 items-center opacity-70">
+              {/* PIX SVG */}
+              <div className="flex items-center gap-1.5">
+                <svg className="h-4 w-4 fill-primary" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zm0 2.83L19.17 12 12 19.17 4.83 12 12 4.83zM12 8l-4 4 4 4 4-4-4-4z"/></svg>
+                <span className="text-[9px] font-black uppercase tracking-widest text-background/80">Pix</span>
+              </div>
+              {/* VISA SVG */}
+              <div className="flex items-center gap-1.5">
+                <svg className="h-3 w-8 fill-background/80" viewBox="0 0 24 24"><path d="M10 6h2l1 12h-2zm-6 0h2l1 12H5zm14 0h2l-1 12h-2z"/></svg>
+                <span className="text-[9px] font-black uppercase tracking-widest text-background/80">Visa</span>
+              </div>
+              {/* MASTER SVG */}
+              <div className="flex items-center gap-1.5">
+                <div className="flex -space-x-2">
+                  <div className="h-4 w-4 rounded-full bg-red-500 opacity-80" />
+                  <div className="h-4 w-4 rounded-full bg-orange-500 opacity-80" />
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-background/80">Master</span>
+              </div>
             </div>
-            <p className="mt-4 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
+            <p className="mt-5 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
           </div>
         </div>
 
