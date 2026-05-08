@@ -37,7 +37,7 @@ export function Header() {
           
           {/* Partnership Widget */}
           <div className="flex flex-col justify-center">
-            <div className="h-5 sm:h-7 flex items-center">
+            <div className="h-5 sm:h-7 flex items-center gap-3">
               {boticarioError ? (
                 <span className="text-[10px] font-black uppercase text-foreground/80">O Boticário</span>
               ) : (
@@ -48,8 +48,12 @@ export function Header() {
                   onError={() => setBoticarioError(true)}
                 />
               )}
+              
+              <div className="h-4 w-px bg-border/60" />
+              
+              <span className="text-[14px] font-serif tracking-[0.2em] font-medium text-foreground/80 leading-none mt-1">EUDORA</span>
             </div>
-            <p className="text-[6px] sm:text-[7px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 -mt-0.5">Onde tem amor tem beleza</p>
+            <p className="text-[6px] sm:text-[7px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 -mt-0.5 pt-1">Onde tem amor tem beleza</p>
           </div>
         </div>
 

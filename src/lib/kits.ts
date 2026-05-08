@@ -15,6 +15,10 @@ import herCodeBody from "@/assets/kits/her-code-body-splash.jpg";
 import florattaRed from "@/assets/kits/floratta-red.jpg";
 import pessegura from "@/assets/kits/cuide-se-bem-pessegura.jpg";
 
+// Placeholders para as imagens da Eudora - O usuário deve substituir pelas imagens locais depois
+const rosaAbsoluta = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Rosa+Absoluta";
+const kissmeDelicious = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Kissme+Delicious";
+const eudoraInstance = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Eudora+Instance";
 
 // Version: 2026.05.08.01.54 - Force Sync
 export type Badge = "Mais Vendido" | "Edição Especial" | "Novidade" | "Mega Promoção" | null;
@@ -48,6 +52,9 @@ export const KITS: Kit[] = [
   { id: "k14", slug: "celebre-sua-forca", nome: "Kit Celebre Sua Força", marca: "O Boticário", descricao: "Perfume + creme para mãos. Mensagem que transborda carinho.", preco: 99.99, precoOriginal: 119.99, imagem: celebre, badge: null },
   { id: "k15", slug: "deleite", nome: "Kit Cuide-se Bem Deleite", marca: "O Boticário", descricao: "Aromas envolventes para um momento de puro autocuidado.", preco: 84.99, precoOriginal: 109.99, imagem: deleite, badge: null },
   { id: "k16", slug: "cuide-se-bem-pessegura", nome: "Kit Cuide-se Bem Pessegura", marca: "O Boticário", descricao: "Pele macia e com cheirinho irresistível de pêssego. O toque de carinho que sua mãe merece.", preco: 49.99, precoOriginal: 74.99, imagem: pessegura, badge: "Mega Promoção" },
+  { id: "e01", slug: "rosa-absoluta", nome: "Kit Rosa Absoluta", marca: "Eudora", descricao: "Fragrância marcante e envolvente. O toque das rosas para o dia a dia.", preco: 39.99, precoOriginal: 59.99, imagem: rosaAbsoluta, badge: "Novidade" },
+  { id: "e02", slug: "kissme-delicious", nome: "Kit Kissme Delicious", marca: "Eudora", descricao: "Um presente irresistível e apaixonante, perfeito para celebrar momentos especiais.", preco: 109.99, precoOriginal: 149.99, imagem: kissmeDelicious, badge: "Novidade" },
+  { id: "e03", slug: "eudora-instance", nome: "Kit Eudora Instance Baunilha", marca: "Eudora", descricao: "Hidratação profunda e pele perfumada em instantes com extrato natural.", preco: 29.99, precoOriginal: 44.99, imagem: eudoraInstance, badge: "Mega Promoção" },
 ];
 
 export const formatBRL = (v: number) =>
