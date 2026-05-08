@@ -25,9 +25,9 @@ export function Footer() {
           <div className="pt-4">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 mb-4">Formas de Pagamento</h4>
             <div className="flex flex-wrap gap-4 items-center opacity-80">
-              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-4 w-auto object-contain" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo.png" alt="Visa" className="h-3 w-auto object-contain" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Mastercard" className="h-5 w-auto object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-5 w-auto object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo-1.png" alt="Visa" className="h-3 w-auto object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-1.png" alt="Mastercard" className="h-5 w-auto object-contain" />
             </div>
             <p className="mt-4 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
           </div>

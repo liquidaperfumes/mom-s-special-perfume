@@ -418,9 +418,9 @@ function Checkout() {
             <div className="mt-8 flex flex-col items-center gap-4">
               <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary/60 text-center">Pagamento Seguro na Entrega</p>
               <div className="flex items-center justify-center gap-5 opacity-80">
-                <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-4 object-contain" />
-                <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo.png" alt="Visa" className="h-3 object-contain" />
-                <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Master" className="h-5 object-contain" />
+                <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-5 object-contain" />
+                <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo-1.png" alt="Visa" className="h-3 object-contain" />
+                <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-1.png" alt="Master" className="h-5 object-contain" />
               </div>
             </div>
           </div>
