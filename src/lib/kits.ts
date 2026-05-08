@@ -16,12 +16,12 @@ import florattaRed from "@/assets/kits/floratta-red.jpg";
 import pessegura from "@/assets/kits/cuide-se-bem-pessegura.jpg";
 
 // Placeholders para as imagens da Eudora - O usuário deve substituir pelas imagens locais depois
-const rosaAbsoluta = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Rosa+Absoluta";
-const kissmeDelicious = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Kissme+Delicious";
-const eudoraInstance = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Eudora+Instance";
-const divaFabulosa = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Diva+Fabulosa";
-const laVictorie = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=La+Victorie";
-const eudoraRoxo = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Eudora+Roxo";
+const rosaAbsoluta = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=Rosa+Absoluta";
+const kissmeDelicious = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=Kissme+Delicious";
+const eudoraInstance = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=Eudora+Instance";
+const divaFabulosa = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=Diva+Fabulosa";
+const laVictorie = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=La+Victorie";
+const eudoraRoxo = "https://placehold.co/600x600/FDF2F3/BF355D/png?text=Eudora+Roxo";
 
 
 // Version: 2026.05.08.01.54 - Force Sync
