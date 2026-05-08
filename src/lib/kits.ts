@@ -1,19 +1,19 @@
-import lily from "@/assets/kits/lily-tradicional.jpg";
-import glamour from "@/assets/kits/glamour-secrets-black.jpg";
-import elysee from "@/assets/kits/elysee-tradicional.jpg";
-import coffee from "@/assets/kits/coffee-woman-duo.jpg";
-import florattaRose from "@/assets/kits/floratta-rose.jpg";
-import lilyCuidados from "@/assets/kits/lily-cuidados.jpg";
-import ameixa from "@/assets/kits/ameixa-tradicional.jpg";
+import lily from "@/assets/kits/lily-tradicional.png";
+import glamour from "@/assets/kits/glamour-secrets-black.png";
+import elysee from "@/assets/kits/elysee-tradicional.png";
+import coffee from "@/assets/kits/coffee-woman-duo.png";
+import florattaRose from "@/assets/kits/floratta-rose.png";
+import lilyCuidados from "@/assets/kits/lily-cuidados.png";
+import ameixa from "@/assets/kits/ameixa-tradicional.png";
 import cuideSe from "@/assets/kits/cuide-se-bem-pessegura.jpg";
-import liz from "@/assets/kits/liz-tradicional.jpg";
-import egeoDolce from "@/assets/kits/egeo-dolce.jpg";
-import herCode from "@/assets/kits/her-code-tradicional.jpg";
-import celebre from "@/assets/kits/celebre-sua-forca.jpg";
-import deleite from "@/assets/kits/deleite.jpg";
-import egeoChoc from "@/assets/kits/egeo-choc.jpg";
-import herCodeBody from "@/assets/kits/her-code-body-splash.jpg";
-import florattaRed from "@/assets/kits/floratta-red.jpg";
+import liz from "@/assets/kits/liz-tradicional.png";
+import egeoDolce from "@/assets/kits/egeo-dolce.png";
+import herCode from "@/assets/kits/her-code-tradicional.png";
+import celebre from "@/assets/kits/celebre-sua-forca.png";
+import deleite from "@/assets/kits/deleite.png";
+import egeoChoc from "@/assets/kits/egeo-choc.png";
+import herCodeBody from "@/assets/kits/her-code-body-splash.png";
+import florattaRed from "@/assets/kits/floratta-red.png";
 
 export type Badge = "Mais Vendido" | "Edição Especial" | "Novidade" | null;
 
