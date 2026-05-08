@@ -18,6 +18,9 @@ function KitCard({ kit }: { kit: Kit }) {
     setTimeout(() => setOpen(true), 250);
   };
 
+  const hasDiscount = kit.precoOriginal && kit.precoOriginal > kit.preco;
+  const discountPercent = hasDiscount ? Math.round(((kit.precoOriginal! - kit.preco) / kit.precoOriginal!) * 100) : 0;
+
   return (
     <motion.article
       layout
@@ -31,10 +34,18 @@ function KitCard({ kit }: { kit: Kit }) {
         <span className={`absolute left-4 top-4 z-10 rounded-full px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] shadow-soft backdrop-blur-md ${
           kit.badge === "Mais Vendido"
             ? "bg-foreground/90 text-background"
+            : kit.badge === "Mega Promoção"
+            ? "bg-primary text-white"
             : "bg-rose-deep/90 text-white"
         }`}>
           {kit.badge}
         </span>
+      )}
+
+      {hasDiscount && (
+        <div className="absolute right-4 top-4 z-10 rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-black text-white shadow-soft">
+          -{discountPercent}%
+        </div>
       )}
 
       <div className="relative aspect-square overflow-hidden bg-secondary/30">
@@ -57,9 +68,21 @@ function KitCard({ kit }: { kit: Kit }) {
         <div className="mt-auto pt-2 sm:pt-4 border-t border-border/50">
           <div className="flex items-center justify-between gap-1">
             <div>
-              <span className="text-base sm:text-2xl font-bold text-foreground">{formatBRL(kit.preco)}</span>
-              <p className="hidden sm:block text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
-                ou {p.vezes}x de <strong className="text-primary font-bold">{formatBRL(p.valor)}</strong>
+              {hasDiscount && (
+                <span className="text-[10px] sm:text-xs text-muted-foreground/60 line-through block mb-0.5">
+                  De {formatBRL(kit.precoOriginal!)}
+                </span>
+              )}
+              <div className="flex flex-col">
+                <span className="text-base sm:text-3xl font-bold text-foreground leading-none">
+                  {formatBRL(kit.preco)}
+                </span>
+                <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-primary font-bold mt-1.5 animate-pulse">
+                  Mega Promoção
+                </p>
+              </div>
+              <p className="hidden sm:block text-[10px] uppercase tracking-widest text-muted-foreground mt-2">
+                ou {p.vezes}x de <strong className="text-foreground font-bold">{formatBRL(p.valor)}</strong>
               </p>
             </div>
             
@@ -111,11 +134,11 @@ export function KitsGrid() {
         <div className="mb-12 text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Parceria Liquida & O Boticário</span>
           <h2 className="mt-3 text-4xl font-bold leading-tight text-balance tracking-tight sm:text-5xl">
-            Kits para presentear<br />
-            <span className="font-medium italic text-primary">com o coração.</span>
+            Mega Promoção de <br />
+            <span className="font-medium italic text-primary">Dia das Mães.</span>
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Selecionamos os perfumes mais amados das melhores marcas, em kits prontos com embalagem premium para presentear.
+            Preços exclusivos em kits selecionados O Boticário. Aproveite os descontos imperdíveis para presentear quem você ama.
           </p>
         </div>
 
