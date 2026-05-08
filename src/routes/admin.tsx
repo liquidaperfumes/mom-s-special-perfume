@@ -7,7 +7,7 @@ import {
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
   Camera, FileText, Image as ImageIcon, ExternalLink, Paperclip, Clock,
   Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter,
-  Edit2, Save, Undo, Sparkles, Eye, EyeOff
+  Edit2, Save, Undo, Sparkles, Eye, EyeOff, Plus, Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 import logoImg from "@/assets/logo-liquida.png";
@@ -572,25 +572,33 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
 }
 
 function CatalogoGrid() {
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [statusMap, setStatusMap] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
-    fetchStatus();
+    fetchData();
   }, []);
 
-  const fetchStatus = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase.from('produtos_status').select('*');
-      if (error) throw error;
-      
-      const map: Record<string, boolean> = {};
-      data.forEach((item: any) => {
-        map[item.id] = item.ativo;
-      });
-      setStatusMap(map);
+      setLoading(true);
+      // Fetch dynamic products
+      const { data: prods, error: errProds } = await supabase.from('produtos').select('*').order('created_at', { ascending: false });
+      if (!errProds) setDbProducts(prods || []);
+
+      // Fetch visibility status (for both hardcoded and dynamic)
+      const { data: status, error: errStatus } = await supabase.from('produtos_status').select('*');
+      if (!errStatus) {
+        const map: Record<string, boolean> = {};
+        status.forEach((item: any) => {
+          map[item.id] = item.ativo;
+        });
+        setStatusMap(map);
+      }
     } catch (err) {
-      console.error("Erro ao buscar status dos produtos:", err);
+      console.error("Erro ao buscar dados do catálogo:", err);
     } finally {
       setLoading(false);
     }
@@ -599,36 +607,228 @@ function CatalogoGrid() {
   const toggleStatus = async (id: string, currentAtivo: boolean) => {
     try {
       const nextAtivo = !currentAtivo;
+      
+      // Update in produtos_status table
       const { error } = await supabase
         .from('produtos_status')
         .upsert({ id, ativo: nextAtivo });
 
       if (error) throw error;
 
+      // Also update in 'produtos' table if it's a dynamic product
+      await supabase.from('produtos').update({ ativo: nextAtivo }).eq('id', id);
+
       setStatusMap(prev => ({ ...prev, [id]: nextAtivo }));
       toast.success(`Produto ${nextAtivo ? 'ativado' : 'desativado'} com sucesso!`);
     } catch (err) {
-      toast.error("Erro ao atualizar visibilidade do produto.");
+      toast.error("Erro ao atualizar visibilidade.");
     }
   };
+
+  const deleteProduct = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir este produto permanentemente?")) return;
+    try {
+      const { error } = await supabase.from('produtos').delete().eq('id', id);
+      if (error) throw error;
+      setDbProducts(prev => prev.filter(p => p.id !== id));
+      toast.success("Produto removido com sucesso!");
+    } catch (err) {
+      toast.error("Erro ao excluir produto.");
+    }
+  };
+
+  const allProducts = useMemo(() => {
+    // Map db products to match the Kit type
+    const mappedDb = dbProducts.map(p => ({
+      ...p,
+      isDynamic: true
+    }));
+    return [...mappedDb, ...KITS];
+  }, [dbProducts]);
 
   if (loading) return <div className="p-12 text-center text-muted-foreground uppercase font-bold tracking-widest animate-pulse">Carregando catálogo...</div>;
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {KITS.map(kit => (
-        <CatalogoCard 
-          key={kit.id} 
-          kit={kit} 
-          ativo={statusMap[kit.id] !== false} 
-          onToggle={() => toggleStatus(kit.id, statusMap[kit.id] !== false)}
-        />
-      ))}
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-foreground">Gestão de Produtos</h2>
+        <button 
+          onClick={() => setShowAddForm(true)}
+          className="flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium"
+        >
+          <Plus className="h-4 w-4" /> Novo Produto
+        </button>
+      </div>
+
+      {showAddForm && (
+        <AddProductForm onCancel={() => setShowAddForm(false)} onSuccess={() => { setShowAddForm(false); fetchData(); }} />
+      )}
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {allProducts.map(kit => (
+          <CatalogoCard 
+            key={kit.id} 
+            kit={kit} 
+            ativo={statusMap[kit.id] !== false} 
+            onToggle={() => toggleStatus(kit.id, statusMap[kit.id] !== false)}
+            onDelete={kit.isDynamic ? () => deleteProduct(kit.id) : undefined}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
-function CatalogoCard({ kit, ativo, onToggle }: { kit: any, ativo: boolean, onToggle: () => void }) {
+function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    nome: "",
+    marca: "Eudora",
+    descricao: "",
+    preco: "",
+    precoOriginal: "",
+    badge: "Novidade" as any
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.nome || !form.preco) return toast.error("Preencha nome e preço.");
+    
+    setLoading(true);
+    const id = `p-${Date.now()}`;
+    const slug = form.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+    
+    try {
+      const { error } = await supabase.from('produtos').insert({
+        id,
+        slug,
+        nome: form.nome,
+        marca: form.marca,
+        descricao: form.descricao,
+        preco: parseFloat(form.preco),
+        precoOriginal: form.precoOriginal ? parseFloat(form.precoOriginal) : null,
+        badge: form.badge,
+        imagem: `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${form.nome.replace(/\s+/g, '+')}`,
+        ativo: true
+      });
+
+      if (error) throw error;
+      
+      toast.success("Produto criado com sucesso!");
+      onSuccess();
+    } catch (err) {
+      toast.error("Erro ao criar produto.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-[2.5rem] border border-rose-tea/10 bg-white p-8 shadow-premium"
+    >
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="text-lg font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" /> Adicionar Novo Kit
+        </h3>
+        <button onClick={onCancel} className="text-muted-foreground hover:text-foreground transition-colors"><X className="h-6 w-6" /></button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Nome do Produto</label>
+          <input 
+            type="text" 
+            required 
+            value={form.nome} 
+            onChange={e => setForm({...form, nome: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+            placeholder="Ex: Kit Eudora Chic"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Marca</label>
+          <select 
+            value={form.marca} 
+            onChange={e => setForm({...form, marca: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+          >
+            <option value="Eudora">Eudora</option>
+            <option value="O Boticário">O Boticário</option>
+            <option value="Nativa SPA">Nativa SPA</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-2 space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Descrição</label>
+          <textarea 
+            rows={3}
+            value={form.descricao} 
+            onChange={e => setForm({...form, descricao: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+            placeholder="Descreva o que vem no kit..."
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Preço Atual (R$)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            required 
+            value={form.preco} 
+            onChange={e => setForm({...form, preco: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+            placeholder="99.90"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Preço Original (Opcional)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            value={form.precoOriginal} 
+            onChange={e => setForm({...form, precoOriginal: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+            placeholder="129.90"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Destaque (Badge)</label>
+          <select 
+            value={form.badge} 
+            onChange={e => setForm({...form, badge: e.target.value})}
+            className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 p-4 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+          >
+            <option value="">Nenhum</option>
+            <option value="Novidade">Novidade</option>
+            <option value="Mais Vendido">Mais Vendido</option>
+            <option value="Mega Promoção">Mega Promoção</option>
+            <option value="Edição Especial">Edição Especial</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-2 flex justify-end gap-4 mt-4">
+          <button type="button" onClick={onCancel} className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground">Cancelar</button>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="rounded-2xl bg-primary px-10 py-4 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium disabled:opacity-50"
+          >
+            {loading ? "Salvando..." : "Criar Produto"}
+          </button>
+        </div>
+      </form>
+    </motion.div>
+  );
+}
+
+function CatalogoCard({ kit, ativo, onToggle, onDelete }: { kit: any, ativo: boolean, onToggle: () => void, onDelete?: () => void }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -676,15 +876,27 @@ function CatalogoCard({ kit, ativo, onToggle }: { kit: any, ativo: boolean, onTo
       
       <div className="mt-auto pt-4 border-t border-rose-tea/10 space-y-2">
         <div className="flex items-center justify-between mb-2 px-1">
-          <span className={`text-[9px] font-black uppercase tracking-widest ${ativo ? 'text-emerald-600' : 'text-rose-600'}`}>
-            {ativo ? 'Visível no Site' : 'Oculto no Site'}
-          </span>
-          <button 
-            onClick={onToggle}
-            className={`p-1.5 rounded-lg transition-premium ${ativo ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' : 'bg-rose-100 text-rose-600 hover:bg-rose-200'}`}
-          >
-            {ativo ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-          </button>
+          <div className="flex items-center gap-2">
+            <span className={`text-[9px] font-black uppercase tracking-widest ${ativo ? 'text-emerald-600' : 'text-rose-600'}`}>
+              {ativo ? 'Visível' : 'Oculto'}
+            </span>
+            <button 
+              onClick={onToggle}
+              className={`p-1.5 rounded-lg transition-premium ${ativo ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' : 'bg-rose-100 text-rose-600 hover:bg-rose-200'}`}
+            >
+              {ativo ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            </button>
+          </div>
+          
+          {onDelete && (
+            <button 
+              onClick={onDelete}
+              className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-premium"
+              title="Excluir Produto"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />

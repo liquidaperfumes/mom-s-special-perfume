@@ -121,27 +121,39 @@ function SortButton({ active, onClick, icon, label }: { active: boolean; onClick
 
 export function KitsGrid() {
   const [sort, setSort] = useState<SortOption>("relevancia");
+  const [dbProducts, setDbProducts] = useState<Kit[]>([]);
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStatus = async () => {
+    const fetchData = async () => {
       try {
-        const { data, error } = await supabase.from('produtos_status').select('id').eq('ativo', false);
-        if (error) throw error;
-        setHiddenIds(data.map((item: any) => item.id));
+        setLoading(true);
+        // Fetch visibility
+        const { data: statusData } = await supabase.from('produtos_status').select('id').eq('ativo', false);
+        setHiddenIds(statusData?.map((item: any) => item.id) || []);
+
+        // Fetch new products
+        const { data: prodsData } = await supabase.from('produtos').select('*').eq('ativo', true);
+        if (prodsData) {
+          setDbProducts(prodsData as Kit[]);
+        }
       } catch (err) {
-        console.error("Erro ao carregar visibilidade:", err);
+        console.error("Erro ao carregar catálogo:", err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchStatus();
+    fetchData();
   }, []);
 
   const sorted = useMemo(() => {
-    const list = KITS.filter(k => !hiddenIds.includes(k.id));
+    const all = [...dbProducts, ...KITS];
+    const list = all.filter(k => !hiddenIds.includes(k.id));
     if (sort === "menor") list.sort((a, b) => a.preco - b.preco);
     if (sort === "maior") list.sort((a, b) => b.preco - a.preco);
     return list;
-  }, [sort, hiddenIds]);
+  }, [sort, hiddenIds, dbProducts]);
 
   return (
     <section id="kits" className="relative bg-background py-16 sm:py-24">
