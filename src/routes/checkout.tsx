@@ -115,24 +115,22 @@ function CheckoutPage() {
       const footer = `_Por favor, confirme meu pedido e envie o link se necessário!_`;
 
       const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + totalInfo + pagInfo + footer;
-      const waUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=${encodeURIComponent(fullMessage)}`;
+      const msgEncoded = encodeURIComponent(fullMessage);
 
-      // 3. STORE THE URL FOR THE SUCCESS PAGE TO HANDLE
-      sessionStorage.setItem("waUrl", waUrl);
-
-      // 4. CLEANUP AND NAVIGATE
+      // 3. CLEANUP AND NAVIGATE WITH URL PARAMS
       toast.success("Pedido salvo com sucesso!", { id: toastId });
       clear();
-      navigate({ to: "/sucesso" });
+      
+      // Pass the message via URL search params to completely avoid sessionStorage DOMExceptions
+      navigate({ to: `/sucesso`, search: { msg: msgEncoded } as any });
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
       
-      const errorWaUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
-      sessionStorage.setItem("waUrl", errorWaUrl);
+      const errorMsg = encodeURIComponent("Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!");
       
       toast.error("Houve um pequeno problema ao salvar o pedido.", { id: toastId });
-      navigate({ to: "/sucesso" });
+      navigate({ to: `/sucesso`, search: { msg: errorMsg } as any });
     }
   };
 

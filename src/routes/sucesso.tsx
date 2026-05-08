@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { CheckCircle2, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/sucesso")({
@@ -19,17 +19,20 @@ function Sucesso() {
   const [waUrl, setWaUrl] = useState(`https://wa.me/${WHATSAPP_CONSULTORA}`);
 
   useEffect(() => {
-    const storedUrl = sessionStorage.getItem("waUrl");
-    if (storedUrl) {
-      setWaUrl(storedUrl);
-      
-      // Attempt to auto-redirect the user once they land on the success page.
-      // Since it's a new page load, some browsers might block this, so the manual button is provided below.
-      setTimeout(() => {
-        window.open(storedUrl, "_blank");
-      }, 500);
-      
-      // We don't remove it from sessionStorage immediately in case they refresh the page.
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const msg = params.get("msg");
+      if (msg) {
+        const fullUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_CONSULTORA}&text=${msg}`;
+        setWaUrl(fullUrl);
+        
+        // Auto-redirect attempt
+        setTimeout(() => {
+          window.open(fullUrl, "_blank");
+        }, 500);
+      }
+    } catch (e) {
+      console.error("Failed to parse URL params", e);
     }
   }, []);
 
