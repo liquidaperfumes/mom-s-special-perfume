@@ -20,19 +20,19 @@ function Sucesso() {
 
   useEffect(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const msg = params.get("msg");
+      const msg = localStorage.getItem('wa_msg');
       if (msg) {
-        const fullUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_CONSULTORA}&text=${msg}`;
+        const fullUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_CONSULTORA}&text=${encodeURIComponent(msg)}`;
         setWaUrl(fullUrl);
         
         // Auto-redirect attempt
         setTimeout(() => {
           window.open(fullUrl, "_blank");
+          localStorage.removeItem('wa_msg'); // limpar após usar
         }, 500);
       }
     } catch (e) {
-      console.error("Failed to parse URL params", e);
+      console.error("Failed to get msg from localStorage", e);
     }
   }, []);
 

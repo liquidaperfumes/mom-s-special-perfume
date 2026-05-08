@@ -138,12 +138,14 @@ function CheckoutPage() {
       const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + pagInfo + footer;
       const msgEncoded = encodeURIComponent(fullMessage);
 
-      // 3. CLEANUP AND NAVIGATE WITH URL PARAMS
+      // 3. CLEANUP AND NAVIGATE
       toast.success("Pedido salvo com sucesso!", { id: toastId });
       clear();
       
-      // Using window.location.href to bypass TanStack Router's strict search param stripping
-      window.location.href = `/sucesso?msg=${msgEncoded}`;
+      // Salvar a mensagem no localStorage para a tela de sucesso ler
+      localStorage.setItem('wa_msg', fullMessage);
+      
+      window.location.href = `/sucesso`;
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
