@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { 
   ArrowLeft, ShoppingBag, Truck, Store, MapPin, 
   MessageCircle, ShieldCheck, AlertCircle, Check,
@@ -11,7 +11,9 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const Route = () => <CheckoutPage />;
+export const Route = createFileRoute("/checkout")({
+  component: CheckoutPage,
+});
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -267,7 +269,7 @@ function CheckoutPage() {
                   Seu pedido será enviado diretamente para uma consultora.
                 </p>
               </div>
-            </section> Section
+            </section>
           </div>
 
           {/* Sidebar */}
