@@ -1,4 +1,4 @@
-import emocional from "@/assets/emocional.jpg";
+import emocional from "@/assets/emocional_nova.png";
 import { motion } from "framer-motion";
 
 export function Emocional() {
@@ -45,7 +45,7 @@ export function Emocional() {
           className="order-1 lg:order-2"
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-elegant">
-            <img src={emocional} alt="Mãe e filha em um abraço" loading="lazy" className="h-full w-full object-cover grayscale" />
+            <img src={emocional} alt="Mãe e filha em um abraço real e afetuoso" loading="lazy" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
           </div>
         </motion.div>
