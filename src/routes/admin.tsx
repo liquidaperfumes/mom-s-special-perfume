@@ -55,10 +55,32 @@ function AdminPage() {
   const stats = useMemo(() => {
     const delivered = pedidos.filter(p => p.status === "entregue");
     const pending = pedidos.filter(p => p.status === "pendente" || p.status === "vendido");
+    
+    // Most ordered product logic
+    const productCounts: Record<string, number> = {};
+    pedidos.forEach(p => {
+      if (p.status !== "cancelado") {
+        p.itens.forEach((it: any) => {
+          const name = it.kit.nome;
+          productCounts[name] = (productCounts[name] || 0) + it.qtd;
+        });
+      }
+    });
+    
+    let mostOrdered = "—";
+    let maxQty = 0;
+    Object.entries(productCounts).forEach(([name, qty]) => {
+      if (qty > maxQty) {
+        maxQty = qty;
+        mostOrdered = name;
+      }
+    });
+
     return {
       totalVendas: delivered.reduce((acc, p) => acc + p.total, 0),
       valorPendente: pending.reduce((acc, p) => acc + p.total, 0),
-      totalPedidos: counts.todos || 0
+      totalPedidos: counts.todos || 0,
+      maisPedido: mostOrdered
     };
   }, [pedidos, counts]);
 
@@ -221,13 +243,17 @@ function AdminPage() {
           <StatCard icon={<TrendingUp className="text-emerald-500" />} label="Vendas Entregues" value={formatBRL(stats.totalVendas)} />
           <StatCard icon={<Clock className="text-amber-500" />} label="Valor em Aberto" value={formatBRL(stats.valorPendente)} />
           <StatCard icon={<Package className="text-blue-500" />} label="Total Pedidos" value={stats.totalPedidos.toString()} />
-          <div className="hidden lg:block relative group">
+          <div className="relative group">
             <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative h-full flex flex-col justify-center rounded-3xl border border-rose-tea/10 bg-white p-6 shadow-soft">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ticket Médio</p>
-              <p className="text-2xl font-bold text-primary">{formatBRL(stats.totalPedidos > 0 ? (stats.totalVendas + stats.valorPendente) / stats.totalPedidos : 0)}</p>
+            <div className="relative h-full flex flex-col justify-center rounded-3xl border border-rose-tea/10 bg-white p-6 shadow-soft transition-premium hover:shadow-premium">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="h-3 w-3 text-gold" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">O Queridinho</p>
+              </div>
+              <p className="text-sm font-bold text-primary truncate" title={stats.maisPedido}>{stats.maisPedido}</p>
             </div>
           </div>
+
         </div>
 
         <div className="mb-8 flex flex-col gap-6">
