@@ -1,4 +1,5 @@
 import { Instagram, MessageCircle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import logoImg from "@/assets/logo-liquida.jpg";
 
 export function Footer() {
@@ -31,8 +32,9 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="border-t border-background/10 py-5 text-center text-xs text-background/50">
-        © {new Date().getFullYear()} Liquida Perfumes — Todos os direitos reservados.
+      <div className="border-t border-background/10 py-5 text-center text-xs text-background/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+        <span>© {new Date().getFullYear()} Liquida Perfumes — Todos os direitos reservados.</span>
+        <Link to="/admin" className="hover:text-primary transition-colors opacity-30 hover:opacity-100">Painel Consultoras</Link>
       </div>
     </footer>
   );

@@ -219,7 +219,7 @@ function PedidoCard({ pedido: p, onUpdate }: { pedido: Pedido; onUpdate: (id: st
           {cfg.label}
         </span>
         <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-          {new Date(p.created_at).toLocaleDateString('pt-BR')} · {new Date(p.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+          {p.created_at ? `${new Date(p.created_at).toLocaleDateString('pt-BR')} · ${new Date(p.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : "Data indisponível"}
         </span>
       </div>
 
