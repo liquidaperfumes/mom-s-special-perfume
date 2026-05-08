@@ -85,8 +85,28 @@ function CheckoutPage() {
       const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
       const whatsappLimpo = whatsapp.replace(/\D/g, "");
       
-      // 1. SAVE TO DATABASE SAFELY
-      let insertResult = await supabase.from("pedidos").insert({
+      // 1. PREPARE WHATSAPP MESSAGE (DO IT FIRST TO ENSURE REDIRECT WORKS EVEN IF DB FAILS)
+      const paymentLabels = {
+        pix: "Pix",
+        cartao_online: "Link de Pagamento (Cartão)",
+        cartao_entrega: "Cartão na Entrega/Retirada"
+      };
+
+      const sep = `\n---------------------------------------\n\n`;
+      const intro = `🛍️ *NOVO PEDIDO PELO SITE!* 🛍️${sep}`;
+      const clienteInfo = `👤 *DADOS DO CLIENTE*\n\n*Nome:* ${nome}\n*WhatsApp:* ${whatsapp}${sep}`;
+      const itensInfo = `🎁 *PRODUTOS ESCOLHIDOS*\n\n${items.map(i => `• ${i.qtd}x ${i.kit.nome}\n  ${formatBRL(i.kit.preco * i.qtd)}`).join("\n\n")}${sep}`;
+      const entregaInfo = modo === "entrega" 
+        ? `🚚 *ENDEREÇO DE ENTREGA*\n\n*Rua:* ${rua}, ${numero}\n*Bairro:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*Ref:* ${referencia}` : ""}${sep}`
+        : `🏪 *MÉTODO DE ENTREGA*\n\nRetirada na Loja (Estrada do Caenga, 235 - Olinda)${sep}`;
+      const pagInfo = `💳 *PAGAMENTO E VALORES*\n\n*Forma de Pagamento:* ${paymentLabels[formaPagamento]}\n*Total a Pagar:* *${formatBRL(totalFinal)}*${sep}`;
+      const footer = `✅ _Aguardando confirmação da consultora..._`;
+
+      const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + pagInfo + footer;
+      localStorage.setItem('wa_msg', fullMessage);
+
+      // 2. SAVE TO DATABASE
+      const { error: insertError } = await supabase.from("pedidos").insert({
         cliente_nome: nome,
         cliente_whatsapp: whatsappLimpo,
         itens: items,
@@ -97,59 +117,13 @@ function CheckoutPage() {
         forma_pagamento: formaPagamento,
       });
 
-      // Se a coluna forma_pagamento ainda não existir no banco, ele dá erro PGRST204
-      // Fazemos um fallback automático sem essa coluna para não travar a venda
-      if (insertResult.error && insertResult.error.code === 'PGRST204') {
-        console.warn("Coluna forma_pagamento não encontrada, fazendo fallback...");
-        insertResult = await supabase.from("pedidos").insert({
-          cliente_nome: nome,
-          cliente_whatsapp: whatsappLimpo,
-          itens: items,
-          tipo_entrega: modo,
-          endereco: enderecoObj,
-          total: totalFinal,
-          status: "pendente"
-        });
+      if (insertError) {
+        console.error("Database insert error:", insertError);
       }
-
-      if (insertResult.error) {
-        console.error("Database insert error:", insertResult.error);
-      }
-
-      // 2. PREPARE WHATSAPP MESSAGE
-      const paymentLabels = {
-        pix: "Pix",
-        cartao_online: "Link de Pagamento (Cartão)",
-        cartao_entrega: "Cartão na Entrega/Retirada"
-      };
-
-      const sep = `\n---------------------------------------\n\n`;
-
-      const intro = `🛍️ *NOVO PEDIDO PELO SITE!* 🛍️${sep}`;
-      
-      const clienteInfo = `👤 *DADOS DO CLIENTE*\n\n*Nome:* ${nome}\n*WhatsApp:* ${whatsapp}${sep}`;
-      
-      const itensInfo = `🎁 *PRODUTOS ESCOLHIDOS*\n\n${items.map(i => `• ${i.qtd}x ${i.kit.nome}\n  ${formatBRL(i.kit.preco * i.qtd)}`).join("\n\n")}${sep}`;
-      
-      const entregaInfo = modo === "entrega" 
-        ? `🚚 *ENDEREÇO DE ENTREGA*\n\n*Rua:* ${rua}, ${numero}\n*Bairro:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*Ref:* ${referencia}` : ""}${sep}`
-        : `🏪 *MÉTODO DE ENTREGA*\n\nRetirada na Loja (Estrada do Caenga, 235 - Olinda)${sep}`;
-        
-      const pagInfo = `💳 *PAGAMENTO E VALORES*\n\n*Forma de Pagamento:* ${paymentLabels[formaPagamento]}\n*Total a Pagar:* *${formatBRL(totalFinal)}*${sep}`;
-      
-      const footer = `✅ _Aguardando confirmação da consultora..._`;
-
-      const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + pagInfo + footer;
-      const msgEncoded = encodeURIComponent(fullMessage);
 
       // 3. CLEANUP AND NAVIGATE
       toast.success("Pedido salvo com sucesso!", { id: toastId });
-      
-      // Salvar a mensagem no localStorage antes de limpar o carrinho por garantia
-      localStorage.setItem('wa_msg', fullMessage);
-      
       clear();
-      
       window.location.href = `/sucesso`;
 
     } catch (err) {
