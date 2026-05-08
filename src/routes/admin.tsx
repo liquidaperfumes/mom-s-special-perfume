@@ -10,6 +10,7 @@ import {
   Edit2, Save, Undo, Sparkles, Eye, EyeOff, Plus, Trash2
 } from "lucide-react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import logoImg from "@/assets/logo-liquida.png";
 
 export const Route = createFileRoute("/admin")({
