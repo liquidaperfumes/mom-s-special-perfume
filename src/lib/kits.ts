@@ -19,6 +19,10 @@ import pessegura from "@/assets/kits/cuide-se-bem-pessegura.jpg";
 const rosaAbsoluta = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Rosa+Absoluta";
 const kissmeDelicious = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Kissme+Delicious";
 const eudoraInstance = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Eudora+Instance";
+const divaFabulosa = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Diva+Fabulosa";
+const laVictorie = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=La+Victorie";
+const eudoraRoxo = "https://via.placeholder.com/600x600/FDF2F3/BF355D?text=Eudora+Roxo";
+
 
 // Version: 2026.05.08.01.54 - Force Sync
 export type Badge = "Mais Vendido" | "Edição Especial" | "Novidade" | "Mega Promoção" | null;
@@ -55,6 +59,9 @@ export const KITS: Kit[] = [
   { id: "e01", slug: "rosa-absoluta", nome: "Kit Rosa Absoluta", marca: "Eudora", descricao: "Fragrância marcante e envolvente. O toque das rosas para o dia a dia.", preco: 39.99, precoOriginal: 59.99, imagem: rosaAbsoluta, badge: "Novidade" },
   { id: "e02", slug: "kissme-delicious", nome: "Kit Kissme Delicious", marca: "Eudora", descricao: "Um presente irresistível e apaixonante, perfeito para celebrar momentos especiais.", preco: 109.99, precoOriginal: 149.99, imagem: kissmeDelicious, badge: "Novidade" },
   { id: "e03", slug: "eudora-instance", nome: "Kit Eudora Instance Baunilha", marca: "Eudora", descricao: "Hidratação profunda e pele perfumada em instantes com extrato natural.", preco: 29.99, precoOriginal: 44.99, imagem: eudoraInstance, badge: "Mega Promoção" },
+  { id: "e04", slug: "diva-fabulosa", nome: "Kit Diva Fabulosa", marca: "Eudora", descricao: "Uma combinação radiante e sofisticada para brilhar em todas as ocasiões.", preco: 99.99, precoOriginal: 139.99, imagem: divaFabulosa, badge: "Novidade" },
+  { id: "e05", slug: "la-victorie-intense", nome: "Kit La Victorie Intense", marca: "Eudora", descricao: "Aroma intenso e sedutor, um verdadeiro símbolo de conquista e poder.", preco: 59.99, precoOriginal: 89.99, imagem: laVictorie, badge: "Mega Promoção" },
+  { id: "e06", slug: "eudora-roxo", nome: "Kit Eudora Roxo", marca: "Eudora", descricao: "A essência clássica da Eudora em um kit luxuoso e inesquecível.", preco: 129.99, precoOriginal: 179.99, imagem: eudoraRoxo, badge: "Mais Vendido" },
 ];
 
 export const formatBRL = (v: number) =>
