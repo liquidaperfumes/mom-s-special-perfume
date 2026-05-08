@@ -81,8 +81,8 @@ function CheckoutPage() {
       const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
       const whatsappLimpo = whatsapp.replace(/\D/g, "");
       
-      // Attempt to save to DB
-      const { error } = await supabase.from("pedidos").insert({
+      // Attempt to save to DB WITHOUT awaiting, to keep the click event synchronous
+      supabase.from("pedidos").insert({
         cliente_nome: nome,
         cliente_whatsapp: whatsappLimpo,
         itens: items,
@@ -91,11 +91,9 @@ function CheckoutPage() {
         total: totalFinal,
         status: "pendente",
         forma_pagamento: formaPagamento,
+      }).then(({ error }) => {
+        if (error) console.warn("Order saved to WhatsApp but failed to reach database:", error);
       });
-
-      if (error) {
-        console.warn("Order saved to WhatsApp but failed to reach database:", error);
-      }
 
       // WhatsApp Message construction
       const paymentLabels = {
@@ -118,23 +116,38 @@ function CheckoutPage() {
       const footer = `_Por favor, confirme meu pedido e envie o link se necessário!_`;
 
       const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + totalInfo + pagInfo + footer;
-      const waUrl = `https://wa.me/5581995811306?text=${encodeURIComponent(fullMessage)}`;
+      
+      // Use api.whatsapp.com which is more stable than wa.me in some environments
+      const waUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=${encodeURIComponent(fullMessage)}`;
 
       toast.success("Pedido realizado com sucesso!", { id: toastId });
       
       // Clear cart before leaving
       clear();
 
-      // Open WhatsApp in a new tab (works in iframe previews like Lovable)
-      window.open(waUrl, "_blank");
+      // Programmatically click a link to ensure it bypasses aggressive popup blockers
+      // because it runs synchronously inside the user's click event.
+      const link = document.createElement('a');
+      link.href = waUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
       // Navigate to the success page to continue the flow
       navigate({ to: "/sucesso" });
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
-      const waUrl = `https://wa.me/5581995811306?text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
-      window.open(waUrl, "_blank");
+      const waUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
+      const link = document.createElement('a');
+      link.href = waUrl;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
       navigate({ to: "/sucesso" });
       toast.error("Houve um pequeno problema, mas você foi redirecionado.", { id: toastId });
     }
