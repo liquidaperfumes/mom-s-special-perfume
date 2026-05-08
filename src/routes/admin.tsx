@@ -764,9 +764,10 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
       
       toast.success("Produto criado com sucesso!");
       onSuccess();
-    } catch (err) {
-      console.error(err);
-      toast.error("Erro ao criar produto.");
+    } catch (err: any) {
+      console.error("Erro detalhado:", err);
+      const msg = err?.message || err?.details || "Erro desconhecido ao salvar.";
+      toast.error(`Não foi possível cadastrar: ${msg}`);
     } finally {
       setLoading(false);
     }
