@@ -437,7 +437,15 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
       <div className="mt-auto pt-4 border-t border-rose-tea/10">
         <div className="flex items-center justify-between mb-4">
           <div><p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Total</p><p className="text-xl font-bold text-primary">{formatBRL(p.total)}</p></div>
-          <div className="text-right"><p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Pagamento</p><p className="text-[10px] font-bold uppercase">{p.forma_pagamento?.replace('_', ' ') || 'WhatsApp'}</p></div>
+          <div className="text-right">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Pagamento</p>
+            <div className="mt-1 flex items-center justify-end gap-1.5">
+              {p.forma_pagamento === "pix" && <span className="flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold uppercase text-emerald-600 border border-emerald-100">💎 Pix</span>}
+              {p.forma_pagamento === "cartao_online" && <span className="flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-[9px] font-bold uppercase text-blue-600 border border-blue-100">🔗 Link</span>}
+              {p.forma_pagamento === "cartao_entrega" && <span className="flex items-center gap-1 rounded-md bg-rose-50 px-2 py-0.5 text-[9px] font-bold uppercase text-rose-600 border border-rose-100">💳 Maquininha</span>}
+              {!p.forma_pagamento && <span className="text-[10px] font-bold uppercase text-muted-foreground">WhatsApp</span>}
+            </div>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {p.status === "pendente" && <button onClick={() => onUpdate(p.id, "vendido")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium">Confirmar Venda</button>}
