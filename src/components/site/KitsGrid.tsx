@@ -37,14 +37,14 @@ function KitCard({ kit }: { kit: Kit }) {
         </span>
       )}
 
-      <div className="relative aspect-[4/5] overflow-hidden bg-secondary/50">
+      <div className="relative aspect-square overflow-hidden bg-secondary/30">
         <img
           src={kit.imagem}
           alt={kit.nome}
           loading="lazy"
-          className="h-full w-full object-contain p-8 transition-transform duration-1000 ease-out group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
       </div>
 
       <div className="flex flex-1 flex-col gap-2 sm:gap-4 p-3 sm:p-6 lg:p-8">
@@ -109,7 +109,7 @@ export function KitsGrid() {
       <div className="pattern-l absolute inset-0 opacity-60" />
       <div className="relative mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Coleção 2026</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Parceria Liquida & O Boticário</span>
           <h2 className="mt-3 text-4xl font-bold leading-tight text-balance tracking-tight sm:text-5xl">
             Kits para presentear<br />
             <span className="font-medium italic text-primary">com o coração.</span>

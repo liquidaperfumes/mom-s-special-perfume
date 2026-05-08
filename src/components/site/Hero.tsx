@@ -26,14 +26,16 @@ export function Hero() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-8"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <motion.div 
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 12, delay: 0.2 }}
-              className="h-14 sm:h-16 overflow-hidden"
+              className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-2 px-4 border border-white/20"
             >
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-8 sm:h-10 w-auto object-contain" />
+              <div className="h-6 w-px bg-white/20" />
+              <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" alt="O Boticário" className="h-5 sm:h-7 w-auto object-contain brightness-0 invert" />
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, y: 10 }}
@@ -41,7 +43,7 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-white/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-md"
             >
-              Edição Especial 2026
+              Parceria Especial 2026
             </motion.span>
           </div>
 
@@ -52,7 +54,7 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">
-            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>. Entregamos o presente na porta de quem você ama com rapidez e carinho.
+            Em uma parceria exclusiva entre <strong className="text-white font-medium">Liquida Perfumes</strong> e <strong className="text-white font-medium">O Boticário</strong>, trazemos kits premium com fragrâncias originais e lacradas para o presente perfeito.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">

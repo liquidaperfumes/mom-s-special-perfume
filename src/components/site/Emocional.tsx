@@ -21,8 +21,7 @@ export function Emocional() {
           </h2>
           <div className="mt-6 space-y-4 text-base leading-relaxed text-background/80">
             <p>
-              Mãe é colo, é cheiro de casa, é abraço apertado de domingo. E quando o tempo passa,
-              é o aroma que traz tudo de volta — a infância, o cuidado, o amor sem palavras.
+              Mãe é colo, é cheiro de casa, é abraço apertado de domingo. A <strong>Liquida Perfumes</strong> e <strong>O Boticário</strong> se uniram para transformar esse sentimento em fragrância — o aroma que traz tudo de volta: a infância, o cuidado, o amor sem palavras.
             </p>
             <p className="text-background/95">
               Presenteie sua mãe com uma fragrância que vai virar memória.
