@@ -6,7 +6,8 @@ import {
   Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, 
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
   Camera, FileText, Image as ImageIcon, ExternalLink, Paperclip, Clock,
-  Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter
+  Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter,
+  Edit2, Save, Undo
 } from "lucide-react";
 import { toast } from "sonner";
 import logoImg from "@/assets/logo-liquida.png";
@@ -149,6 +150,12 @@ function AdminPage() {
     else toast.success(`Status atualizado para ${newStatus}`);
   };
 
+  const updatePedido = async (id: string, updates: Partial<Pedido>) => {
+    const { error } = await supabase.from("pedidos").update(updates).eq("id", id);
+    if (error) toast.error("Erro ao atualizar pedido.");
+    else toast.success("Pedido atualizado com sucesso!");
+  };
+
   const addEvidence = async (id: string, url: string) => {
     const pedido = pedidos.find(p => p.id === id);
     const newEvidencias = [...(pedido?.evidencias || []), url];
@@ -160,7 +167,7 @@ function AdminPage() {
   if (!auth) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-        <div className="w-full max-w-sm rounded-3xl border border-border bg-background p-8 shadow-premium">
+        <div className="w-full max-sm:px-0 max-w-sm rounded-3xl border border-border bg-background p-8 shadow-premium">
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 h-14 overflow-hidden"><img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mx-auto" /></div>
             <h2 className="text-2xl font-bold tracking-tight text-primary">Painel da Consultora</h2>
@@ -262,7 +269,7 @@ function AdminPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredPedidos.map((p) => (
-              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} />
+              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} onSave={updatePedido} />
             ))}
           </div>
         )}
@@ -293,8 +300,10 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string
   );
 }
 
-function PedidoCard({ pedido: p, onUpdate, onAddEvidence }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void }) {
+function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void, onSave: (id: string, updates: Partial<Pedido>) => void }) {
   const [expanded, setExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ nome: p.cliente_nome, whatsapp: p.cliente_whatsapp, bairro: p.endereco?.bairro || "" });
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cfg = STATUS_CONFIG[p.status] || STATUS_CONFIG.pendente;
@@ -318,6 +327,15 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence }: { pedido: Pedido; on
     toast.success("Endereço copiado para o entregador!");
   };
 
+  const handleSaveEdit = () => {
+    onSave(p.id, {
+      cliente_nome: editData.nome,
+      cliente_whatsapp: editData.whatsapp,
+      endereco: { ...p.endereco, bairro: editData.bairro }
+    });
+    setIsEditing(false);
+  };
+
   const sendStatusUpdate = (msg: string) => {
     const text = encodeURIComponent(`Olá ${p.cliente_nome}! ${msg}`);
     window.open(`https://wa.me/${p.cliente_whatsapp}?text=${text}`, '_blank');
@@ -329,15 +347,24 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence }: { pedido: Pedido; on
         <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] ${cfg.bg} ${cfg.text}`}>
           <cfg.icon className="h-3 w-3" /> {cfg.label}
         </div>
-        <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)} · {new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setIsEditing(!isEditing)} className="p-2 hover:bg-secondary rounded-full transition-colors text-muted-foreground hover:text-primary">
+            {isEditing ? <Save className="h-3.5 w-3.5" onClick={handleSaveEdit} /> : <Edit2 className="h-3.5 w-3.5" />}
+          </button>
+          <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
+        </div>
       </div>
 
       <div className="space-y-4 mb-6">
         <div className="flex items-center gap-4 bg-secondary/10 p-3 rounded-2xl border border-rose-tea/5">
           <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow-soft text-primary"><User className="h-5 w-5" /></div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Cliente</p>
-            <p className="text-sm font-bold truncate">{p.cliente_nome}</p>
+            {isEditing ? (
+              <input className="w-full bg-transparent text-sm font-bold border-b border-primary/20 outline-none" value={editData.nome} onChange={e => setEditData({...editData, nome: e.target.value})} />
+            ) : (
+              <p className="text-sm font-bold truncate">{p.cliente_nome}</p>
+            )}
           </div>
         </div>
 
@@ -345,21 +372,31 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence }: { pedido: Pedido; on
           <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow-soft text-[#25D366]"><MessageCircle className="h-5 w-5" /></div>
           <div className="min-w-0 flex-1">
             <p className="text-[9px] font-black uppercase tracking-widest text-[#25D366]/60">WhatsApp</p>
-            <a href={`https://wa.me/${p.cliente_whatsapp}`} target="_blank" rel="noopener" className="text-sm font-bold hover:underline">{p.cliente_whatsapp}</a>
+            {isEditing ? (
+              <input className="w-full bg-transparent text-sm font-bold border-b border-[#25D366]/20 outline-none" value={editData.whatsapp} onChange={e => setEditData({...editData, whatsapp: e.target.value})} />
+            ) : (
+              <a href={`https://wa.me/${p.cliente_whatsapp}`} target="_blank" rel="noopener" className="text-sm font-bold hover:underline">{p.cliente_whatsapp}</a>
+            )}
           </div>
-          <div className="flex gap-1">
-            <button onClick={() => sendStatusUpdate("Seu pedido foi confirmado e já estamos preparando com muito carinho! 🌸")} className="p-2 hover:bg-white rounded-lg transition-colors" title="Confirmar Preparo"><Check className="h-3 w-3 text-emerald-500" /></button>
-            <button onClick={() => sendStatusUpdate("Seu presente acabou de sair para entrega! Em breve chegará ao destino. 🚚")} className="p-2 hover:bg-white rounded-lg transition-colors" title="Notificar Entrega"><Truck className="h-3 w-3 text-blue-500" /></button>
-          </div>
+          {!isEditing && (
+            <div className="flex gap-1">
+              <button onClick={() => sendStatusUpdate("Seu pedido foi confirmado e já estamos preparando com muito carinho! 🌸")} className="p-2 hover:bg-white rounded-lg transition-colors" title="Confirmar Preparo"><Check className="h-3 w-3 text-emerald-500" /></button>
+              <button onClick={() => sendStatusUpdate("Seu presente acabou de sair para entrega! Em breve chegará ao destino. 🚚")} className="p-2 hover:bg-white rounded-lg transition-colors" title="Notificar Entrega"><Truck className="h-3 w-3 text-blue-500" /></button>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-4 bg-rose-deep/5 p-3 rounded-2xl border border-rose-deep/10">
           <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow-soft text-rose-deep"><MapPin className="h-5 w-5" /></div>
           <div className="min-w-0 flex-1">
             <p className="text-[9px] font-black uppercase tracking-widest text-rose-deep/60">Entrega: {p.tipo_entrega}</p>
-            <p className="text-xs font-bold truncate">{p.tipo_entrega === "retirada" ? "Retirada na Loja" : `${p.endereco?.bairro || '—'}`}</p>
+            {isEditing && p.tipo_entrega === "entrega" ? (
+              <input className="w-full bg-transparent text-xs font-bold border-b border-rose-deep/20 outline-none" value={editData.bairro} onChange={e => setEditData({...editData, bairro: e.target.value})} />
+            ) : (
+              <p className="text-xs font-bold truncate">{p.tipo_entrega === "retirada" ? "Retirada na Loja" : `${p.endereco?.bairro || '—'}`}</p>
+            )}
           </div>
-          {p.tipo_entrega !== "retirada" && <button onClick={copyAddress} className="p-2 hover:bg-white rounded-lg transition-colors" title="Copiar Endereço"><Copy className="h-3 w-3 text-rose-deep" /></button>}
+          {p.tipo_entrega !== "retirada" && !isEditing && <button onClick={copyAddress} className="p-2 hover:bg-white rounded-lg transition-colors" title="Copiar Endereço"><Copy className="h-3 w-3 text-rose-deep" /></button>}
         </div>
       </div>
 
@@ -404,8 +441,17 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence }: { pedido: Pedido; on
         </div>
         <div className="grid grid-cols-2 gap-2">
           {p.status === "pendente" && <button onClick={() => onUpdate(p.id, "vendido")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium">Confirmar Venda</button>}
-          {p.status === "vendido" && <button onClick={() => onUpdate(p.id, "entregue")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-emerald-700 transition-premium"><Truck className="h-4 w-4" /> Entregue</button>}
-          {p.status !== "cancelado" && p.status !== "entregue" && <button onClick={() => onUpdate(p.id, "cancelado")} className="col-span-2 border border-rose-tea/20 text-muted-foreground py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-red-50 transition-premium">Cancelar</button>}
+          {p.status === "vendido" && <button onClick={() => onUpdate(p.id, "entregue")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-emerald-700 transition-premium"><Truck className="h-4 w-4" /> Marcar como Entregue</button>}
+          
+          {p.status === "cancelado" ? (
+            <button onClick={() => onUpdate(p.id, "pendente")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-amber-500 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-amber-600 transition-premium">
+              <Undo className="h-4 w-4" /> Reabrir Pedido
+            </button>
+          ) : p.status !== "entregue" && (
+            <button onClick={() => onUpdate(p.id, "cancelado")} className="col-span-2 border border-rose-tea/20 text-muted-foreground py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-premium">
+              Cancelar Pedido
+            </button>
+          )}
         </div>
       </div>
     </div>
