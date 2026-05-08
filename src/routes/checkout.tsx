@@ -173,8 +173,8 @@ function Checkout() {
       <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-30">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link to="/" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"><ArrowLeft className="h-4 w-4" /> Voltar</Link>
-          <div className="h-8 sm:h-10 overflow-hidden">
-            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply" />
+          <div className="h-10 sm:h-12 overflow-hidden flex items-center">
+            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply border-none outline-none" />
           </div>
         </div>
       </header>
