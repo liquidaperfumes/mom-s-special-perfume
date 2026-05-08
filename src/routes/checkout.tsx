@@ -79,11 +79,12 @@ function CheckoutPage() {
 
     try {
       const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
+      const whatsappLimpo = whatsapp.replace(/\D/g, "");
       
-      // Attempt to save to DB, but don't block the user if it fails
+      // Attempt to save to DB
       const { error } = await supabase.from("pedidos").insert({
         cliente_nome: nome,
-        cliente_whatsapp: whatsapp.replace(/\D/g, ""),
+        cliente_whatsapp: whatsappLimpo,
         itens: items,
         tipo_entrega: modo,
         endereco: enderecoObj,
@@ -96,7 +97,7 @@ function CheckoutPage() {
         console.warn("Order saved to WhatsApp but failed to reach database:", error);
       }
 
-      // WhatsApp Message
+      // WhatsApp Message construction
       const paymentLabels = {
         pix: "Pix",
         cartao_online: "Link de Pagamento (Cartão)",
@@ -105,26 +106,38 @@ function CheckoutPage() {
 
       const intro = `Olá! Acabei de fazer um pedido pelo site:\n\n`;
       const clienteInfo = `*CLIENTE:* ${nome}\n*WHATSAPP:* ${whatsapp}\n\n`;
-      const itensInfo = `*PEDIDO:* \n${items.map(i => `• ${i.qtd}x ${i.kit.nome} - ${formatBRL(i.kit.preco * i.qtd)}`).join("\n")}\n\n`;
+      
+      const itensInfo = `*PRODUTOS:* \n${items.map(i => `• ${i.qtd}x ${i.kit.nome} - ${formatBRL(i.kit.preco * i.qtd)}`).join("\n")}\n\n`;
+      
       const entregaInfo = modo === "entrega" 
-        ? `*ENTREGA:* ${rua}, ${numero} - ${bairro} (CEP: ${cep})${referencia ? ` [Ref: ${referencia}]` : ""}\n`
-        : `*RETIRADA:* Na loja em Olinda\n`;
+        ? `*ENTREGA EM:* ${rua}, ${numero}\n*BAIRRO:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*REF:* ${referencia}` : ""}\n\n`
+        : `*RETIRADA:* Na loja em Olinda (Estrada do Caenga, 235)\n\n`;
+        
       const totalInfo = `*VALOR TOTAL:* ${formatBRL(totalFinal)}\n`;
       const pagInfo = `*FORMA DE PAGAMENTO:* ${paymentLabels[formaPagamento]}\n\n`;
-      const footer = `Por favor, confirme meu pedido!`;
+      const footer = `_Por favor, confirme meu pedido e envie o link se necessário!_`;
 
       const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + totalInfo + pagInfo + footer;
       const waUrl = `https://wa.me/5581995811306?text=${encodeURIComponent(fullMessage)}`;
 
       toast.success("Pedido realizado com sucesso!", { id: toastId });
+      
+      // Clear cart before leaving
       clear();
-      window.open(waUrl, "_blank");
-      navigate({ to: "/" });
+
+      // IMPORTANT: window.location.href is more reliable than window.open after an async call
+      // as many browsers block popups that aren't a direct result of user click.
+      window.location.href = waUrl;
+      
+      // In case they come back, we navigate to success page
+      setTimeout(() => {
+        navigate({ to: "/sucesso" });
+      }, 1000);
+
     } catch (err) {
       console.error("Critical error in finalize:", err);
-      // Even on critical error, try to open WhatsApp as a last resort
-      const waUrl = `https://wa.me/5581995811306?text=Erro no checkout, mas quero fazer o pedido.`;
-      window.open(waUrl, "_blank");
+      const waUrl = `https://wa.me/5581995811306?text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
+      window.location.href = waUrl;
       toast.error("Houve um pequeno problema, mas você foi redirecionado ao WhatsApp.", { id: toastId });
     }
   };
