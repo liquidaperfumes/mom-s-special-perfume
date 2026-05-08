@@ -125,20 +125,18 @@ function CheckoutPage() {
       // Clear cart before leaving
       clear();
 
-      // IMPORTANT: window.location.href is more reliable than window.open after an async call
-      // as many browsers block popups that aren't a direct result of user click.
-      window.location.href = waUrl;
+      // Open WhatsApp in a new tab (works in iframe previews like Lovable)
+      window.open(waUrl, "_blank");
       
-      // In case they come back, we navigate to success page
-      setTimeout(() => {
-        navigate({ to: "/sucesso" });
-      }, 1000);
+      // Navigate to the success page to continue the flow
+      navigate({ to: "/sucesso" });
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
       const waUrl = `https://wa.me/5581995811306?text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
-      window.location.href = waUrl;
-      toast.error("Houve um pequeno problema, mas você foi redirecionado ao WhatsApp.", { id: toastId });
+      window.open(waUrl, "_blank");
+      navigate({ to: "/sucesso" });
+      toast.error("Houve um pequeno problema, mas você foi redirecionado.", { id: toastId });
     }
   };
 
