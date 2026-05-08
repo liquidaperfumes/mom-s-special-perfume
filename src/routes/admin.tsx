@@ -400,21 +400,29 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
     window.open(`https://wa.me/${p.cliente_whatsapp}?text=${text}`, '_blank');
   };
 
+  const dataFormatada = new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  }).format(new Date(p.created_at));
+
   return (
     <div className="group flex flex-col rounded-[2.5rem] border border-rose-tea/10 bg-white p-6 shadow-soft transition-premium hover:shadow-premium hover:-translate-y-1">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex items-start justify-between">
         <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] ${cfg.bg} ${cfg.text}`}>
           <cfg.icon className="h-3 w-3" /> {cfg.label}
         </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => isEditing ? handleSaveEdit() : setIsEditing(true)} 
-            className={`p-2 rounded-full transition-premium ${isEditing ? "bg-primary text-white" : "hover:bg-secondary text-muted-foreground hover:text-primary"}`}
-            title={isEditing ? "Salvar Alterações" : "Editar Pedido"}
-          >
-            {isEditing ? <Save className="h-3.5 w-3.5" /> : <Edit2 className="h-3.5 w-3.5" />}
-          </button>
-          <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
+        <div className="flex flex-col items-end gap-1.5">
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => isEditing ? handleSaveEdit() : setIsEditing(true)} 
+              className={`p-2 rounded-full transition-premium ${isEditing ? "bg-primary text-white" : "hover:bg-secondary text-muted-foreground hover:text-primary"}`}
+              title={isEditing ? "Salvar Alterações" : "Editar Pedido"}
+            >
+              {isEditing ? <Save className="h-3.5 w-3.5" /> : <Edit2 className="h-3.5 w-3.5" />}
+            </button>
+            <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
+          </div>
+          <span className="text-[9px] font-medium text-muted-foreground/70">{dataFormatada}</span>
         </div>
       </div>
 
