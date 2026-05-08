@@ -346,8 +346,7 @@ function AdminPage() {
               </button>
             ))}
           </div>
-        </div>
-
+        
         {filter === "catalogo" ? (
           <CatalogoGrid />
         ) : loading && pedidos.length === 0 ? (
