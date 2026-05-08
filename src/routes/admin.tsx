@@ -7,7 +7,7 @@ import {
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
   Camera, FileText, Image as ImageIcon, ExternalLink, Paperclip, Clock,
   Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter,
-  Edit2, Save, Undo
+  Edit2, Save, Undo, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import logoImg from "@/assets/logo-liquida.png";
@@ -59,10 +59,12 @@ function AdminPage() {
     // Most ordered product logic
     const productCounts: Record<string, number> = {};
     pedidos.forEach(p => {
-      if (p.status !== "cancelado") {
+      if (p.status !== "cancelado" && Array.isArray(p.itens)) {
         p.itens.forEach((it: any) => {
-          const name = it.kit.nome;
-          productCounts[name] = (productCounts[name] || 0) + it.qtd;
+          const name = it?.kit?.nome;
+          if (name) {
+            productCounts[name] = (productCounts[name] || 0) + it.qtd;
+          }
         });
       }
     });
@@ -77,8 +79,8 @@ function AdminPage() {
     });
 
     return {
-      totalVendas: delivered.reduce((acc, p) => acc + p.total, 0),
-      valorPendente: pending.reduce((acc, p) => acc + p.total, 0),
+      totalVendas: delivered.reduce((acc, p) => acc + (p.total || 0), 0),
+      valorPendente: pending.reduce((acc, p) => acc + (p.total || 0), 0),
       totalPedidos: counts.todos || 0,
       maisPedido: mostOrdered
     };
@@ -86,9 +88,9 @@ function AdminPage() {
 
   const filteredPedidos = useMemo(() => {
     return pedidos.filter(p => 
-      p.cliente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.cliente_whatsapp.includes(searchTerm) ||
-      p.id.includes(searchTerm)
+      (p.cliente_nome || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.cliente_whatsapp || "").includes(searchTerm) ||
+      (p.id || "").includes(searchTerm)
     );
   }, [pedidos, searchTerm]);
 
