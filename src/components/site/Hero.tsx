@@ -1,3 +1,4 @@
+import { useState } from "react";
 import heroImg from "@/assets/hero-maes.jpg";
 import logoImg from "@/assets/logo-liquida.png";
 import { Countdown } from "./Countdown";
@@ -5,6 +6,8 @@ import { ShieldCheck, Truck, Store } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function Hero() {
+  const [boticarioError, setBoticarioError] = useState(false);
+
   return (
     <section className="relative min-h-[90vh] overflow-hidden bg-gradient-hero text-primary-foreground flex items-center">
       <div
@@ -36,15 +39,16 @@ export function Hero() {
               <img src={logoImg} alt="Liquida Perfumes" className="h-10 sm:h-12 w-auto object-contain" />
               <div className="h-8 w-px bg-white/20" />
               <div className="flex flex-col">
-                <img 
-                  src="https://www.boticario.com.br/on/demandware.static/-/Sites-boticario-Library/default/dw1d96096a/images/header/logo-boticario.svg" 
-                  alt="O Boticário" 
-                  className="h-6 sm:h-8 w-auto object-contain brightness-0 invert" 
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerHTML += '<span class="text-[10px] font-black uppercase text-white">O Boticário</span>';
-                  }}
-                />
+                {boticarioError ? (
+                  <span className="text-[10px] font-black uppercase text-white">O Boticário</span>
+                ) : (
+                  <img 
+                    src="https://www.boticario.com.br/on/demandware.static/-/Sites-boticario-Library/default/dw1d96096a/images/header/logo-boticario.svg" 
+                    alt="O Boticário" 
+                    className="h-6 sm:h-8 w-auto object-contain brightness-0 invert" 
+                    onError={() => setBoticarioError(true)}
+                  />
+                )}
                 <p className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.2em] text-white/70 -mt-1">Onde tem amor tem beleza</p>
               </div>
             </motion.div>

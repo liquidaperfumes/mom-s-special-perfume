@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ShoppingBag, Sparkles } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -9,6 +10,8 @@ const BOTICARIO_SVG = "https://www.boticario.com.br/on/demandware.static/-/Sites
 
 export function Header() {
   const { count, setOpen } = useCart();
+  const [boticarioError, setBoticarioError] = useState(false);
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl transition-premium">
       {/* Promo TopBar */}
@@ -35,16 +38,16 @@ export function Header() {
           {/* Partnership Widget */}
           <div className="flex flex-col justify-center">
             <div className="h-5 sm:h-7 flex items-center">
-              <img 
-                src={BOTICARIO_SVG} 
-                alt="O Boticário" 
-                className="h-full w-auto object-contain brightness-0 opacity-80" 
-                onError={(e) => {
-                  // Fallback to text if SVG fails
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML += '<span class="text-[10px] font-black uppercase text-foreground/80">O Boticário</span>';
-                }}
-              />
+              {boticarioError ? (
+                <span className="text-[10px] font-black uppercase text-foreground/80">O Boticário</span>
+              ) : (
+                <img 
+                  src={BOTICARIO_SVG} 
+                  alt="O Boticário" 
+                  className="h-full w-auto object-contain brightness-0 opacity-80" 
+                  onError={() => setBoticarioError(true)}
+                />
+              )}
             </div>
             <p className="text-[6px] sm:text-[7px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 -mt-0.5">Onde tem amor tem beleza</p>
           </div>
