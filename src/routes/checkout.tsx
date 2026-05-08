@@ -10,6 +10,7 @@ import { formatBRL } from "@/lib/kits";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { calcularFrete } from "@/lib/frete";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -30,6 +31,7 @@ function CheckoutPage() {
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [referencia, setReferencia] = useState("");
+  const [valorEntrega, setValorEntrega] = useState(0);
 
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -42,7 +44,9 @@ function CheckoutPage() {
         if (!data.erro) {
           setRua(data.logradouro);
           setBairro(data.bairro);
-          toast.success("Endereço encontrado!");
+          const valor = calcularFrete(data.bairro);
+          setValorEntrega(valor);
+          toast.success(`Endereço encontrado! Frete: ${formatBRL(valor)}`);
         } else {
           toast.error("CEP não encontrado.");
         }
@@ -52,7 +56,7 @@ function CheckoutPage() {
     }
   };
 
-  const totalFinal = modo === "entrega" ? total + 10 : total;
+  const totalFinal = modo === "entrega" ? total + valorEntrega : total;
 
   useEffect(() => {
     if (items.length === 0 && step === 1) {
@@ -203,7 +207,7 @@ function CheckoutPage() {
                     <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3 mb-4">
                       <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
                       <p className="text-[10px] text-amber-700 leading-relaxed font-medium">
-                        Realizamos entregas em toda a região. O prazo médio é de 3h a 24h após a confirmação do pedido. Taxa fixa de <strong>R$ 10,00</strong>.
+                        Realizamos entregas em toda a região. O valor da entrega é calculado automaticamente com base no seu bairro.
                       </p>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -332,7 +336,7 @@ function CheckoutPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-medium">Entrega</span>
                   <span className={modo === "retirada" ? "text-emerald-500 font-bold" : "font-bold"}>
-                    {modo === "retirada" ? "Grátis" : formatBRL(10)}
+                    {modo === "retirada" ? "Grátis" : formatBRL(valorEntrega)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-4 border-t border-rose-tea/5">
