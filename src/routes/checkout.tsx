@@ -196,7 +196,7 @@ function Checkout() {
             <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Voltar</span>
           </Link>
           <div className="h-9 sm:h-11 overflow-hidden flex items-center">
-            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply" />
+            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
           </div>
           <div className="w-16" /> {/* spacer */}
         </div>

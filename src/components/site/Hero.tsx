@@ -33,7 +33,7 @@ export function Hero() {
               transition={{ type: "spring", damping: 12, delay: 0.2 }}
               className="h-14 sm:h-16 overflow-hidden"
             >
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain grayscale invert brightness-200 mix-blend-screen" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, y: 10 }}

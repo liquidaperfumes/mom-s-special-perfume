@@ -9,7 +9,7 @@ export function Footer() {
         <div>
           <div>
             <div className="h-10 overflow-hidden">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain grayscale invert brightness-200 mix-blend-screen" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
             </div>
           </div>
           <p className="mt-4 max-w-xs text-sm text-background/70">
