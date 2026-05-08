@@ -45,7 +45,7 @@ export const KITS: Kit[] = [
   { id: "k13", slug: "ameixa-tradicional", nome: "Kit Ameixa Tradicional Nativa SPA", marca: "Nativa SPA", descricao: "Sabonete + loção corporal com fragrância clássica de ameixa.", preco: 99.99, precoOriginal: 129.99, imagem: ameixa, badge: null },
   { id: "k14", slug: "celebre-sua-forca", nome: "Kit Celebre Sua Força", marca: "O Boticário", descricao: "Perfume + creme para mãos. Mensagem que transborda carinho.", preco: 99.99, precoOriginal: 119.99, imagem: celebre, badge: null },
   { id: "k15", slug: "deleite", nome: "Kit Cuide-se Bem Deleite", marca: "O Boticário", descricao: "Aromas envolventes para um momento de puro autocuidado.", preco: 84.99, precoOriginal: 109.99, imagem: deleite, badge: null },
-  { id: "k16", slug: "cuide-se-bem-pessegura", nome: "Kit Cuide-se Bem Pessegura", marca: "O Boticário", descricao: "Loção hidratante + body spray com aroma frutal de pêssego.", preco: 54.99, precoOriginal: 74.99, imagem: "https://boticario.vteximg.com.br/arquivos/ids/251347/Kit-Cuide-se-Bem-Pessegura.jpg", badge: "Mega Promoção" },
+  { id: "k16", slug: "cuide-se-bem-pessegura", nome: "Kit Cuide-se Bem Pessegura", marca: "O Boticário", descricao: "Loção hidratante + body spray com aroma frutal de pêssego.", preco: 54.99, precoOriginal: 74.99, imagem: "https://boticario.vteximg.com.br/arquivos/ids/229045/Kit-Cuide-se-Bem-Pessegura.jpg", badge: "Mega Promoção" },
 ];
 
 export const formatBRL = (v: number) =>
