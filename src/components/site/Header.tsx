@@ -32,10 +32,10 @@ export function Header() {
           )}
         </button>
       </div>
-      <div className="bg-foreground py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.25em] text-background/90 flex items-center justify-center gap-4">
-        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> Entregamos presentes</span>
-        <span className="hidden sm:flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> Até 12x no cartão</span>
-        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> 100% Originais</span>
+      <div className="py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-4" style={{ backgroundColor: '#BF355D', color: '#FFFFFF' }}>
+        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3" style={{ color: '#F7ADAF' }} /> Entregamos presentes</span>
+        <span className="hidden sm:flex items-center gap-1.5"><Sparkles className="h-3 w-3" style={{ color: '#F7ADAF' }} /> Até 12x no cartão</span>
+        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3" style={{ color: '#F7ADAF' }} /> 100% Originais</span>
       </div>
     </header>
   );

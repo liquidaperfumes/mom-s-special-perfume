@@ -6,8 +6,8 @@ export function Loja() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-2 lg:items-stretch">
         <div className="flex flex-col justify-center">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Retirada Expressa</span>
-          <h2 className="mt-3 font-display text-4xl font-medium sm:text-5xl">
-            Retire na loja em <em className="italic">Olinda</em>
+          <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+            Retire na loja em <span className="font-medium italic text-primary">Olinda</span>
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             Sem frete, sem espera. Compre online e retire no mesmo dia em nossa loja em São Benedito.

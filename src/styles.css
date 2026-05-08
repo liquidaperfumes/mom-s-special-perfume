@@ -4,11 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500&display=swap');
 
 @theme inline {
   --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  --font-display: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -45,66 +45,70 @@
   --radius: 1rem;
 
   /* Brand — Manual Liquida Perfumes */
-  --rose-deep: oklch(0.55 0.17 5);          /* #BF355D */
-  --rose-tea: oklch(0.85 0.07 15);          /* #F7ADAF */
+  /* PANTONE 214 · CMYK 20 100 53 05 · RGB 191 53 93 */
+  --rose-deep: #BF355D;
+  /* CMYK 0 40 20 0 · RGB 247 173 175 */
+  --rose-tea: #F7ADAF;
+  /* CMYK 27 12 6 0 · RGB 184 204 222 */
+  --rose-blue: #B8CCDE;
   --gold: oklch(0.78 0.12 80);
 
-  --background: oklch(0.99 0.005 15);       /* off-white rosado */
-  --foreground: oklch(0.18 0.02 350);       /* grafite */
+  --background: #FDFBFB;                    /* off-white rosado suave */
+  --foreground: #1A1118;                    /* grafite escuro */
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 350);
+  --card: #FFFFFF;
+  --card-foreground: #1A1118;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 350);
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1118;
 
-  --primary: var(--rose-deep);
-  --primary-foreground: oklch(0.99 0.005 15);
-  --primary-glow: oklch(0.65 0.20 8);
+  --primary: #BF355D;
+  --primary-foreground: #FFFFFF;
+  --primary-glow: #D4456E;
 
-  --secondary: oklch(0.96 0.02 15);
-  --secondary-foreground: var(--rose-deep);
+  --secondary: #FDF2F3;
+  --secondary-foreground: #BF355D;
 
-  --muted: oklch(0.96 0.015 15);
-  --muted-foreground: oklch(0.45 0.03 350);
+  --muted: #FAF0F0;
+  --muted-foreground: #7A6068;
 
-  --accent: var(--rose-tea);
-  --accent-foreground: oklch(0.18 0.02 350);
+  --accent: #F7ADAF;
+  --accent-foreground: #1A1118;
 
   --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.92 0.02 15);
-  --input: oklch(0.94 0.015 15);
-  --ring: var(--rose-deep);
+  --border: #F0DDE0;
+  --input: #F5E8EA;
+  --ring: #BF355D;
 
-  --gradient-hero: linear-gradient(135deg, oklch(0.35 0.15 5) 0%, oklch(0.50 0.17 5) 50%, oklch(0.25 0.10 350) 100%);
-  --gradient-rose: linear-gradient(135deg, var(--rose-deep), var(--primary-glow));
+  --gradient-hero: linear-gradient(135deg, #7A1535 0%, #BF355D 50%, #3D0A1A 100%);
+  --gradient-rose: linear-gradient(135deg, #BF355D, #D4456E);
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
   
-  --shadow-elegant: 0 25px 60px -20px color-mix(in oklab, var(--rose-deep) 30%, transparent);
-  --shadow-soft: 0 10px 40px -15px color-mix(in oklab, var(--rose-deep) 15%, transparent);
+  --shadow-elegant: 0 25px 60px -20px rgba(191, 53, 93, 0.30);
+  --shadow-soft: 0 10px 40px -15px rgba(191, 53, 93, 0.15);
   --shadow-premium: 0 30px 100px -20px rgba(0, 0, 0, 0.12), 0 15px 40px -15px rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-  --background: oklch(0.18 0.02 350);
-  --foreground: oklch(0.99 0.005 15);
-  --card: oklch(0.22 0.03 350);
-  --card-foreground: oklch(0.99 0.005 15);
-  --popover: oklch(0.22 0.03 350);
-  --popover-foreground: oklch(0.99 0.005 15);
-  --primary: var(--rose-tea);
-  --primary-foreground: oklch(0.18 0.02 350);
-  --secondary: oklch(0.28 0.04 350);
-  --secondary-foreground: oklch(0.99 0 0);
-  --muted: oklch(0.28 0.04 350);
-  --muted-foreground: oklch(0.75 0.03 15);
-  --accent: oklch(0.28 0.04 350);
-  --accent-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: var(--rose-tea);
+  --background: #1A1118;
+  --foreground: #FDF2F3;
+  --card: #261520;
+  --card-foreground: #FDF2F3;
+  --popover: #261520;
+  --popover-foreground: #FDF2F3;
+  --primary: #F7ADAF;
+  --primary-foreground: #1A1118;
+  --secondary: #2E1A22;
+  --secondary-foreground: #FFFFFF;
+  --muted: #2E1A22;
+  --muted-foreground: #C0949A;
+  --accent: #2E1A22;
+  --accent-foreground: #FFFFFF;
+  --border: rgba(255,255,255,0.10);
+  --input: rgba(255,255,255,0.13);
+  --ring: #F7ADAF;
 }
 
 @layer base {
@@ -113,11 +117,18 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { font-family: var(--font-sans); letter-spacing: -0.02em; }
-  .font-display { font-family: var(--font-display); letter-spacing: 0; }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .font-display {
+    font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer utilities {
@@ -144,10 +155,16 @@
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* L-pattern decorative */
+  /* L-pattern decorativo da marca Liquida Perfumes */
   .pattern-l {
     background-image:
-      radial-gradient(circle at 20% 20%, color-mix(in oklab, var(--rose-tea) 25%, transparent) 0%, transparent 30%),
-      radial-gradient(circle at 80% 70%, color-mix(in oklab, var(--rose-deep) 15%, transparent) 0%, transparent 40%);
+      radial-gradient(circle at 20% 20%, rgba(247, 173, 175, 0.22) 0%, transparent 35%),
+      radial-gradient(circle at 80% 70%, rgba(191, 53, 93, 0.10) 0%, transparent 45%);
+  }
+
+  /* Badge rosa-chá */
+  .badge-tea {
+    background-color: #F7ADAF;
+    color: #7A1535;
   }
 }

@@ -11,7 +11,7 @@ export function Depoimentos() {
     <section className="bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-10 text-center">
-          <h2 className="font-display text-3xl font-medium sm:text-4xl">Quem presenteou, voltou.</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Quem presenteou, voltou.</h2>
           <p className="mt-2 text-sm text-muted-foreground">Mais de 12.000 mães presenteadas no Grande Recife.</p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
@@ -20,7 +20,7 @@ export function Depoimentos() {
               <div className="flex gap-0.5 text-primary">
                 {Array.from({ length: d.s }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
               </div>
-              <blockquote className="mt-3 font-display text-lg italic leading-snug text-foreground">"{d.t}"</blockquote>
+              <blockquote className="mt-3 text-base italic leading-snug text-foreground font-medium">"{d.t}"</blockquote>
               <figcaption className="mt-4 text-xs">
                 <span className="font-bold text-foreground">{d.n}</span>
                 <span className="text-muted-foreground"> · {d.b}</span>

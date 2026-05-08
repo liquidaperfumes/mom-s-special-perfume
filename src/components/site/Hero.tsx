@@ -45,10 +45,10 @@ export function Hero() {
             </motion.span>
           </div>
 
-          <h1 className="font-display text-4xl font-light leading-[0.9] text-balance sm:text-6xl lg:text-8xl">
+          <h1 className="text-4xl font-bold leading-[1.05] text-balance sm:text-6xl lg:text-7xl tracking-tight">
             O presente que <br />
-            <em className="italic text-rose-tea font-normal">eterniza</em> <br />
-            o <span className="text-white font-medium">sentimento.</span>
+            <span className="font-medium italic" style={{ color: '#F7ADAF' }}>eterniza</span> <br />
+            o <span className="text-white font-extrabold">sentimento.</span>
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">

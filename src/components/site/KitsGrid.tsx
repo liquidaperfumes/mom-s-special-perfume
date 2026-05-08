@@ -110,9 +110,9 @@ export function KitsGrid() {
       <div className="relative mx-auto max-w-7xl px-4">
         <div className="mb-12 text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Coleção 2026</span>
-          <h2 className="mt-3 font-display text-4xl font-medium leading-tight text-balance sm:text-5xl">
-            16 kits para presentear<br />
-            <em className="italic text-primary">com o coração.</em>
+          <h2 className="mt-3 text-4xl font-bold leading-tight text-balance tracking-tight sm:text-5xl">
+            Kits para presentear<br />
+            <span className="font-medium italic text-primary">com o coração.</span>
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
             Selecionamos os perfumes mais amados das melhores marcas, em kits prontos com embalagem premium para presentear.

@@ -15,8 +15,8 @@ export function Emocional() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[oklch(0.85_0.07_15)]">
             o presente perfeito
           </span>
-          <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-            Um perfume guarda <em className="italic">tudo</em><br />
+          <h2 className="mt-4 text-4xl font-bold leading-[1.08] text-balance tracking-tight sm:text-5xl lg:text-6xl">
+            Um perfume guarda <span className="font-extrabold">tudo</span><br />
             o que as palavras não dizem.
           </h2>
           <div className="mt-6 space-y-4 text-base leading-relaxed text-background/80">
@@ -26,7 +26,7 @@ export function Emocional() {
             </p>
             <p className="text-background/95">
               Presenteie sua mãe com uma fragrância que vai virar memória.
-              <br /><span className="font-display italic text-[oklch(0.9_0.06_15)]">Para sempre.</span>
+              <br /><span className="font-medium italic" style={{ color: '#F7ADAF' }}>Para sempre.</span>
             </p>
           </div>
           <a
