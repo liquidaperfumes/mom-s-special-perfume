@@ -81,21 +81,7 @@ function CheckoutPage() {
       const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
       const whatsappLimpo = whatsapp.replace(/\D/g, "");
       
-      // Attempt to save to DB WITHOUT awaiting, to keep the click event synchronous
-      supabase.from("pedidos").insert({
-        cliente_nome: nome,
-        cliente_whatsapp: whatsappLimpo,
-        itens: items,
-        tipo_entrega: modo,
-        endereco: enderecoObj,
-        total: totalFinal,
-        status: "pendente",
-        forma_pagamento: formaPagamento,
-      }).then(({ error }) => {
-        if (error) console.warn("Order saved to WhatsApp but failed to reach database:", error);
-      });
-
-      // WhatsApp Message construction
+      // 1. Construct WhatsApp message synchronously
       const paymentLabels = {
         pix: "Pix",
         cartao_online: "Link de Pagamento (Cartão)",
@@ -104,29 +90,19 @@ function CheckoutPage() {
 
       const intro = `Olá! Acabei de fazer um pedido pelo site:\n\n`;
       const clienteInfo = `*CLIENTE:* ${nome}\n*WHATSAPP:* ${whatsapp}\n\n`;
-      
       const itensInfo = `*PRODUTOS:* \n${items.map(i => `• ${i.qtd}x ${i.kit.nome} - ${formatBRL(i.kit.preco * i.qtd)}`).join("\n")}\n\n`;
-      
       const entregaInfo = modo === "entrega" 
         ? `*ENTREGA EM:* ${rua}, ${numero}\n*BAIRRO:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*REF:* ${referencia}` : ""}\n\n`
         : `*RETIRADA:* Na loja em Olinda (Estrada do Caenga, 235)\n\n`;
-        
       const totalInfo = `*VALOR TOTAL:* ${formatBRL(totalFinal)}\n`;
       const pagInfo = `*FORMA DE PAGAMENTO:* ${paymentLabels[formaPagamento]}\n\n`;
       const footer = `_Por favor, confirme meu pedido e envie o link se necessário!_`;
 
       const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + totalInfo + pagInfo + footer;
-      
-      // Use api.whatsapp.com which is more stable than wa.me in some environments
       const waUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=${encodeURIComponent(fullMessage)}`;
 
-      toast.success("Pedido realizado com sucesso!", { id: toastId });
-      
-      // Clear cart before leaving
-      clear();
-
-      // Programmatically click a link to ensure it bypasses aggressive popup blockers
-      // because it runs synchronously inside the user's click event.
+      // 2. Open WhatsApp immediately BEFORE any async operation.
+      // This guarantees popup blockers and iframe sandboxes won't block it.
       const link = document.createElement('a');
       link.href = waUrl;
       link.target = "_blank";
@@ -134,12 +110,32 @@ function CheckoutPage() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // 3. NOW await the database insert safely (the popup is already handling the user)
+      const { error } = await supabase.from("pedidos").insert({
+        cliente_nome: nome,
+        cliente_whatsapp: whatsappLimpo,
+        itens: items,
+        tipo_entrega: modo,
+        endereco: enderecoObj,
+        total: totalFinal,
+        status: "pendente",
+        forma_pagamento: formaPagamento,
+      });
+
+      if (error) {
+        console.error("Failed to save order to database:", error);
+      }
+
+      toast.success("Pedido realizado com sucesso!", { id: toastId });
       
-      // Navigate to the success page to continue the flow
+      // 4. Clear cart and go to success page
+      clear();
       navigate({ to: "/sucesso" });
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
+      // Fallback
       const waUrl = `https://api.whatsapp.com/send?phone=5581995811306&text=Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!`;
       const link = document.createElement('a');
       link.href = waUrl;
