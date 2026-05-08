@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/kits";
 import { Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, ShoppingBag, MessageCircle, X, ChevronDown, Instagram } from "lucide-react";
 import { toast } from "sonner";
-import logoImg from "@/assets/logo-liquida.jpg";
+import logoImg from "@/assets/logo-liquida.png";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({

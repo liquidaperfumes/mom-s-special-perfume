@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ShoppingBag, Sparkles } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import logoImg from "@/assets/logo-liquida.jpg";
+import logoImg from "@/assets/logo-liquida.png";
 
 export function Header() {
   const { count, setOpen } = useCart();

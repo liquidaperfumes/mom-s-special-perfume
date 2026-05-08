@@ -1,6 +1,6 @@
 import { Instagram, MessageCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import logoImg from "@/assets/logo-liquida.jpg";
+import logoImg from "@/assets/logo-liquida.png";
 
 export function Footer() {
   return (

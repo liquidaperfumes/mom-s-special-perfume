@@ -7,7 +7,7 @@ import { ArrowLeft, Check, MessageCircle, Store, Truck, MapPin, Clock } from "lu
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import logoImg from "@/assets/logo-liquida.jpg";
+import logoImg from "@/assets/logo-liquida.png";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({

@@ -1,5 +1,5 @@
 import heroImg from "@/assets/hero-maes.jpg";
-import logoImg from "@/assets/logo-liquida.jpg";
+import logoImg from "@/assets/logo-liquida.png";
 import { Countdown } from "./Countdown";
 import { ShieldCheck, Truck, Store } from "lucide-react";
 import { motion } from "framer-motion";
