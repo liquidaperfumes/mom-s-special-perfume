@@ -30,7 +30,7 @@ export function FreteCalc() {
             <Truck className="mx-auto h-8 w-8 text-primary" />
             <h2 className="mt-3 text-3xl font-medium sm:text-4xl">Calcule seu frete</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Digite seu bairro e veja o valor da entrega na hora. Entrega em até 3 horas!
+              Digite seu bairro e veja o valor da entrega na hora. Entrega rápida e segura!
             </p>
           </div>
 
@@ -73,7 +73,7 @@ export function FreteCalc() {
                   <p className="text-3xl text-primary">
                     {formatBRL(res.valor)}
                   </p>
-                  <p className="text-sm text-muted-foreground">Entrega em até 3 horas</p>
+                  <p className="text-sm text-muted-foreground">Entrega rápida</p>
                 </div>
               ) : (
                 <div className="space-y-3 text-center">

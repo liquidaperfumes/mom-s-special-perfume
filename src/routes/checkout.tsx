@@ -24,6 +24,7 @@ const WHATSAPP_CONSULTORA = "5581995811306";
 const WHATSAPP_DISPLAY = "(81) 99581-1306";
 
 type EntregaModo = "entrega" | "retirada";
+type FormaPagamento = "pix" | "cartao_entrega" | "cartao_online";
 
 function maskPhone(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
@@ -47,33 +48,48 @@ function buildWhatsAppMessage(
   endereco: { rua: string; num: string; comp: string; bairro: string; cidade: string; uf: string; cep: string },
   total: number,
   freteValor: number | null,
+  pagamento: FormaPagamento,
 ) {
-  const linhas = items.map((i) => `• ${i.qtd}x ${i.kit.nome} — ${formatBRL(i.kit.preco * i.qtd)}`).join("\n");
+  const data = new Date().toLocaleDateString('pt-BR');
+  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  
+  const linhas = items.map((i) => `✅ ${i.qtd}x ${i.kit.nome.toUpperCase()}`).join("\n");
+  
   const enderecoTxt = modo === "retirada"
-    ? "Retirada na loja (Estrada do Caenga, 235 - São Benedito, Olinda - PE)"
-    : `${endereco.rua}, ${endereco.num}${endereco.comp ? " - " + endereco.comp : ""} - ${endereco.bairro}, ${endereco.cidade}/${endereco.uf} - CEP ${endereco.cep}`;
+    ? "📍 RETIRADA NA LOJA (São Benedito, Olinda)"
+    : `📍 ENTREGA: ${endereco.rua}, ${endereco.num}${endereco.comp ? " (" + endereco.comp + ")" : ""} - ${endereco.bairro}`;
+
+  const pagTxt = {
+    pix: "💎 PIX (com desconto)",
+    cartao_entrega: "💳 CARTÃO NA ENTREGA",
+    cartao_online: "🔗 LINK DE PAGAMENTO (Crédito/Débito)"
+  }[pagamento];
+
   const totalFinal = total + (freteValor ?? 0);
-  const msg = [
-    `*Novo pedido — Líquida Perfumes 💝*`,
-    ``,
-    `*Cliente:* ${nome}`,
-    `*WhatsApp:* ${whatsapp}`,
-    ``,
-    `*Itens:*`,
-    linhas,
-    ``,
-    `*Entrega:* ${enderecoTxt}`,
-    modo === "entrega" ? `*Prazo:* Entrega em até 3 horas` : "",
-    `*Frete:* ${freteValor === 0 ? "Grátis" : freteValor != null ? formatBRL(freteValor) : "A combinar"}`,
-    ``,
-    `*Subtotal:* ${formatBRL(total)}`,
-    `*TOTAL: ${formatBRL(totalFinal)}*`,
-    ``,
-    `Parcelamento em até 12x`,
-    ``,
-    `Ainda está disponível?`,
-  ].filter(Boolean).join("\n");
-  return msg;
+
+  return `*NOVO PEDIDO - LÍQUIDA PERFUMES* 💝
+------------------------------------------
+📅 *Data:* ${data} às ${hora}
+👤 *Cliente:* ${nome}
+📱 *WhatsApp:* ${whatsapp}
+
+📦 *MEU CARRINHO:*
+${linhas}
+
+🚚 *FORMA DE RECEBIMENTO:*
+${enderecoTxt}
+${modo === "entrega" ? "⏱️ *Prazo:* Envio imediato após confirmação" : ""}
+
+💰 *PAGAMENTO:*
+${pagTxt}
+
+------------------------------------------
+*RESUMO FINANCEIRO:*
+Subtotal: ${formatBRL(total)}
+Frete: ${freteValor === 0 ? "GRÁTIS" : freteValor != null ? formatBRL(freteValor) : "A combinar"}
+*TOTAL: ${formatBRL(totalFinal)}*
+
+_Olá! Acabei de montar meu pedido no site. Como faço para concluir o pagamento?_`;
 }
 
 function Checkout() {
@@ -85,6 +101,7 @@ function Checkout() {
   const [whatsapp, setWhatsapp] = useState("");
 
   const [modo, setModo] = useState<EntregaModo>("entrega");
+  const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>("pix");
   const [cep, setCep] = useState("");
   const [bairro, setBairro] = useState("");
   const [rua, setRua] = useState("");
@@ -154,7 +171,7 @@ function Checkout() {
   const finalizar = async () => {
     setLoading(true);
     const enderecoObj = { rua, num, comp, bairro, cidade, uf, cep };
-    const msg = buildWhatsAppMessage(items, nome, whatsapp, modo, enderecoObj, total, freteValor);
+    const msg = buildWhatsAppMessage(items, nome, whatsapp, modo, enderecoObj, total, freteValor, formaPagamento);
 
     try {
       // Save to Supabase — non-blocking: open WhatsApp regardless
@@ -166,6 +183,7 @@ function Checkout() {
         endereco: enderecoObj,
         total: totalFinal,
         status: "pendente",
+        forma_pagamento: formaPagamento,
       }).then(({ error }) => {
         if (error) console.error("Supabase insert error:", error);
       });
@@ -254,7 +272,7 @@ function Checkout() {
                 </div>
 
                 <div className="grid gap-3 grid-cols-2">
-                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega" desc="Até 3h" />
+                  <ModoCard active={modo === "entrega"} onClick={() => setModo("entrega")} icon={<Truck className="h-5 w-5" />} title="Entrega" desc="Rápida" />
                   <ModoCard active={modo === "retirada"} onClick={() => setModo("retirada")} icon={<Store className="h-5 w-5" />} title="Retirar" desc="Grátis · Olinda" />
                 </div>
 
@@ -295,7 +313,7 @@ function Checkout() {
                       <div className="sm:col-span-2 rounded-xl bg-primary/5 border border-primary/10 p-3 flex items-center gap-3">
                         <Clock className="h-5 w-5 text-primary shrink-0" />
                         <div className="text-xs">
-                          <p className="font-bold text-primary">Frete: {formatBRL(fr.valor)} · Até 3h</p>
+                          <p className="font-bold text-primary">Frete: {formatBRL(fr.valor)}</p>
                           <p className="text-muted-foreground mt-0.5">Após confirmação, o presente chega rapidinho.</p>
                         </div>
                       </div>
@@ -347,32 +365,59 @@ function Checkout() {
             )}
 
             {step === 3 && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 text-center">
-                <div>
-                  <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Finalize seu pedido</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">Tudo pronto! Agora é só falar com a gente no WhatsApp.</p>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Como deseja pagar?</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">Escolha sua forma de pagamento preferida.</p>
                 </div>
 
-                <div className="mx-auto max-w-sm rounded-2xl bg-primary/5 border border-primary/10 p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft">
-                    <MessageCircle className="h-8 w-8" />
-                  </div>
-                  <h3 className="font-bold text-lg tracking-tight">Finalização pelo WhatsApp</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    O resumo será enviado automaticamente. Nossa consultora confirmará pagamento e entrega.
+                <div className="grid gap-3">
+                  <ModoCard
+                    active={formaPagamento === "pix"}
+                    onClick={() => setFormaPagamento("pix")}
+                    icon={<div className="font-bold text-xs">PIX</div>}
+                    title="Pix"
+                    desc="Pagamento instantâneo com desconto"
+                  />
+                  <ModoCard
+                    active={formaPagamento === "cartao_online"}
+                    onClick={() => setFormaPagamento("cartao_online")}
+                    icon={<div className="font-bold text-xs">LINK</div>}
+                    title="Link de Pagamento"
+                    desc="Crédito em até 12x via WhatsApp"
+                  />
+                  {modo === "entrega" && (
+                    <ModoCard
+                      active={formaPagamento === "cartao_entrega"}
+                      onClick={() => setFormaPagamento("cartao_entrega")}
+                      icon={<div className="font-bold text-xs">CARD</div>}
+                      title="Cartão na Entrega"
+                      desc="Pague ao receber o produto"
+                    />
+                  )}
+                </div>
+
+                <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 text-center">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Ao clicar no botão abaixo, você será redirecionado para o WhatsApp para finalizar os detalhes com nossa consultora.
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button disabled={loading} onClick={finalizar} className={`${btnPrimary} py-5 text-sm`}>
+                  <button disabled={loading} onClick={finalizar} className={`${btnPrimary} py-5 text-sm flex items-center justify-center gap-3`}>
                     {loading ? (
-                      <span className="flex items-center justify-center gap-2">
+                      <>
                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                         Processando...
-                      </span>
-                    ) : "Finalizar no WhatsApp →"}
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="h-5 w-5" />
+                        Finalizar no WhatsApp
+                      </>
+                    )}
                   </button>
-                  <button onClick={() => setStep(2)} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                  <button onClick={() => setStep(2)} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors text-center">
                     ← Voltar
                   </button>
                 </div>

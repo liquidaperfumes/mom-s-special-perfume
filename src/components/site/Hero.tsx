@@ -52,7 +52,7 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">
-            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>. Entregamos o presente na porta de quem você ama em até 3 horas.
+            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>. Entregamos o presente na porta de quem você ama com rapidez e carinho.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
