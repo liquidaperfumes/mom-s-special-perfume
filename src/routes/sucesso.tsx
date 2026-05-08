@@ -27,9 +27,9 @@ function Sucesso() {
         
         // Auto-redirect attempt
         setTimeout(() => {
-          window.open(fullUrl, "_blank");
+          window.location.href = fullUrl;
           localStorage.removeItem('wa_msg'); // limpar após usar
-        }, 500);
+        }, 800);
       }
     } catch (e) {
       console.error("Failed to get msg from localStorage", e);
