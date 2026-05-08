@@ -32,7 +32,7 @@ export type Kit = {
 };
 
 export const KITS: Kit[] = [
-  { id: "k01", slug: "lily-tradicional", nome: "Kit Lily Tradicional", marca: "O Boticário", descricao: "Eau de Parfum + creme hidratante. Sofisticado, floral e atemporal.", preco: 249.99, precoOriginal: 319.99, imagem: lily, badge: "Mais Vendido" },
+  { id: "k01", slug: "lily-tradicional", nome: "Kit Lily Tradicional", marca: "O Boticário", descricao: "Eau de Parfum + creme hidratante. Sofisticado, floral e atemporal.", preco: 269.99, precoOriginal: 319.99, imagem: lily, badge: "Mais Vendido" },
   { id: "k02", slug: "elysee-tradicional", nome: "Kit Elysée Tradicional", marca: "O Boticário", descricao: "Floral oriental envolvente, presente de alto valor afetivo.", preco: 289.99, precoOriginal: 359.99, imagem: elysee, badge: "Edição Especial" },
   { id: "k03", slug: "her-code-tradicional", nome: "Kit Her Code Tradicional", marca: "O Boticário", descricao: "Frasco icônico em cadeado, fragrância marcante e moderna.", preco: 244.99, precoOriginal: 299.99, imagem: herCode, badge: "Edição Especial" },
   { id: "k04", slug: "coffee-woman-duo", nome: "Kit Coffee Woman Duo", marca: "O Boticário", descricao: "Loção corporal + creme para mãos. Aroma quente e adocicado.", preco: 219.99, precoOriginal: 269.99, imagem: coffee, badge: null },
@@ -47,7 +47,7 @@ export const KITS: Kit[] = [
   { id: "k13", slug: "ameixa-tradicional", nome: "Kit Ameixa Tradicional Nativa SPA", marca: "Nativa SPA", descricao: "Sabonete + loção corporal com fragrância clássica de ameixa.", preco: 99.99, precoOriginal: 129.99, imagem: ameixa, badge: null },
   { id: "k14", slug: "celebre-sua-forca", nome: "Kit Celebre Sua Força", marca: "O Boticário", descricao: "Perfume + creme para mãos. Mensagem que transborda carinho.", preco: 99.99, precoOriginal: 119.99, imagem: celebre, badge: null },
   { id: "k15", slug: "deleite", nome: "Kit Cuide-se Bem Deleite", marca: "O Boticário", descricao: "Aromas envolventes para um momento de puro autocuidado.", preco: 84.99, precoOriginal: 109.99, imagem: deleite, badge: null },
-  { id: "k16", slug: "cuide-se-bem-pessegura", nome: "Kit Cuide-se Bem Pessegura", marca: "O Boticário", descricao: "Pele macia e com cheirinho irresistível de pêssego. O toque de carinho que sua mãe merece.", preco: 50.00, precoOriginal: 74.99, imagem: pessegura, badge: "Mega Promoção" },
+  { id: "k16", slug: "cuide-se-bem-pessegura", nome: "Kit Cuide-se Bem Pessegura", marca: "O Boticário", descricao: "Pele macia e com cheirinho irresistível de pêssego. O toque de carinho que sua mãe merece.", preco: 49.99, precoOriginal: 74.99, imagem: pessegura, badge: "Mega Promoção" },
 ];
 
 export const formatBRL = (v: number) =>
