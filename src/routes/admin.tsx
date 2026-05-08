@@ -336,6 +336,30 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
     setIsEditing(false);
   };
 
+  const handleConfirmSale = () => {
+    if (!p.evidencias || p.evidencias.length === 0) {
+      toast.error("Obrigatorio anexar evidência antes de confirmar venda!", {
+        description: "Anexe o comprovante ou foto do produto preparado.",
+        duration: 4000,
+      });
+      fileInputRef.current?.click();
+      return;
+    }
+    onUpdate(p.id, "vendido");
+  };
+
+  const handleMarkDelivered = () => {
+    onUpdate(p.id, "entregue");
+  };
+
+  const handleReopen = () => {
+    onUpdate(p.id, "pendente");
+  };
+
+  const handleCancel = () => {
+    onUpdate(p.id, "cancelado");
+  };
+
   const sendStatusUpdate = (msg: string) => {
     const text = encodeURIComponent(`Olá ${p.cliente_nome}! ${msg}`);
     window.open(`https://wa.me/${p.cliente_whatsapp}?text=${text}`, '_blank');
@@ -348,8 +372,12 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
           <cfg.icon className="h-3 w-3" /> {cfg.label}
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setIsEditing(!isEditing)} className="p-2 hover:bg-secondary rounded-full transition-colors text-muted-foreground hover:text-primary">
-            {isEditing ? <Save className="h-3.5 w-3.5" onClick={handleSaveEdit} /> : <Edit2 className="h-3.5 w-3.5" />}
+          <button 
+            onClick={() => isEditing ? handleSaveEdit() : setIsEditing(true)} 
+            className={`p-2 rounded-full transition-premium ${isEditing ? "bg-primary text-white" : "hover:bg-secondary text-muted-foreground hover:text-primary"}`}
+            title={isEditing ? "Salvar Alterações" : "Editar Pedido"}
+          >
+            {isEditing ? <Save className="h-3.5 w-3.5" /> : <Edit2 className="h-3.5 w-3.5" />}
           </button>
           <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
         </div>
@@ -448,15 +476,15 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {p.status === "pendente" && <button onClick={() => onUpdate(p.id, "vendido")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium">Confirmar Venda</button>}
-          {p.status === "vendido" && <button onClick={() => onUpdate(p.id, "entregue")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-emerald-700 transition-premium"><Truck className="h-4 w-4" /> Marcar como Entregue</button>}
+          {p.status === "pendente" && <button onClick={handleConfirmSale} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-primary-glow transition-premium">Confirmar Venda</button>}
+          {p.status === "vendido" && <button onClick={handleMarkDelivered} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-emerald-700 transition-premium"><Truck className="h-4 w-4" /> Marcar como Entregue</button>}
           
           {p.status === "cancelado" ? (
-            <button onClick={() => onUpdate(p.id, "pendente")} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-amber-500 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-amber-600 transition-premium">
+            <button onClick={handleReopen} className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-amber-500 py-3.5 text-[10px] font-black uppercase tracking-widest text-white shadow-soft hover:bg-amber-600 transition-premium">
               <Undo className="h-4 w-4" /> Reabrir Pedido
             </button>
           ) : p.status !== "entregue" && (
-            <button onClick={() => onUpdate(p.id, "cancelado")} className="col-span-2 border border-rose-tea/20 text-muted-foreground py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-premium">
+            <button onClick={handleCancel} className="col-span-2 border border-rose-tea/20 text-muted-foreground py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-premium">
               Cancelar Pedido
             </button>
           )}
