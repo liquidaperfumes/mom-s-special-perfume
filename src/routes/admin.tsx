@@ -220,6 +220,22 @@ function AdminPage() {
     else toast.success("Evidência anexada com sucesso!");
   };
 
+  const clearHistory = async () => {
+    if (!confirm("⚠️ ATENÇÃO: Isso apagará TODOS os pedidos do sistema permanentemente. Deseja continuar?")) return;
+    
+    try {
+      // Excluir todos os pedidos
+      const { error } = await supabase.from('pedidos').delete().neq('id', 'placeholder');
+      if (error) throw error;
+      
+      toast.success("Histórico de pedidos removido!");
+      setPedidos([]);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao limpar histórico. Verifique as permissões do banco.");
+    }
+  };
+
   if (loadingAuth) {
     return <div className="flex min-h-screen items-center justify-center bg-secondary/30" />
   }
@@ -292,10 +308,17 @@ function AdminPage() {
         </div>
 
         <div className="mb-8 flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Gestão de Pedidos 🌸</h1>
-              <p className="text-sm text-muted-foreground mt-1">Localize e gerencie as vendas do dia.</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">Gestão de Pedidos 🌸</h1>
+                <p className="text-sm text-muted-foreground mt-1">Localize e gerencie as vendas do dia.</p>
+              </div>
+              <button 
+                onClick={clearHistory}
+                className="flex items-center justify-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-red-100 transition-premium"
+              >
+                <Trash2 className="h-3 w-3" /> Limpar Histórico de Testes
+              </button>
             </div>
             <div className="relative w-full sm:w-80">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
