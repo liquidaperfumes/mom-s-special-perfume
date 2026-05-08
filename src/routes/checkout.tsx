@@ -174,7 +174,7 @@ function Checkout() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link to="/" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"><ArrowLeft className="h-4 w-4" /> Voltar</Link>
           <div className="h-8 sm:h-10 overflow-hidden">
-            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
+            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply" />
           </div>
         </div>
       </header>

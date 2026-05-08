@@ -103,7 +103,7 @@ function AdminPage() {
         <div className="w-full max-w-sm rounded-3xl border border-border bg-background p-8 shadow-premium">
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 h-14 overflow-hidden">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mx-auto" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mx-auto mix-blend-multiply" />
             </div>
             <h2 className="font-display text-2xl">Acesso Restrito</h2>
             <p className="text-xs text-muted-foreground mt-2 uppercase tracking-widest font-bold">Painel de Consultoras</p>
@@ -141,7 +141,7 @@ function AdminPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3">
             <div className="h-8 sm:h-10 overflow-hidden">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply" />
             </div>
             <div className="border-l border-border pl-3">
               <h1 className="text-xs sm:text-sm font-bold tracking-[0.2em] text-primary">ADMIN</h1>

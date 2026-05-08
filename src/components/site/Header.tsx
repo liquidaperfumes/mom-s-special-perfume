@@ -10,7 +10,7 @@ export function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link to="/" className="flex items-center group">
           <div className="h-10 sm:h-12 overflow-hidden group-hover:scale-105 transition-premium">
-            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
+            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mix-blend-multiply" />
           </div>
         </Link>
 

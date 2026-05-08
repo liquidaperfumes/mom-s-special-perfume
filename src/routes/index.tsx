@@ -6,7 +6,7 @@ import { Emocional } from "@/components/site/Emocional";
 import { Beneficios } from "@/components/site/Beneficios";
 
 import { Loja } from "@/components/site/Loja";
-import { Depoimentos } from "@/components/site/Depoimentos";
+
 import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
@@ -36,7 +36,7 @@ function Landing() {
         <Beneficios />
 
         <Loja />
-        <Depoimentos />
+
         <section className="bg-gradient-rose py-16 text-center text-primary-foreground">
           <div className="mx-auto max-w-2xl px-4">
             <h2 className="font-display text-4xl font-medium sm:text-5xl">Faça o Dia das Mães inesquecível.</h2>
