@@ -82,19 +82,34 @@ function CheckoutPage() {
       const whatsappLimpo = whatsapp.replace(/\D/g, "");
       
       // 1. SAVE TO DATABASE SAFELY
-      const { error } = await supabase.from("pedidos").insert({
+      let insertResult = await supabase.from("pedidos").insert({
         cliente_nome: nome,
         cliente_whatsapp: whatsappLimpo,
         itens: items,
         tipo_entrega: modo,
         endereco: enderecoObj,
         total: totalFinal,
-        status: "pendente"
-        // forma_pagamento: formaPagamento, // Temporarily removed to fix PGRST204 error
+        status: "pendente",
+        forma_pagamento: formaPagamento,
       });
 
-      if (error) {
-        console.error("Database insert error:", error);
+      // Se a coluna forma_pagamento ainda não existir no banco, ele dá erro PGRST204
+      // Fazemos um fallback automático sem essa coluna para não travar a venda
+      if (insertResult.error && insertResult.error.code === 'PGRST204') {
+        console.warn("Coluna forma_pagamento não encontrada, fazendo fallback...");
+        insertResult = await supabase.from("pedidos").insert({
+          cliente_nome: nome,
+          cliente_whatsapp: whatsappLimpo,
+          itens: items,
+          tipo_entrega: modo,
+          endereco: enderecoObj,
+          total: totalFinal,
+          status: "pendente"
+        });
+      }
+
+      if (insertResult.error) {
+        console.error("Database insert error:", insertResult.error);
       }
 
       // 2. PREPARE WHATSAPP MESSAGE
