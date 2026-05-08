@@ -36,7 +36,7 @@ export function Hero() {
               <img src={logoImg} alt="Liquida Perfumes" className="h-8 sm:h-10 w-auto object-contain" />
               <div className="h-6 w-px bg-white/20" />
               <img 
-                src="https://logopng.com.br/logos/o-boticario-131.png" 
+                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
                 alt="O Boticário" 
                 className="h-5 sm:h-7 w-auto object-contain brightness-0 invert" 
               />

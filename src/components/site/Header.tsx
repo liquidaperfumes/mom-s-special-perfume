@@ -17,7 +17,7 @@ export function Header() {
           <div className="h-6 w-px bg-border hidden sm:block" />
           <div className="h-6 sm:h-8 flex items-center">
             <img 
-              src="https://logopng.com.br/logos/o-boticario-131.png" 
+              src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
               alt="O Boticário" 
               className="h-full w-auto object-contain brightness-0 opacity-40" 
             />

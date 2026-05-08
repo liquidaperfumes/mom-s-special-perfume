@@ -352,7 +352,6 @@ function Checkout() {
                     desc="Pague ao receber o produto"
                   />
 
-                  {/* Payment Notice */}
                   <div className="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3">
                     <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-amber-100 text-amber-700">
                       <AlertCircle className="h-5 w-5" />
@@ -389,22 +388,22 @@ function Checkout() {
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-2xl sm:rounded-[2rem] border border-border bg-card p-5 shadow-premium sm:p-8">
             <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 mb-4">Resumo da Sacola</h3>
-            <ul className="space-y-3 max-h-[35vh] overflow-auto pr-1">
+            <ul className="space-y-4 max-h-[40vh] overflow-auto pr-1">
               {items.map(({ kit, qtd }) => (
-                <li key={kit.id} className="flex gap-3">
-                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-secondary/50">
-                    <img src={kit.imagem} alt="" className="h-full w-full object-contain p-1.5" loading="lazy" />
+                <li key={kit.id} className="flex gap-4">
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-secondary/50 border border-border/50">
+                    <img src={kit.imagem} alt="" className="h-full w-full object-contain p-2" loading="lazy" />
                   </div>
                   <div className="flex-1 text-xs flex flex-col justify-center min-w-0">
-                    <p className="font-bold text-foreground leading-tight truncate">{kit.nome}</p>
-                    <p className="text-muted-foreground mt-1">{qtd}x · {formatBRL(kit.preco)}</p>
+                    <p className="font-bold text-foreground leading-tight text-sm mb-1">{kit.nome}</p>
+                    <p className="text-muted-foreground">{qtd}x · {formatBRL(kit.preco)}</p>
                   </div>
-                  <span className="text-xs font-bold self-center shrink-0">{formatBRL(kit.preco * qtd)}</span>
+                  <span className="text-sm font-bold self-center shrink-0 text-primary">{formatBRL(kit.preco * qtd)}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-6 space-y-2 border-t border-border pt-4 text-sm">
+            <div className="mt-6 space-y-2 border-t border-border pt-6 text-sm">
               <Linha label="Subtotal" v={formatBRL(total)} />
               <Linha label="Frete" v={freteValor === null ? "A combinar" : freteValor === 0 ? "Grátis" : formatBRL(freteValor)} accent={freteValor === 0} />
               <div className="mt-4 flex items-baseline justify-between border-t border-border/50 pt-4">
@@ -416,12 +415,12 @@ function Checkout() {
               </p>
             </div>
 
-            <div className="mt-6 flex flex-col items-center gap-4">
+            <div className="mt-8 flex flex-col items-center gap-4">
               <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary/60 text-center">Pagamento Seguro na Entrega</p>
-              <div className="flex items-center justify-center gap-4 opacity-40 grayscale">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_pix.png/512px-Logo_pix.png" alt="Pix" className="h-3 object-contain" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-2.5 object-contain" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Master" className="h-4 object-contain" />
+              <div className="flex items-center justify-center gap-5 opacity-80">
+                <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-4 object-contain" />
+                <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo.png" alt="Visa" className="h-3 object-contain" />
+                <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Master" className="h-5 object-contain" />
               </div>
             </div>
           </div>

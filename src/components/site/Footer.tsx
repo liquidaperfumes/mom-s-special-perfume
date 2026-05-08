@@ -11,7 +11,7 @@ export function Footer() {
             <img src={logoImg} alt="Liquida Perfumes" className="h-10 w-auto object-contain" />
             <div className="h-6 w-px bg-background/20" />
             <img 
-              src="https://logopng.com.br/logos/o-boticario-131.png" 
+              src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
               alt="O Boticário" 
               className="h-6 w-auto object-contain brightness-0 invert opacity-40" 
             />
@@ -21,10 +21,10 @@ export function Footer() {
           </p>
           <div className="pt-4">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 mb-4">Formas de Pagamento</h4>
-            <div className="flex flex-wrap gap-4 items-center opacity-60">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_pix.png/512px-Logo_pix.png" alt="Pix" className="h-4 w-auto object-contain" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-3 w-auto object-contain" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Mastercard" className="h-5 w-auto object-contain" />
+            <div className="flex flex-wrap gap-4 items-center opacity-80">
+              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-4 w-auto object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo.png" alt="Visa" className="h-3 w-auto object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo.png" alt="Mastercard" className="h-5 w-auto object-contain" />
             </div>
             <p className="mt-4 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
           </div>
