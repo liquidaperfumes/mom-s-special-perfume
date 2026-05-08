@@ -682,6 +682,8 @@ function CatalogoGrid() {
 
 function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [form, setForm] = useState({
     nome: "",
     marca: "Eudora",
@@ -691,6 +693,14 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
     badge: "Novidade" as any
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      setFile(selected);
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.nome || !form.preco) return toast.error("Preencha nome e preço.");
@@ -699,7 +709,21 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
     const id = `p-${Date.now()}`;
     const slug = form.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-').replace(/[^\w-]/g, '');
     
+    let imageUrl = `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${form.nome.replace(/\s+/g, '+')}`;
+
     try {
+      // 1. Upload image if selected
+      if (file) {
+        const { error: uploadError } = await supabase.storage
+          .from('evidencias')
+          .upload(`evidencias/produto_${id}.jpg`, file, { upsert: true });
+        
+        if (uploadError) throw uploadError;
+        
+        imageUrl = `https://uycsoeqqbayjroetmsai.supabase.co/storage/v1/object/public/evidencias/evidencias/produto_${id}.jpg`;
+      }
+
+      // 2. Create product record
       const { error } = await supabase.from('produtos').insert({
         id,
         slug,
@@ -709,7 +733,7 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
         preco: parseFloat(form.preco),
         precoOriginal: form.precoOriginal ? parseFloat(form.precoOriginal) : null,
         badge: form.badge,
-        imagem: `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${form.nome.replace(/\s+/g, '+')}`,
+        imagem: imageUrl,
         ativo: true
       });
 
@@ -718,6 +742,7 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
       toast.success("Produto criado com sucesso!");
       onSuccess();
     } catch (err) {
+      console.error(err);
       toast.error("Erro ao criar produto.");
     } finally {
       setLoading(false);
@@ -812,6 +837,30 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
             <option value="Mega Promoção">Mega Promoção</option>
             <option value="Edição Especial">Edição Especial</option>
           </select>
+        </div>
+
+        <div className="md:col-span-2 space-y-4 pt-4">
+          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-2">
+            <Camera className="h-4 w-4" /> Foto do Produto
+          </label>
+          <div className="flex items-center gap-6">
+            <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-dashed border-rose-tea/30 bg-secondary/5 flex items-center justify-center">
+              {preview ? (
+                <img src={preview} className="h-full w-full object-cover" alt="Preview" />
+              ) : (
+                <Camera className="h-8 w-8 text-muted-foreground/30" />
+              )}
+            </div>
+            <div className="flex-1">
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange}
+                className="block w-full text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer"
+              />
+              <p className="mt-2 text-[9px] text-muted-foreground/60 uppercase tracking-widest">Formatos aceitos: JPG, PNG. Recomendado 600x600px.</p>
+            </div>
+          </div>
         </div>
 
         <div className="md:col-span-2 flex justify-end gap-4 mt-4">
