@@ -89,8 +89,8 @@ function CheckoutPage() {
         tipo_entrega: modo,
         endereco: enderecoObj,
         total: totalFinal,
-        status: "pendente",
-        forma_pagamento: formaPagamento,
+        status: "pendente"
+        // forma_pagamento: formaPagamento, // Temporarily removed to fix PGRST204 error
       });
 
       if (error) {
