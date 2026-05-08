@@ -19,6 +19,7 @@ function Sucesso() {
   const [waUrl, setWaUrl] = useState(`https://wa.me/${WHATSAPP_CONSULTORA}`);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     try {
       const msg = localStorage.getItem('wa_msg');
       if (msg) {

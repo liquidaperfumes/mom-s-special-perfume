@@ -23,6 +23,10 @@ function CheckoutPage() {
   const [modo, setModo] = useState<"entrega" | "retirada">("entrega");
   const [formaPagamento, setFormaPagamento] = useState<"pix" | "cartao_online" | "cartao_entrega">("pix");
   
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // Form fields
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
