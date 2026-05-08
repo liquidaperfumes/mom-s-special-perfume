@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/kits";
-import { Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, ShoppingBag, MessageCircle, X, ChevronDown } from "lucide-react";
+import { Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, ShoppingBag, MessageCircle, X, ChevronDown, Instagram } from "lucide-react";
 import { toast } from "sonner";
 import logoImg from "@/assets/logo-liquida.jpg";
 
@@ -102,8 +102,8 @@ function AdminPage() {
       <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
         <div className="w-full max-w-sm rounded-3xl border border-border bg-background p-8 shadow-premium">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 h-20 w-20 overflow-hidden rounded-full border-4 border-primary/20 shadow-soft bg-white">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
+            <div className="mx-auto mb-4 h-14 overflow-hidden">
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mx-auto" />
             </div>
             <h2 className="font-display text-2xl">Acesso Restrito</h2>
             <p className="text-xs text-muted-foreground mt-2 uppercase tracking-widest font-bold">Painel de Consultoras</p>
@@ -140,10 +140,10 @@ function AdminPage() {
       <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-30">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full border-2 border-primary/20 shadow-soft bg-white">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
+            <div className="h-8 sm:h-10 overflow-hidden">
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
             </div>
-            <div>
+            <div className="border-l border-border pl-3">
               <h1 className="text-xs sm:text-sm font-bold tracking-[0.2em] text-primary">ADMIN</h1>
               <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold leading-none mt-0.5">Consultoras</p>
             </div>
@@ -274,12 +274,20 @@ function PedidoCard({ pedido: p, onUpdate }: { pedido: Pedido; onUpdate: (id: st
         <div className="mt-3 sm:mt-4 space-y-2">
           {p.status === "pendente" && (
             <>
-              <ActionBtn
-                onClick={() => onUpdate(p.id, "vendido", "Pedido marcado como vendido!")}
-                icon={<MessageCircle className="h-4 w-4" />}
-                label="Marcar como Vendido (WhatsApp)"
-                className="bg-blue-600 hover:bg-blue-700"
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <ActionBtn
+                  onClick={() => onUpdate(p.id, "vendido", "Vendido via WhatsApp!")}
+                  icon={<MessageCircle className="h-4 w-4" />}
+                  label="WhatsApp"
+                  className="bg-[#25D366] hover:bg-[#1da855]"
+                />
+                <ActionBtn
+                  onClick={() => onUpdate(p.id, "vendido", "Vendido via Instagram!")}
+                  icon={<Instagram className="h-4 w-4" />}
+                  label="Instagram"
+                  className="bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90"
+                />
+              </div>
               <ActionBtn
                 onClick={() => onUpdate(p.id, "cancelado", "Pedido cancelado.")}
                 icon={<X className="h-4 w-4" />}

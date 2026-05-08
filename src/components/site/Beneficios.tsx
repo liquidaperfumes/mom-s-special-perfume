@@ -1,7 +1,7 @@
 import { Truck, ShieldCheck, Gift, Lock, Store, Sparkles } from "lucide-react";
 
 const items = [
-  { icon: Truck, t: "Entrega em 3h", d: "Receba seu pedido em até 3 horas no Grande Recife." },
+  { icon: Truck, t: "Entregamos Presentes", d: "Levamos o presente até quem você ama em até 3h no Grande Recife." },
   { icon: ShieldCheck, t: "100% Originais", d: "Produtos lacrados, direto das melhores marcas." },
   { icon: Gift, t: "Embalagem Presenteável", d: "Tudo pronto para presentear, sem nenhuma fricção." },
   { icon: Lock, t: "Parcelamento em até 12x", d: "Pague com cartão de crédito ou Pix com total segurança." },

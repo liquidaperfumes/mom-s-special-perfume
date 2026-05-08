@@ -52,7 +52,7 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">
-            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>, prontos para emocionar quem você mais ama.
+            Kits exclusivos com as fragrâncias mais amadas do mundo, <strong className="font-medium text-white">originais e lacrados</strong>. Entregamos o presente na porta de quem você ama em até 3 horas.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
@@ -65,9 +65,9 @@ export function Hero() {
             </a>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-6 text-[11px] font-medium uppercase tracking-widest text-white/70">
+          <div className="mt-4 flex flex-wrap gap-4 sm:gap-6 text-[11px] font-medium uppercase tracking-widest text-white/70">
             <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-rose-tea" /> 100% Originais</span>
-            <span className="flex items-center gap-2"><Truck className="h-4 w-4 text-rose-tea" /> Entrega em 3h</span>
+            <span className="flex items-center gap-2"><Truck className="h-4 w-4 text-rose-tea" /> Entregamos presentes</span>
             <span className="flex items-center gap-2"><Store className="h-4 w-4 text-rose-tea" /> Retirada Hoje</span>
           </div>
         </motion.div>

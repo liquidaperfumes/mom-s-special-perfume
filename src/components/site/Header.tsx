@@ -16,7 +16,7 @@ export function Header() {
 
         <nav className="hidden items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70 md:flex">
           <a href="#kits" className="hover:text-primary transition-colors">Coleção</a>
-          <a href="#frete" className="hover:text-primary transition-colors">Entrega</a>
+          <a href="#loja" className="hover:text-primary transition-colors">Loja</a>
         </nav>
 
         <button
@@ -33,7 +33,7 @@ export function Header() {
         </button>
       </div>
       <div className="bg-foreground py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.25em] text-background/90 flex items-center justify-center gap-4">
-        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> Entrega em 3h</span>
+        <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> Entregamos presentes</span>
         <span className="hidden sm:flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> Até 12x no cartão</span>
         <span className="flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-rose-tea" /> 100% Originais</span>
       </div>
