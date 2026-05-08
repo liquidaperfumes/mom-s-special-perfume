@@ -28,9 +28,7 @@ function Landing() {
       <Header />
       <main>
         <Hero />
-        <div className="bg-foreground py-3 text-center text-xs font-semibold uppercase tracking-widest text-background">
-          ⚡ Estoque limitado · Compre até 10/05 para aproveitar as ofertas do Dia das Mães
-        </div>
+
         <KitsGrid />
         <Emocional />
         <Beneficios />
