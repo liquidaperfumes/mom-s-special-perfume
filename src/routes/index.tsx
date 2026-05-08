@@ -4,7 +4,7 @@ import { Hero } from "@/components/site/Hero";
 import { KitsGrid } from "@/components/site/KitsGrid";
 import { Emocional } from "@/components/site/Emocional";
 import { Beneficios } from "@/components/site/Beneficios";
-import { FreteCalc } from "@/components/site/FreteCalc";
+
 import { Loja } from "@/components/site/Loja";
 import { Depoimentos } from "@/components/site/Depoimentos";
 import { Footer } from "@/components/site/Footer";
@@ -34,7 +34,7 @@ function Landing() {
         <KitsGrid />
         <Emocional />
         <Beneficios />
-        <FreteCalc />
+
         <Loja />
         <Depoimentos />
         <section className="bg-gradient-rose py-16 text-center text-primary-foreground">
