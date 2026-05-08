@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Líquida Perfumes — Kits Dia das Mães 2026 · Frete Recife" },
-      { name: "description", content: "Kits especiais de Dia das Mães com perfumes originais. Entrega em até 3h em Recife/Olinda, retirada na loja e parcelamento em até 12x. Garanta o presente perfeito." },
+      { name: "description", content: "Kits especiais de Dia das Mães com perfumes originais. Entrega rápida em Recife/Olinda, retirada na loja e parcelamento em até 12x. Garanta o presente perfeito." },
       { property: "og:title", content: "Transforme carinho em memória · Kits Dia das Mães" },
       { property: "og:description", content: "16 kits premium para presentear sua mãe. Originais, com embalagem pronta para presente. Entrega rápida em todo Grande Recife." },
       { property: "og:type", content: "website" },
