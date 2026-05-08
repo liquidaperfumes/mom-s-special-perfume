@@ -7,7 +7,7 @@ import {
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
   Camera, FileText, Image as ImageIcon, ExternalLink, Paperclip, Clock,
   Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter,
-  Edit2, Save, Undo, Sparkles
+  Edit2, Save, Undo, Sparkles, Eye, EyeOff
 } from "lucide-react";
 import { toast } from "sonner";
 import logoImg from "@/assets/logo-liquida.png";
@@ -572,16 +572,63 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
 }
 
 function CatalogoGrid() {
+  const [statusMap, setStatusMap] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  const fetchStatus = async () => {
+    try {
+      const { data, error } = await supabase.from('produtos_status').select('*');
+      if (error) throw error;
+      
+      const map: Record<string, boolean> = {};
+      data.forEach((item: any) => {
+        map[item.id] = item.ativo;
+      });
+      setStatusMap(map);
+    } catch (err) {
+      console.error("Erro ao buscar status dos produtos:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleStatus = async (id: string, currentAtivo: boolean) => {
+    try {
+      const nextAtivo = !currentAtivo;
+      const { error } = await supabase
+        .from('produtos_status')
+        .upsert({ id, ativo: nextAtivo });
+
+      if (error) throw error;
+
+      setStatusMap(prev => ({ ...prev, [id]: nextAtivo }));
+      toast.success(`Produto ${nextAtivo ? 'ativado' : 'desativado'} com sucesso!`);
+    } catch (err) {
+      toast.error("Erro ao atualizar visibilidade do produto.");
+    }
+  };
+
+  if (loading) return <div className="p-12 text-center text-muted-foreground uppercase font-bold tracking-widest animate-pulse">Carregando catálogo...</div>;
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {KITS.filter(k => k.id.startsWith("e")).map(kit => (
-        <CatalogoCard key={kit.id} kit={kit} />
+      {KITS.map(kit => (
+        <CatalogoCard 
+          key={kit.id} 
+          kit={kit} 
+          ativo={statusMap[kit.id] !== false} 
+          onToggle={() => toggleStatus(kit.id, statusMap[kit.id] !== false)}
+        />
       ))}
     </div>
   );
 }
 
-function CatalogoCard({ kit }: { kit: any }) {
+function CatalogoCard({ kit, ativo, onToggle }: { kit: any, ativo: boolean, onToggle: () => void }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -627,7 +674,19 @@ function CatalogoCard({ kit }: { kit: any }) {
       <h3 className="mt-1 text-sm font-semibold leading-tight text-foreground truncate">{kit.nome}</h3>
       <p className="text-xs text-muted-foreground/80 font-bold mt-1 mb-4">{formatBRL(kit.preco)}</p>
       
-      <div className="mt-auto pt-4 border-t border-rose-tea/10">
+      <div className="mt-auto pt-4 border-t border-rose-tea/10 space-y-2">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className={`text-[9px] font-black uppercase tracking-widest ${ativo ? 'text-emerald-600' : 'text-rose-600'}`}>
+            {ativo ? 'Visível no Site' : 'Oculto no Site'}
+          </span>
+          <button 
+            onClick={onToggle}
+            className={`p-1.5 rounded-lg transition-premium ${ativo ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' : 'bg-rose-100 text-rose-600 hover:bg-rose-200'}`}
+          >
+            {ativo ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+          </button>
+        </div>
+
         <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
         <button 
           disabled={uploading} 

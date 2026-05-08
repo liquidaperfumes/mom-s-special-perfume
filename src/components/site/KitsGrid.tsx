@@ -1,8 +1,9 @@
 import { KITS, formatBRL, parcelas, type Kit } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
 import { Plus, Check, ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 type SortOption = "relevancia" | "menor" | "maior";
 
@@ -119,14 +120,27 @@ function SortButton({ active, onClick, icon, label }: { active: boolean; onClick
 }
 
 export function KitsGrid() {
-  const [sort, setSort] = useState<SortOption>("relevancia");
+  const [hiddenIds, setHiddenIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const { data, error } = await supabase.from('produtos_status').select('id').eq('ativo', false);
+        if (error) throw error;
+        setHiddenIds(data.map((item: any) => item.id));
+      } catch (err) {
+        console.error("Erro ao carregar visibilidade:", err);
+      }
+    };
+    fetchStatus();
+  }, []);
 
   const sorted = useMemo(() => {
-    const list = [...KITS];
+    const list = KITS.filter(k => !hiddenIds.includes(k.id));
     if (sort === "menor") list.sort((a, b) => a.preco - b.preco);
     if (sort === "maior") list.sort((a, b) => b.preco - a.preco);
     return list;
-  }, [sort]);
+  }, [sort, hiddenIds]);
 
   return (
     <section id="kits" className="relative bg-background py-16 sm:py-24">
