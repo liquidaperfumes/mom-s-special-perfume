@@ -8,13 +8,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl transition-premium">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-primary/20 shadow-soft group-hover:scale-110 transition-premium bg-white">
-            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
-          </div>
-          <div className="leading-tight">
-            <div className="text-[12px] font-bold tracking-[0.3em] text-primary">LIQUIDA</div>
-            <div className="text-[10px] font-medium tracking-[0.4em] text-muted-foreground/60">PERFUMES</div>
+        <Link to="/" className="flex items-center group">
+          <div className="h-10 sm:h-12 overflow-hidden group-hover:scale-105 transition-premium">
+            <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
           </div>
         </Link>
 

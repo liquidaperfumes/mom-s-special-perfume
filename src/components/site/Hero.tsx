@@ -31,9 +31,9 @@ export function Hero() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 12, delay: 0.2 }}
-              className="h-20 w-20 overflow-hidden rounded-full border-4 border-white/20 shadow-premium bg-white"
+              className="h-14 sm:h-16 overflow-hidden"
             >
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain brightness-0 invert" />
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, y: 10 }}
@@ -62,12 +62,6 @@ export function Hero() {
             >
               <span className="absolute inset-0 bg-rose-tea/10 opacity-0 transition-opacity group-hover:opacity-100" />
               Escolher meu presente
-            </a>
-            <a
-              href="#frete"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-8 py-5 text-sm font-semibold uppercase tracking-wider text-white backdrop-blur-sm transition hover:bg-white/10"
-            >
-              Consultar Entrega
             </a>
           </div>
 

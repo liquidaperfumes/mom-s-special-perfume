@@ -6,13 +6,9 @@ export function Footer() {
     <footer className="bg-foreground text-background">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 shadow-soft bg-white">
-              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-full object-cover" />
-            </div>
-            <div>
-              <div className="text-sm font-bold tracking-[0.25em]">LIQUIDA</div>
-              <div className="text-[10px] tracking-[0.3em] text-background/60">PERFUMES</div>
+          <div>
+            <div className="h-10 overflow-hidden">
+              <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain brightness-0 invert" />
             </div>
           </div>
           <p className="mt-4 max-w-xs text-sm text-background/70">
