@@ -25,10 +25,32 @@ function CheckoutPage() {
   // Form fields
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [cep, setCep] = useState("");
   const [bairro, setBairro] = useState("");
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [referencia, setReferencia] = useState("");
+
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setCep(value);
+
+    if (value.length === 8) {
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${value}/json/`);
+        const data = await res.json();
+        if (!data.erro) {
+          setRua(data.logradouro);
+          setBairro(data.bairro);
+          toast.success("Endereço encontrado!");
+        } else {
+          toast.error("CEP não encontrado.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   const totalFinal = modo === "entrega" ? total + 10 : total;
 
@@ -52,7 +74,7 @@ function CheckoutPage() {
     const toastId = toast.loading("Finalizando seu pedido...");
 
     try {
-      const enderecoObj = modo === "entrega" ? { bairro, rua, numero, referencia } : null;
+      const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
       
       const { data, error } = await supabase.from("pedidos").insert({
         cliente_nome: nome,
@@ -78,7 +100,7 @@ function CheckoutPage() {
       const clienteInfo = `*CLIENTE:* ${nome}\n*WHATSAPP:* ${whatsapp}\n\n`;
       const itensInfo = `*PEDIDO:* \n${items.map(i => `• ${i.qtd}x ${i.kit.nome} - ${formatBRL(i.kit.preco * i.qtd)}`).join("\n")}\n\n`;
       const entregaInfo = modo === "entrega" 
-        ? `*ENTREGA:* ${rua}, ${numero} - ${bairro}${referencia ? ` (${referencia})` : ""}\n`
+        ? `*ENTREGA:* ${rua}, ${numero} - ${bairro} (CEP: ${cep})${referencia ? ` [Ref: ${referencia}]` : ""}\n`
         : `*RETIRADA:* Na loja em Olinda\n`;
       const totalInfo = `*VALOR TOTAL:* ${formatBRL(totalFinal)}\n`;
       const pagInfo = `*FORMA DE PAGAMENTO:* ${paymentLabels[formaPagamento]}\n\n`;
@@ -185,6 +207,17 @@ function CheckoutPage() {
                       </p>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">CEP</label>
+                        <input 
+                          type="tel" 
+                          placeholder="00000-000" 
+                          maxLength={8}
+                          value={cep} 
+                          onChange={handleCepChange} 
+                          className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 px-5 py-4 text-sm outline-none focus:ring-2 focus:ring-primary/20" 
+                        />
+                      </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Bairro</label>
                         <input type="text" placeholder="Ex: São Benedito" value={bairro} onChange={e => setBairro(e.target.value)} className="w-full rounded-2xl border border-rose-tea/10 bg-secondary/10 px-5 py-4 text-sm outline-none focus:ring-2 focus:ring-primary/20" />
