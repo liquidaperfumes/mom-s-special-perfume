@@ -119,17 +119,19 @@ function CheckoutPage() {
         cartao_entrega: "Cartão na Entrega/Retirada"
       };
 
-      const intro = `🛍️ *NOVO PEDIDO PELO SITE!* 🛍️\n\n`;
+      const sep = `\n---------------------------------------\n\n`;
+
+      const intro = `🛍️ *NOVO PEDIDO PELO SITE!* 🛍️${sep}`;
       
-      const clienteInfo = `👤 *DADOS DO CLIENTE*\n*Nome:* ${nome}\n*WhatsApp:* ${whatsapp}\n\n`;
+      const clienteInfo = `👤 *DADOS DO CLIENTE*\n\n*Nome:* ${nome}\n*WhatsApp:* ${whatsapp}${sep}`;
       
-      const itensInfo = `🎁 *PRODUTOS ESCOLHIDOS*\n${items.map(i => `• ${i.qtd}x ${i.kit.nome}\n  ${formatBRL(i.kit.preco * i.qtd)}`).join("\n\n")}\n\n`;
+      const itensInfo = `🎁 *PRODUTOS ESCOLHIDOS*\n\n${items.map(i => `• ${i.qtd}x ${i.kit.nome}\n  ${formatBRL(i.kit.preco * i.qtd)}`).join("\n\n")}${sep}`;
       
       const entregaInfo = modo === "entrega" 
-        ? `🚚 *ENDEREÇO DE ENTREGA*\n*Rua:* ${rua}, ${numero}\n*Bairro:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*Ref:* ${referencia}` : ""}\n\n`
-        : `🏪 *MÉTODO DE ENTREGA*\nRetirada na Loja (Estrada do Caenga, 235 - Olinda)\n\n`;
+        ? `🚚 *ENDEREÇO DE ENTREGA*\n\n*Rua:* ${rua}, ${numero}\n*Bairro:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*Ref:* ${referencia}` : ""}${sep}`
+        : `🏪 *MÉTODO DE ENTREGA*\n\nRetirada na Loja (Estrada do Caenga, 235 - Olinda)${sep}`;
         
-      const pagInfo = `💳 *PAGAMENTO E VALORES*\n*Forma de Pagamento:* ${paymentLabels[formaPagamento]}\n*Total a Pagar:* *${formatBRL(totalFinal)}*\n\n`;
+      const pagInfo = `💳 *PAGAMENTO E VALORES*\n\n*Forma de Pagamento:* ${paymentLabels[formaPagamento]}\n*Total a Pagar:* *${formatBRL(totalFinal)}*${sep}`;
       
       const footer = `✅ _Aguardando confirmação da consultora..._`;
 
