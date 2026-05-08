@@ -48,7 +48,7 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-primary-foreground/80 sm:text-xl font-light">
-            Em uma parceria exclusiva entre <strong className="text-white font-medium">Liquida Perfumes</strong> e <strong className="text-white font-medium">O Boticário</strong>, trazemos kits premium com fragrâncias originais e lacradas para o presente perfeito.
+            Em uma parceria exclusiva entre <strong className="text-white font-medium">Liquida Perfumes</strong>, <strong className="text-white font-medium">O Boticário</strong> e <strong className="text-white font-medium">Eudora</strong>, trazemos kits premium com fragrâncias originais e lacradas para o presente perfeito.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
