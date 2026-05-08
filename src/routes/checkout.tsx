@@ -119,17 +119,21 @@ function CheckoutPage() {
         cartao_entrega: "Cartão na Entrega/Retirada"
       };
 
-      const intro = `Olá! Acabei de fazer um pedido pelo site:\n\n`;
-      const clienteInfo = `*CLIENTE:* ${nome}\n*WHATSAPP:* ${whatsapp}\n\n`;
-      const itensInfo = `*PRODUTOS:* \n${items.map(i => `• ${i.qtd}x ${i.kit.nome} - ${formatBRL(i.kit.preco * i.qtd)}`).join("\n")}\n\n`;
+      const intro = `🛍️ *NOVO PEDIDO PELO SITE!* 🛍️\n\n`;
+      
+      const clienteInfo = `👤 *DADOS DO CLIENTE*\n├ *Nome:* ${nome}\n└ *WhatsApp:* ${whatsapp}\n\n`;
+      
+      const itensInfo = `🎁 *PRODUTOS ESCOLHIDOS*\n${items.map(i => `├ ${i.qtd}x ${i.kit.nome} (${formatBRL(i.kit.preco * i.qtd)})`).join("\n")}\n\n`;
+      
       const entregaInfo = modo === "entrega" 
-        ? `*ENTREGA EM:* ${rua}, ${numero}\n*BAIRRO:* ${bairro}\n*CEP:* ${cep}${referencia ? `\n*REF:* ${referencia}` : ""}\n\n`
-        : `*RETIRADA:* Na loja em Olinda (Estrada do Caenga, 235)\n\n`;
-      const totalInfo = `*VALOR TOTAL:* ${formatBRL(totalFinal)}\n`;
-      const pagInfo = `*FORMA DE PAGAMENTO:* ${paymentLabels[formaPagamento]}\n\n`;
-      const footer = `_Por favor, confirme meu pedido e envie o link se necessário!_`;
+        ? `🚚 *ENDEREÇO DE ENTREGA*\n├ *Rua:* ${rua}, ${numero}\n├ *Bairro:* ${bairro}\n├ *CEP:* ${cep}${referencia ? `\n└ *Ref:* ${referencia}` : ""}\n\n`
+        : `🏪 *MÉTODO DE ENTREGA*\n└ Retirada na Loja (Estrada do Caenga, 235 - Olinda)\n\n`;
+        
+      const pagInfo = `💳 *PAGAMENTO E VALORES*\n├ *Forma de Pagamento:* ${paymentLabels[formaPagamento]}\n└ *Total a Pagar:* *${formatBRL(totalFinal)}*\n\n`;
+      
+      const footer = `✅ _Aguardando confirmação da consultora..._`;
 
-      const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + totalInfo + pagInfo + footer;
+      const fullMessage = intro + clienteInfo + itensInfo + entregaInfo + pagInfo + footer;
       const msgEncoded = encodeURIComponent(fullMessage);
 
       // 3. CLEANUP AND NAVIGATE WITH URL PARAMS
