@@ -37,11 +37,11 @@ export function Hero() {
               <div className="h-8 w-px bg-white/20" />
               <div className="flex flex-col">
                 <img 
-                  src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                  src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" 
                   alt="O Boticário" 
                   className="h-6 sm:h-8 w-auto object-contain brightness-0 invert" 
                 />
-                <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.1em] text-white/60 -mt-1">Onde tem amor tem beleza</p>
+                <p className="text-[7px] sm:text-[8px] font-black uppercase tracking-[0.2em] text-white/70 -mt-1">Onde tem amor tem beleza</p>
               </div>
             </motion.div>
             <motion.span 

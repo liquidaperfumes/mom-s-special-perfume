@@ -12,11 +12,11 @@ export function Footer() {
             <div className="h-6 w-px bg-background/20" />
             <div className="flex flex-col">
               <img 
-                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" 
                 alt="O Boticário" 
                 className="h-6 w-auto object-contain brightness-0 invert opacity-60" 
               />
-              <p className="text-[6px] font-bold uppercase tracking-[0.1em] text-background/30 -mt-0.5">Onde tem amor tem beleza</p>
+              <p className="text-[6px] font-black uppercase tracking-[0.15em] text-background/30 -mt-0.5">Onde tem amor tem beleza</p>
             </div>
           </div>
           <p className="max-w-xs text-sm text-background/60 leading-relaxed font-light">
@@ -25,9 +25,9 @@ export function Footer() {
           <div className="pt-4">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/40 mb-4">Formas de Pagamento</h4>
             <div className="flex flex-wrap gap-4 items-center opacity-80">
-              <img src="https://logodownload.org/wp-content/uploads/2020/02/pix-logo.png" alt="Pix" className="h-5 w-auto object-contain" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/visa-logo-1.png" alt="Visa" className="h-3 w-auto object-contain" />
-              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-1.png" alt="Mastercard" className="h-5 w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Pix.png/512px-Logo_Pix.png" alt="Pix" className="h-5 w-auto object-contain brightness-0 invert" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/512px-Visa_Inc._logo.svg.png" alt="Visa" className="h-3 w-auto object-contain brightness-0 invert" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/512px-Mastercard-logo.svg.png" alt="Mastercard" className="h-5 w-auto object-contain" />
             </div>
             <p className="mt-4 text-[9px] font-bold uppercase tracking-widest text-primary">✓ Pagamento na Entrega ou Retirada</p>
           </div>

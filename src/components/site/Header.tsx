@@ -21,12 +21,12 @@ export function Header() {
           <div className="flex flex-col justify-center">
             <div className="h-5 sm:h-7 flex items-center">
               <img 
-                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                src="https://upload.wikimedia.org/wikipedia/pt/thumb/f/f6/O_Botic%C3%A1rio_logo.svg/512px-O_Botic%C3%A1rio_logo.svg.png" 
                 alt="O Boticário" 
                 className="h-full w-auto object-contain brightness-0 opacity-80" 
               />
             </div>
-            <p className="text-[6px] sm:text-[7px] font-bold uppercase tracking-[0.1em] text-muted-foreground/60 -mt-0.5">Onde tem amor tem beleza</p>
+            <p className="text-[6px] sm:text-[7px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 -mt-0.5">Onde tem amor tem beleza</p>
           </div>
         </div>
 
