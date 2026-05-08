@@ -84,7 +84,14 @@ function AdminPage() {
     setLoading(true);
 
     let query = supabase.from("pedidos").select("*").order("created_at", { ascending: false });
-    if (filter !== "todos") query = query.eq("status", filter);
+    
+    // If searching, ignore status filter to allow global search
+    if (searchTerm) {
+      // Searching by name, whatsapp or ID using DB filters for efficiency
+      query = query.or(`cliente_nome.ilike.%${searchTerm}%,cliente_whatsapp.ilike.%${searchTerm}%,id.ilike.%${searchTerm}%`);
+    } else if (filter !== "todos") {
+      query = query.eq("status", filter);
+    }
 
     const { data, error } = await query;
 
@@ -136,7 +143,7 @@ function AdminPage() {
       .subscribe((status) => setIsSynced(status === "SUBSCRIBED"));
 
     return () => { supabase.removeChannel(channel); };
-  }, [filter, auth]);
+  }, [filter, auth, searchTerm]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
