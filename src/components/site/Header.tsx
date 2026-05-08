@@ -15,7 +15,7 @@ export function Header() {
           animate={{ opacity: 1, y: 0 }}
           className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2"
         >
-          <span className="animate-pulse">⚡</span> Estoque limitado · Compre até 08/05 e receba antes do Dia das Mães
+          <span className="animate-pulse">⚡</span> Estoque limitado · Compre até 10/05 e receba a tempo do Dia das Mães!
         </motion.p>
       </div>
 
