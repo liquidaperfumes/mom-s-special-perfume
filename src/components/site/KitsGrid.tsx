@@ -120,6 +120,7 @@ function SortButton({ active, onClick, icon, label }: { active: boolean; onClick
 }
 
 export function KitsGrid() {
+  const [sort, setSort] = useState<SortOption>("relevancia");
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
 
   useEffect(() => {
