@@ -80,7 +80,8 @@ function CheckoutPage() {
     try {
       const enderecoObj = modo === "entrega" ? { cep, bairro, rua, numero, referencia } : null;
       
-      const { data, error } = await supabase.from("pedidos").insert({
+      // Attempt to save to DB, but don't block the user if it fails
+      const { error } = await supabase.from("pedidos").insert({
         cliente_nome: nome,
         cliente_whatsapp: whatsapp.replace(/\D/g, ""),
         itens: items,
@@ -89,9 +90,11 @@ function CheckoutPage() {
         total: totalFinal,
         status: "pendente",
         forma_pagamento: formaPagamento,
-      }).select().single();
+      });
 
-      if (error) throw error;
+      if (error) {
+        console.warn("Order saved to WhatsApp but failed to reach database:", error);
+      }
 
       // WhatsApp Message
       const paymentLabels = {
@@ -118,8 +121,11 @@ function CheckoutPage() {
       window.open(waUrl, "_blank");
       navigate({ to: "/" });
     } catch (err) {
-      console.error(err);
-      toast.error("Erro ao processar pedido. Tente novamente.", { id: toastId });
+      console.error("Critical error in finalize:", err);
+      // Even on critical error, try to open WhatsApp as a last resort
+      const waUrl = `https://wa.me/5581995811306?text=Erro no checkout, mas quero fazer o pedido.`;
+      window.open(waUrl, "_blank");
+      toast.error("Houve um pequeno problema, mas você foi redirecionado ao WhatsApp.", { id: toastId });
     }
   };
 
@@ -283,7 +289,7 @@ function CheckoutPage() {
                   onClick={() => setFormaPagamento("cartao_online")}
                   icon={<CreditCard className="h-5 w-5" />}
                   label="Link de Pagamento"
-                  sub="Até 12x s/ juros"
+                  sub="Até 12x no cartão"
                 />
                 <PaymentOption 
                   active={formaPagamento === "cartao_entrega"} 
@@ -343,7 +349,7 @@ function CheckoutPage() {
                   <span className="text-lg font-bold text-foreground">Total</span>
                   <div className="text-right">
                     <span className="text-2xl font-black text-primary leading-none block">{formatBRL(totalFinal)}</span>
-                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mt-1 block">em até 12x sem juros</span>
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mt-1 block">em até 12x no cartão</span>
                   </div>
                 </div>
               </div>

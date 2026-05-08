@@ -81,9 +81,7 @@ function KitCard({ kit }: { kit: Kit }) {
                   Mega Promoção
                 </p>
               </div>
-              <p className="hidden sm:block text-[10px] uppercase tracking-widest text-muted-foreground mt-2">
-                ou {p.vezes}x de <strong className="text-foreground font-bold">{formatBRL(p.valor)}</strong>
-              </p>
+
             </div>
             
             <button
