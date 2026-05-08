@@ -8,19 +8,25 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl transition-premium">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center group">
-            <div className="h-9 sm:h-12 overflow-hidden group-hover:scale-105 transition-premium flex items-center">
+            <div className="h-10 sm:h-12 overflow-hidden group-hover:scale-105 transition-premium flex items-center">
               <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain" />
             </div>
           </Link>
-          <div className="h-6 w-px bg-border hidden sm:block" />
-          <div className="h-6 sm:h-8 flex items-center">
-            <img 
-              src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
-              alt="O Boticário" 
-              className="h-full w-auto object-contain brightness-0 opacity-40" 
-            />
+          
+          <div className="h-8 w-px bg-border/60 mx-1" />
+          
+          {/* Partnership Widget */}
+          <div className="flex flex-col justify-center">
+            <div className="h-5 sm:h-7 flex items-center">
+              <img 
+                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                alt="O Boticário" 
+                className="h-full w-auto object-contain brightness-0 opacity-80" 
+              />
+            </div>
+            <p className="text-[6px] sm:text-[7px] font-bold uppercase tracking-[0.1em] text-muted-foreground/60 -mt-0.5">Onde tem amor tem beleza</p>
           </div>
         </div>
 

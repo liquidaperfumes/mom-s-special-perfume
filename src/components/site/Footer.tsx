@@ -10,11 +10,14 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <img src={logoImg} alt="Liquida Perfumes" className="h-10 w-auto object-contain" />
             <div className="h-6 w-px bg-background/20" />
-            <img 
-              src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
-              alt="O Boticário" 
-              className="h-6 w-auto object-contain brightness-0 invert opacity-40" 
-            />
+            <div className="flex flex-col">
+              <img 
+                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                alt="O Boticário" 
+                className="h-6 w-auto object-contain brightness-0 invert opacity-60" 
+              />
+              <p className="text-[6px] font-bold uppercase tracking-[0.1em] text-background/30 -mt-0.5">Onde tem amor tem beleza</p>
+            </div>
           </div>
           <p className="max-w-xs text-sm text-background/60 leading-relaxed font-light">
             Especialistas em fragrâncias que eternizam momentos. Parceria oficial Liquida & O Boticário para este Dia das Mães.

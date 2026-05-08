@@ -31,15 +31,18 @@ export function Hero() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 12, delay: 0.2 }}
-              className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-2 px-4 border border-white/20"
+              className="flex items-center gap-5 bg-white/10 backdrop-blur-md rounded-[1.5rem] p-3 px-5 border border-white/20"
             >
-              <img src={logoImg} alt="Liquida Perfumes" className="h-8 sm:h-10 w-auto object-contain" />
-              <div className="h-6 w-px bg-white/20" />
-              <img 
-                src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo.png" 
-                alt="O Boticário" 
-                className="h-5 sm:h-7 w-auto object-contain brightness-0 invert" 
-              />
+              <img src={logoImg} alt="Liquida Perfumes" className="h-10 sm:h-12 w-auto object-contain" />
+              <div className="h-8 w-px bg-white/20" />
+              <div className="flex flex-col">
+                <img 
+                  src="https://logodownload.org/wp-content/uploads/2017/04/boticario-logo-1.png" 
+                  alt="O Boticário" 
+                  className="h-6 sm:h-8 w-auto object-contain brightness-0 invert" 
+                />
+                <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.1em] text-white/60 -mt-1">Onde tem amor tem beleza</p>
+              </div>
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, y: 10 }}
@@ -47,7 +50,7 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-white/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-md"
             >
-              Parceria Especial 2026
+              Campanha Especial 2026
             </motion.span>
           </div>
 
