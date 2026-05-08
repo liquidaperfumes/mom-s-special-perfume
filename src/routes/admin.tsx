@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
-import { formatBRL } from "@/lib/kits";
+import { formatBRL, KITS } from "@/lib/kits";
 import { 
   Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, 
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
@@ -45,7 +45,7 @@ const STATUS_CONFIG: Record<PedidoStatus, { label: string; bg: string; text: str
 function AdminPage() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"todos" | PedidoStatus>("pendente");
+  const [filter, setFilter] = useState<"todos" | "catalogo" | PedidoStatus>("pendente");
   const [searchTerm, setSearchTerm] = useState("");
   const [session, setSession] = useState<any>(null);
   const [email, setEmail] = useState("");
@@ -309,7 +309,7 @@ function AdminPage() {
           </div>
           
           <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
-            {(["pendente", "vendido", "entregue", "cancelado", "todos"] as const).map((f) => (
+            {(["pendente", "vendido", "entregue", "cancelado", "todos", "catalogo"] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f as any)}
@@ -317,14 +317,16 @@ function AdminPage() {
                   filter === f ? "bg-primary text-white shadow-soft" : "bg-white border border-rose-tea/20 text-muted-foreground hover:border-primary/40"
                 }`}
               >
-                {f === "todos" ? "Ver Todos" : f.charAt(0).toUpperCase() + f.slice(1)}
-                {counts[f] > 0 && <span className={`rounded-full px-2 py-0.5 text-[8px] ${filter === f ? "bg-white/20" : "bg-secondary text-primary"}`}>{counts[f]}</span>}
+                {f === "todos" ? "Ver Todos" : f === "catalogo" ? "📸 Alterar Fotos" : f.charAt(0).toUpperCase() + f.slice(1)}
+                {f !== "catalogo" && counts[f] > 0 && <span className={`rounded-full px-2 py-0.5 text-[8px] ${filter === f ? "bg-white/20" : "bg-secondary text-primary"}`}>{counts[f]}</span>}
               </button>
             ))}
           </div>
         </div>
 
-        {loading && pedidos.length === 0 ? (
+        {filter === "catalogo" ? (
+          <CatalogoGrid />
+        ) : loading && pedidos.length === 0 ? (
           <div className="flex h-96 items-center justify-center">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
@@ -564,6 +566,76 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
             </button>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function CatalogoGrid() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {KITS.filter(k => k.id.startsWith("e")).map(kit => (
+        <CatalogoCard key={kit.id} kit={kit} />
+      ))}
+    </div>
+  );
+}
+
+function CatalogoCard({ kit }: { kit: any }) {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; 
+    if (!file) return;
+    
+    setUploading(true);
+    const fileName = `${kit.id}.jpg`;
+    
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('evidencias')
+        .upload(`produtos/${fileName}`, file, { upsert: true });
+        
+      if (uploadError) throw uploadError;
+      
+      toast.success("Foto do produto atualizada! A loja já está exibindo a nova imagem.");
+      
+      // Force reload to see new image
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (error) { 
+      toast.error("Erro ao subir arquivo da foto do produto."); 
+    } finally { 
+      setUploading(false); 
+    }
+  };
+
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <div className="group flex flex-col rounded-[2rem] border border-rose-tea/10 bg-white p-4 shadow-soft transition-premium hover:-translate-y-1 hover:shadow-premium">
+      <div className="relative aspect-square overflow-hidden rounded-xl bg-secondary/30 mb-4 border border-border">
+        <img 
+          src={imgError ? `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${kit.nome.replace(/\s+/g, '+')}` : kit.imagem} 
+          alt={kit.nome} 
+          onError={() => setImgError(true)}
+          className="h-full w-full object-cover" 
+        />
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">{kit.marca}</p>
+      <h3 className="mt-1 text-sm font-semibold leading-tight text-foreground truncate">{kit.nome}</h3>
+      <p className="text-xs text-muted-foreground/80 font-bold mt-1 mb-4">{formatBRL(kit.preco)}</p>
+      
+      <div className="mt-auto pt-4 border-t border-rose-tea/10">
+        <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
+        <button 
+          disabled={uploading} 
+          onClick={() => fileInputRef.current?.click()} 
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary/10 py-3 text-[10px] font-black uppercase tracking-widest text-primary transition-premium hover:bg-primary/20"
+        >
+          {uploading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+          Alterar Imagem
+        </button>
       </div>
     </div>
   );

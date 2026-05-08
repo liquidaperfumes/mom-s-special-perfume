@@ -21,6 +21,8 @@ function KitCard({ kit }: { kit: Kit }) {
   const hasDiscount = kit.precoOriginal && kit.precoOriginal > kit.preco;
   const discountPercent = hasDiscount ? Math.round(((kit.precoOriginal! - kit.preco) / kit.precoOriginal!) * 100) : 0;
 
+  const [imgError, setImgError] = useState(false);
+
   return (
     <motion.article
       layout
@@ -50,9 +52,10 @@ function KitCard({ kit }: { kit: Kit }) {
 
       <div className="relative aspect-square overflow-hidden bg-secondary/30">
         <img
-          src={kit.imagem}
+          src={imgError ? `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${kit.nome.replace(/\s+/g, '+')}` : kit.imagem}
           alt={kit.nome}
           loading="lazy"
+          onError={() => setImgError(true)}
           className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />

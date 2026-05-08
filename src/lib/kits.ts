@@ -15,13 +15,16 @@ import herCodeBody from "@/assets/kits/her-code-body-splash.jpg";
 import florattaRed from "@/assets/kits/floratta-red.jpg";
 import pessegura from "@/assets/kits/cuide-se-bem-pessegura.jpg";
 
-// Placeholders para as imagens da Eudora - O usuário deve substituir pelas imagens locais depois
-const rosaAbsoluta = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=Rosa+Absoluta";
-const kissmeDelicious = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=Kissme+Delicious";
-const eudoraInstance = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=Eudora+Instance";
-const divaFabulosa = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=Diva+Fabulosa";
-const laVictorie = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=La+Victorie";
-const eudoraRoxo = "https://dummyimage.com/600x600/bf355d/ffffff.png&text=Eudora+Roxo";
+// As imagens agora são puxadas diretamente do banco de dados (bucket evidencias/produtos)
+// O painel Admin tem uma nova aba para fazer o upload dessas fotos.
+const imgUrl = (id: string) => `https://uycsoeqqbayjroetmsai.supabase.co/storage/v1/object/public/evidencias/produtos/${id}.jpg?t=${Date.now()}`;
+
+const rosaAbsoluta = imgUrl("e01");
+const kissmeDelicious = imgUrl("e02");
+const eudoraInstance = imgUrl("e03");
+const divaFabulosa = imgUrl("e04");
+const laVictorie = imgUrl("e05");
+const eudoraRoxo = imgUrl("e06");
 
 
 // Version: 2026.05.08.01.54 - Force Sync
