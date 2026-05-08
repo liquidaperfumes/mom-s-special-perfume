@@ -95,7 +95,7 @@ export function Hero() {
             <Countdown light />
             <div className="h-px w-full bg-white/10" />
             <p className="text-center text-sm font-light leading-relaxed text-white/80">
-              Garanta seu kit agora para receber a tempo de <strong className="font-semibold text-white">presentear com amor.</strong>
+              Garanta seu kit até <strong className="font-semibold text-white">08/05</strong> para receber a tempo do <strong className="font-semibold text-white">Dia das Mães (10/05).</strong>
             </p>
           </div>
         </motion.div>

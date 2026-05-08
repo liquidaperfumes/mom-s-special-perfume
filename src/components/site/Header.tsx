@@ -2,11 +2,23 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingBag, Sparkles } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import logoImg from "@/assets/logo-liquida.png";
+import { motion } from "framer-motion";
 
 export function Header() {
   const { count, setOpen } = useCart();
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl transition-premium">
+      {/* Promo TopBar */}
+      <div className="bg-primary py-2 text-center overflow-hidden">
+        <motion.p 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2"
+        >
+          <span className="animate-pulse">⚡</span> Estoque limitado · Compre até 08/05 e receba antes do Dia das Mães
+        </motion.p>
+      </div>
+
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center group">
