@@ -53,7 +53,7 @@ export function Hero() {
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <a
-              href="#kits"
+              href="/#kits"
               className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-8 py-5 text-sm font-bold uppercase tracking-wider text-rose-deep shadow-premium transition-all hover:scale-[1.03] active:scale-[0.98]"
             >
               <span className="absolute inset-0 bg-rose-tea/10 opacity-0 transition-opacity group-hover:opacity-100" />

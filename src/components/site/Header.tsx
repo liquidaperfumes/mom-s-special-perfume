@@ -58,8 +58,8 @@ export function Header() {
         </div>
 
         <nav className="hidden items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70 md:flex">
-          <a href="#kits" className="hover:text-primary transition-colors">Coleção</a>
-          <a href="#loja" className="hover:text-primary transition-colors">Loja</a>
+          <a href="/#kits" className="hover:text-primary transition-colors">Coleção</a>
+          <a href="/#loja" className="hover:text-primary transition-colors">Loja</a>
         </nav>
 
         <button
