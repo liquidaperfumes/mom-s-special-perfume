@@ -136,8 +136,8 @@ function CheckoutPage() {
       toast.success("Pedido salvo com sucesso!", { id: toastId });
       clear();
       
-      // Pass the message via URL search params to completely avoid sessionStorage DOMExceptions
-      navigate({ to: `/sucesso`, search: { msg: msgEncoded } as any });
+      // Using window.location.href to bypass TanStack Router's strict search param stripping
+      window.location.href = `/sucesso?msg=${msgEncoded}`;
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
@@ -145,7 +145,7 @@ function CheckoutPage() {
       const errorMsg = encodeURIComponent("Olá, tentei fazer um pedido pelo site mas houve um erro técnico. Gostaria de finalizar por aqui!");
       
       toast.error("Houve um pequeno problema ao salvar o pedido.", { id: toastId });
-      navigate({ to: `/sucesso`, search: { msg: errorMsg } as any });
+      window.location.href = `/sucesso?msg=${errorMsg}`;
     }
   };
 
