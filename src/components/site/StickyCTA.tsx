@@ -1,13 +1,7 @@
 import { useCart } from "@/lib/cart";
 import { useNavigate } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
-import { formatBRL } from "@/lib/utils";
-
-const WHATSAPP_CONSULTORA = "5581995811306";
-
-export function StickyCTA() {
-  const { count, total, setOpen } = useCart();
-  const navigate = useNavigate();
+import { formatBRL } from "@/lib/kits";
 
 export function StickyCTA() {
   const { count, total } = useCart();
@@ -32,7 +26,7 @@ export function StickyCTA() {
             <span className="uppercase tracking-widest">Finalizar</span>
           </div>
           <div className="h-4 w-px bg-white/20" />
-          <span className="font-display text-lg tracking-normal">{formatBRL(total)}</span>
+          <span className="text-lg tracking-normal font-bold">{formatBRL(total)}</span>
         </button>
       )}
     </div>

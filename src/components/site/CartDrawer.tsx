@@ -29,7 +29,7 @@ export function CartDrawer() {
           >
             <header className="flex items-center justify-between border-b border-border px-6 py-5">
               <div>
-                <h2 className="flex items-center gap-3 font-display text-2xl tracking-tight">
+                <h2 className="flex items-center gap-3 text-2xl tracking-tight">
                   <ShoppingBag className="h-6 w-6 text-primary" /> 
                   Sua sacola
                 </h2>
@@ -44,7 +44,7 @@ export function CartDrawer() {
                   <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
                     <ShoppingBag className="h-10 w-10 text-muted-foreground opacity-30" />
                   </div>
-                  <h3 className="font-display text-xl mb-2">Sua sacola está vazia</h3>
+                  <h3 className="text-xl mb-2">Sua sacola está vazia</h3>
                   <p className="text-sm text-muted-foreground font-light mb-8 max-w-[200px]">Adicione algum de nossos kits exclusivos para começar.</p>
                   <button onClick={() => setOpen(false)} className="rounded-full bg-primary px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-soft hover:scale-105 transition-premium">Explorar Coleção</button>
                 </div>
@@ -83,14 +83,14 @@ export function CartDrawer() {
               <footer className="space-y-4 border-t border-border bg-background p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Estimado</span>
-                  <span className="font-display text-3xl text-primary">{formatBRL(total)}</span>
+                  <span className="text-3xl text-primary">{formatBRL(total)}</span>
                 </div>
                 
                 <div className="flex flex-col gap-3">
                   <Link
                     to="/checkout"
                     onClick={() => setOpen(false)}
-                    className="w-full rounded-full bg-primary py-4.5 text-xs font-bold uppercase tracking-widest text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow flex items-center justify-center gap-2"
+                    className="w-full rounded-full bg-primary py-[18px] text-xs font-bold uppercase tracking-widest text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow flex items-center justify-center gap-2"
                   >
                     Finalizar pedido →
                   </Link>

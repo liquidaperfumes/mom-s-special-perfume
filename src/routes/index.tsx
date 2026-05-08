@@ -39,7 +39,7 @@ function Landing() {
 
         <section className="bg-gradient-rose py-16 text-center text-primary-foreground">
           <div className="mx-auto max-w-2xl px-4">
-            <h2 className="font-display text-4xl font-medium sm:text-5xl">Faça o Dia das Mães inesquecível.</h2>
+            <h2 className="text-4xl font-medium sm:text-5xl">Faça o Dia das Mães inesquecível.</h2>
             <p className="mx-auto mt-4 max-w-md text-base text-primary-foreground/90">
               Escolha o kit perfeito agora e garanta a entrega antes do domingo mais especial do ano.
             </p>

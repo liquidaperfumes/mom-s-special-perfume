@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Kit } from "./kits";
 
 type Item = { kit: Kit; qtd: number };
@@ -20,16 +20,33 @@ const KEY = "liquida_cart_v1";
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<Item[]>([]);
   const [open, setOpen] = useState(false);
+  // BUG FIX: prevent saving empty cart before hydration from localStorage
+  const hydrated = useRef(false);
 
+  // Hydrate from localStorage once on mount
   useEffect(() => {
     try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(KEY) : null;
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setItems(parsed);
+      }
+    } catch {
+      // Corrupted storage — start fresh
+      localStorage.removeItem(KEY);
+    } finally {
+      hydrated.current = true;
+    }
   }, []);
 
+  // Persist to localStorage only after hydration
   useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {}
+    if (!hydrated.current) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(items));
+    } catch {
+      // Storage full or unavailable — fail silently
+    }
   }, [items]);
 
   const add = (k: Kit) =>
@@ -40,11 +57,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
 
   const remove = (id: string) => setItems((s) => s.filter((i) => i.kit.id !== id));
-  const setQtd = (id: string, q: number) =>
-    setItems((s) => s.map((i) => (i.kit.id === id ? { ...i, qtd: Math.max(1, q) } : i)));
+
+  // BUG FIX: setQtd with qty=0 removes item instead of leaving it at 1
+  const setQtd = (id: string, q: number) => {
+    if (q <= 0) {
+      remove(id);
+      return;
+    }
+    setItems((s) => s.map((i) => (i.kit.id === id ? { ...i, qtd: q } : i)));
+  };
+
   const clear = () => setItems([]);
 
-  const total = items.reduce((acc, i) => acc + i.kit.preco * i.qtd, 0);
+  // BUG FIX: use fixed-point arithmetic to avoid floating-point sum errors (R$0.01 drift)
+  const total = Math.round(items.reduce((acc, i) => acc + i.kit.preco * i.qtd, 0) * 100) / 100;
   const count = items.reduce((acc, i) => acc + i.qtd, 0);
 
   return (

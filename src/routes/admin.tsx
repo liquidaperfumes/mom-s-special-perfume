@@ -48,21 +48,21 @@ function AdminPage() {
     if (!auth) return;
     setLoading(true);
 
-    // Fetch filtered pedidos
-    let query = supabase.from("pedidos").select("*").order("created_at", { ascending: false });
-    if (filter !== "todos") {
-      query = query.eq("status", filter);
-    }
-    const { data, error } = await query;
+    // BUG FIX: run both queries in parallel instead of sequential to halve load time
+    let filteredQuery = supabase.from("pedidos").select("*").order("created_at", { ascending: false });
+    if (filter !== "todos") filteredQuery = filteredQuery.eq("status", filter);
+
+    const [{ data, error }, { data: allData }] = await Promise.all([
+      filteredQuery,
+      supabase.from("pedidos").select("status"),
+    ]);
 
     if (error) {
-      toast.error("Erro ao carregar pedidos");
+      toast.error("Erro ao carregar pedidos. Tente novamente.");
     } else {
       setPedidos(data || []);
     }
 
-    // Fetch counts for badges
-    const { data: allData } = await supabase.from("pedidos").select("status");
     if (allData) {
       const c: Record<string, number> = { todos: allData.length };
       allData.forEach((p: any) => { c[p.status] = (c[p.status] || 0) + 1; });
@@ -87,12 +87,22 @@ function AdminPage() {
   };
 
   const updateStatus = async (id: string, newStatus: PedidoStatus, successMsg: string) => {
+    // BUG FIX: optimistic update — show change immediately, revert on error
+    setPedidos((prev) => prev.map((p) => p.id === id ? { ...p, status: newStatus } : p));
     const { error } = await supabase.from("pedidos").update({ status: newStatus }).eq("id", id);
     if (error) {
-      toast.error("Erro ao atualizar pedido");
+      toast.error("Erro ao atualizar. Recarregando...");
+      fetchPedidos(); // revert by re-fetching
     } else {
       toast.success(successMsg);
-      fetchPedidos();
+      // Refresh counts in background
+      supabase.from("pedidos").select("status").then(({ data }) => {
+        if (data) {
+          const c: Record<string, number> = { todos: data.length };
+          data.forEach((p: any) => { c[p.status] = (c[p.status] || 0) + 1; });
+          setCounts(c);
+        }
+      });
     }
   };
 
@@ -105,7 +115,7 @@ function AdminPage() {
             <div className="mx-auto mb-4 h-14 overflow-hidden">
               <img src={logoImg} alt="Liquida Perfumes" className="h-full w-auto object-contain mx-auto mix-blend-multiply border-none outline-none" />
             </div>
-            <h2 className="font-display text-2xl">Acesso Restrito</h2>
+            <h2 className="text-2xl">Acesso Restrito</h2>
             <p className="text-xs text-muted-foreground mt-2 uppercase tracking-widest font-bold">Painel de Consultoras</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -160,7 +170,7 @@ function AdminPage() {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-10">
         {/* Title + Stats */}
         <div className="mb-6 sm:mb-10">
-          <h2 className="font-display text-3xl sm:text-4xl font-medium">Gestão de Pedidos</h2>
+          <h2 className="text-3xl sm:text-4xl font-medium">Gestão de Pedidos</h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">Gerencie, dê baixa e acompanhe entregas.</p>
         </div>
 
@@ -267,7 +277,7 @@ function PedidoCard({ pedido: p, onUpdate }: { pedido: Pedido; onUpdate: (id: st
         {/* Total */}
         <div className="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-foreground text-background">
           <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em]">Total</span>
-          <span className="font-display text-lg sm:text-xl">{formatBRL(p.total)}</span>
+          <span className="text-lg sm:text-xl">{formatBRL(p.total)}</span>
         </div>
 
         {/* Action Buttons */}
@@ -355,7 +365,7 @@ function StatCard({ icon, label, value, color, bg }: { icon: React.ReactNode; la
         {icon}
       </div>
       <div>
-        <p className="font-display text-xl sm:text-2xl font-bold leading-none">{value}</p>
+        <p className="text-xl sm:text-2xl font-bold leading-none">{value}</p>
         <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">{label}</p>
       </div>
     </div>

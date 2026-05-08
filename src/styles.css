@@ -119,6 +119,12 @@
     color: var(--color-foreground);
     font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    /* Mobile: remove tap highlight on iOS */
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Remove 300ms tap delay on all interactive elements */
+  a, button, [role="button"] {
+    touch-action: manipulation;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
@@ -160,6 +166,15 @@
     background-image:
       radial-gradient(circle at 20% 20%, rgba(247, 173, 175, 0.22) 0%, transparent 35%),
       radial-gradient(circle at 80% 70%, rgba(191, 53, 93, 0.10) 0%, transparent 45%);
+  }
+
+  /* Scrollbar hide — used in CartDrawer, admin filters, checkout */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   /* Badge rosa-chá */

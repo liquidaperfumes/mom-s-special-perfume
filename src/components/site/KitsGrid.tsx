@@ -25,7 +25,7 @@ function KitCard({ kit }: { kit: Kit }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-premium hover:-translate-y-2 hover:shadow-premium"
+      className="group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-[2rem] border border-border bg-card shadow-soft transition-premium hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-premium"
     >
       {kit.badge && (
         <span className={`absolute left-4 top-4 z-10 rounded-full px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] shadow-soft backdrop-blur-md ${
@@ -47,29 +47,29 @@ function KitCard({ kit }: { kit: Kit }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 p-6 sm:p-8">
+      <div className="flex flex-1 flex-col gap-2 sm:gap-4 p-3 sm:p-6 lg:p-8">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-rose-deep/60">{kit.marca}</p>
-          <h3 className="mt-2 text-lg font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">{kit.nome}</h3>
+          <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60">{kit.marca}</p>
+          <h3 className="mt-1 sm:mt-2 text-sm sm:text-base font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">{kit.nome}</h3>
         </div>
-        <p className="text-xs leading-relaxed text-muted-foreground/80 line-clamp-2 font-light">{kit.descricao}</p>
+        <p className="hidden sm:block text-xs leading-relaxed text-muted-foreground/80 line-clamp-2 font-light">{kit.descricao}</p>
 
-        <div className="mt-auto pt-4 border-t border-border/50">
-          <div className="flex items-baseline justify-between">
+        <div className="mt-auto pt-2 sm:pt-4 border-t border-border/50">
+          <div className="flex items-center justify-between gap-1">
             <div>
-              <span className="text-2xl font-bold text-foreground">{formatBRL(kit.preco)}</span>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
-                ou {p.vezes}x de <strong className="text-rose-deep font-bold">{formatBRL(p.valor)}</strong>
+              <span className="text-base sm:text-2xl font-bold text-foreground">{formatBRL(kit.preco)}</span>
+              <p className="hidden sm:block text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                ou {p.vezes}x de <strong className="text-primary font-bold">{formatBRL(p.valor)}</strong>
               </p>
             </div>
             
             <button
               onClick={onAdd}
-              className={`flex h-12 w-12 items-center justify-center rounded-full transition-premium ${
+              className={`flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full transition-premium ${
                 added ? "bg-emerald-500 text-white" : "bg-primary text-white hover:scale-110 active:scale-95 shadow-soft"
               }`}
             >
-              {added ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+              {added ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <Plus className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
           </div>
         </div>
@@ -141,7 +141,7 @@ export function KitsGrid() {
           />
         </div>
 
-        <motion.div layout className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <motion.div layout className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {sorted.map((k) => <KitCard key={k.id} kit={k} />)}
           </AnimatePresence>
