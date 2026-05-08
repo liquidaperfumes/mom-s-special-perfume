@@ -595,7 +595,7 @@ function CatalogoCard({ kit }: { kit: any }) {
     try {
       const { error: uploadError } = await supabase.storage
         .from('evidencias')
-        .upload(`produtos/${fileName}`, file, { upsert: true });
+        .upload(`evidencias/produto_${kit.id}.jpg`, file, { upsert: true, cacheControl: '10' });
         
       if (uploadError) throw uploadError;
       
@@ -603,8 +603,9 @@ function CatalogoCard({ kit }: { kit: any }) {
       
       // Force reload to see new image
       setTimeout(() => window.location.reload(), 1500);
-    } catch (error) { 
-      toast.error("Erro ao subir arquivo da foto do produto."); 
+    } catch (error: any) { 
+      console.error(error);
+      toast.error(`Erro: ${error?.message || "Desconhecido"}`); 
     } finally { 
       setUploading(false); 
     }

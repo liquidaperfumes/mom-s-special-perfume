@@ -15,9 +15,9 @@ import herCodeBody from "@/assets/kits/her-code-body-splash.jpg";
 import florattaRed from "@/assets/kits/floratta-red.jpg";
 import pessegura from "@/assets/kits/cuide-se-bem-pessegura.jpg";
 
-// As imagens agora são puxadas diretamente do banco de dados (bucket evidencias/produtos)
+// As imagens agora são puxadas diretamente do banco de dados (bucket evidencias)
 // O painel Admin tem uma nova aba para fazer o upload dessas fotos.
-const imgUrl = (id: string) => `https://uycsoeqqbayjroetmsai.supabase.co/storage/v1/object/public/evidencias/produtos/${id}.jpg?t=${Date.now()}`;
+const imgUrl = (id: string) => `https://uycsoeqqbayjroetmsai.supabase.co/storage/v1/object/public/evidencias/evidencias/produto_${id}.jpg?t=${Date.now()}`;
 
 const rosaAbsoluta = imgUrl("e01");
 const kissmeDelicious = imgUrl("e02");
