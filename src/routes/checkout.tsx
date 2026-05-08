@@ -144,10 +144,11 @@ function CheckoutPage() {
 
       // 3. CLEANUP AND NAVIGATE
       toast.success("Pedido salvo com sucesso!", { id: toastId });
-      clear();
       
-      // Salvar a mensagem no localStorage para a tela de sucesso ler
+      // Salvar a mensagem no localStorage antes de limpar o carrinho por garantia
       localStorage.setItem('wa_msg', fullMessage);
+      
+      clear();
       
       window.location.href = `/sucesso`;
 

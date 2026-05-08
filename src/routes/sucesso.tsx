@@ -16,24 +16,30 @@ const WHATSAPP_CONSULTORA = "5581995811306";
 const WHATSAPP_DISPLAY = "(81) 99581-1306";
 
 function Sucesso() {
-  const [waUrl, setWaUrl] = useState(`https://wa.me/${WHATSAPP_CONSULTORA}`);
+  const [waUrl, setWaUrl] = useState(() => {
+    // Inicializar com o link completo se a mensagem já estiver no localStorage
+    const msg = typeof window !== 'undefined' ? localStorage.getItem('wa_msg') : null;
+    if (msg) {
+      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msg)}`;
+    }
+    return `https://wa.me/${WHATSAPP_CONSULTORA}`;
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    try {
-      const msg = localStorage.getItem('wa_msg');
-      if (msg) {
-        const fullUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_CONSULTORA}&text=${encodeURIComponent(msg)}`;
-        setWaUrl(fullUrl);
-        
-        // Auto-redirect attempt
-        setTimeout(() => {
-          window.location.href = fullUrl;
-          localStorage.removeItem('wa_msg'); // limpar após usar
-        }, 800);
-      }
-    } catch (e) {
-      console.error("Failed to get msg from localStorage", e);
+    const msg = localStorage.getItem('wa_msg');
+    
+    if (msg) {
+      const fullUrl = `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(msg)}`;
+      setWaUrl(fullUrl);
+      
+      // Auto-redirect attempt com um pequeno delay para garantir o estado
+      const timer = setTimeout(() => {
+        window.location.href = fullUrl;
+        // Não removemos o localStorage aqui para permitir que o usuário clique no botão caso o redirect falhe
+      }, 1000);
+
+      return () => clearTimeout(timer);
     }
   }, []);
 
