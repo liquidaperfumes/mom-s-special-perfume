@@ -212,6 +212,17 @@ function AdminPage() {
     else toast.success("Pedido atualizado com sucesso!");
   };
 
+  const deletePedido = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir este pedido permanentemente? Esta ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("pedidos").delete().eq("id", id);
+    if (error) {
+      toast.error("Erro ao excluir pedido.");
+    } else {
+      toast.success("Pedido excluído com sucesso!");
+      setPedidos((current) => current.filter(p => p.id !== id));
+    }
+  };
+
   const addEvidence = async (id: string, url: string) => {
     const pedido = pedidos.find(p => p.id === id);
     const newEvidencias = [...(pedido?.evidencias || []), url];
@@ -361,7 +372,7 @@ function AdminPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredPedidos.map((p) => (
-              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} onSave={updatePedido} />
+              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} onSave={updatePedido} onDelete={deletePedido} />
             ))}
           </div>
         )}
@@ -392,7 +403,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string
   );
 }
 
-function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void, onSave: (id: string, updates: Partial<Pedido>) => void }) {
+function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave, onDelete }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void, onSave: (id: string, updates: Partial<Pedido>) => void, onDelete: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ nome: p.cliente_nome, whatsapp: p.cliente_whatsapp, bairro: p.endereco?.bairro || "" });
@@ -476,6 +487,13 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pe
               title={isEditing ? "Salvar Alterações" : "Editar Pedido"}
             >
               {isEditing ? <Save className="h-3.5 w-3.5" /> : <Edit2 className="h-3.5 w-3.5" />}
+            </button>
+            <button
+              onClick={() => onDelete(p.id)}
+              className="p-2 rounded-full hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-premium"
+              title="Excluir pedido"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
             </button>
             <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
           </div>
