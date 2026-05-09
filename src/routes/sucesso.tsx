@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { CheckCircle2, MessageCircle, Sparkles } from "lucide-react";
+import { CheckCircle2, MessageCircle, Sparkles, Instagram, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/sucesso")({
@@ -12,24 +12,22 @@ export const Route = createFileRoute("/sucesso")({
   }),
   component: Sucesso,
 });
-
-const WHATSAPP_CONSULTORA = "5581995811306";
-const WHATSAPP_DISPLAY = "(81) 99581-1306";
-
 function Sucesso() {
-  const search = useSearch({ from: "/sucesso" }) as any;
-  const [waUrl] = useState(() => {
-    // 1. Check URL first (highest priority)
-    if (search.msg) {
-      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${search.msg}`;
-    }
-    // 2. Check localStorage
+  const [orderMsg] = useState(() => {
     const localMsg = typeof window !== 'undefined' ? localStorage.getItem('wa_msg') : null;
-    if (localMsg) {
-      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(localMsg)}`;
-    }
-    return `https://wa.me/${WHATSAPP_CONSULTORA}`;
+    return localMsg || "";
   });
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyAndRedirect = () => {
+    if (orderMsg) {
+      navigator.clipboard.writeText(orderMsg);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+    window.open("https://ig.me/m/liquida.perfumes", "_blank");
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -48,24 +46,23 @@ function Sucesso() {
         
         <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Pedido Salvo! 💝</h1>
         
-        <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100/50">
-          <p className="text-sm leading-relaxed text-emerald-800 font-medium">
-            Falta apenas um passo! Para <span className="font-bold underline">garantir seu presente</span>, clique no botão abaixo para nos enviar os dados pelo WhatsApp.
+        <div className="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-100/50">
+          <p className="text-xs leading-relaxed text-amber-800 font-medium">
+            O Instagram não permite enviar o texto automaticamente. <br/>
+            <strong>Clique no botão abaixo:</strong> nós vamos copiar o resumo do pedido e abrir o direct para você colar! 🌸
           </p>
         </div>
 
         <div className="mt-8 space-y-4">
-          <motion.a
-            href={waUrl}
-            target="_blank"
-            rel="noopener"
+          <motion.button
+            onClick={handleCopyAndRedirect}
             initial={{ scale: 1 }}
             animate={{ 
               scale: [1, 1.05, 1],
               boxShadow: [
-                "0 0 0 0px rgba(37, 211, 102, 0.4)",
-                "0 0 0 15px rgba(37, 211, 102, 0)",
-                "0 0 0 0px rgba(37, 211, 102, 0)"
+                "0 0 0 0px rgba(225, 48, 108, 0.4)",
+                "0 0 0 15px rgba(225, 48, 108, 0)",
+                "0 0 0 0px rgba(225, 48, 108, 0)"
               ]
             }}
             transition={{ 
@@ -74,16 +71,16 @@ function Sucesso() {
               ease: "easeInOut"
             }}
             className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all"
-            style={{ background: '#25D366' }}
+            style={{ background: 'linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4)' }}
           >
-            <MessageCircle className="h-6 w-6" /> 
-            Finalizar no WhatsApp
+            {copied ? <Check className="h-6 w-6" /> : <Instagram className="h-6 w-6" />} 
+            {copied ? "Pedido Copiado!" : "Finalizar no Instagram"}
             <Sparkles className="h-4 w-4 text-white/50" />
-          </motion.a>
+          </motion.button>
           
           <div className="flex flex-col items-center gap-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Consultora Oficial</p>
-            <p className="text-xs font-black text-gray-600">{WHATSAPP_DISPLAY}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
+            <p className="text-xs font-black text-gray-600">@liquida.perfumes</p>
           </div>
 
           <div className="pt-6 border-t border-gray-100">

@@ -346,10 +346,10 @@ function CheckoutPage() {
                   className="w-full flex items-center justify-center gap-3 rounded-full bg-primary py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow"
                 >
                   <MessageCircle className="h-5 w-5" />
-                  Finalizar via WhatsApp
+                  Finalizar via Instagram
                 </button>
                 <p className="mt-4 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
-                  Seu pedido será enviado diretamente para uma consultora.
+                  Seu pedido será enviado diretamente para o direct da loja.
                 </p>
               </div>
             </section>

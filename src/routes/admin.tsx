@@ -195,9 +195,9 @@ function AdminPage() {
     
     if (error) {
       console.error("Erro completo do Supabase Auth:", error);
-      toast.error(`Erro no login: ${error.message}`, { 
+      toast.error(`Erro no sistema (500)`, { 
         id: toastId,
-        description: `Status: ${error.status} - Verifique se o usuário existe.`
+        description: "O banco de dados do Supabase retornou um erro interno. Tente excluir e recriar o usuário no dashboard do Supabase."
       });
     } else {
       toast.success("Acesso liberado", { id: toastId });
