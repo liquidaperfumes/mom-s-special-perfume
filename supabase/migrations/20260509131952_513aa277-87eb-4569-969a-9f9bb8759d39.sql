@@ -1,0 +1,1 @@
+CREATE POLICY "Anyone can delete orders" ON public.pedidos FOR DELETE TO anon, authenticated USING (true);
