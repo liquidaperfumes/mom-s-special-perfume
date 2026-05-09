@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { BAIRROS_DISPONIVEIS, calcularFrete, type FreteResult } from "@/lib/frete";
+import { TABELA_FRETE, calcularFrete } from "@/lib/frete";
+
+const BAIRROS_DISPONIVEIS = Object.keys(TABELA_FRETE);
+type FreteResult = { disponivel: boolean; bairro: string; valor: number };
+
+function calcular(bairro: string): FreteResult {
+  const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const match = BAIRROS_DISPONIVEIS.find((k) => normalize(k) === normalize(bairro));
+  if (!match) return { disponivel: false, bairro, valor: 0 };
+  return { disponivel: true, bairro: match, valor: calcularFrete(match) };
+}
 import { formatBRL } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
 import { Truck, MapPin, Store } from "lucide-react";
@@ -15,7 +25,7 @@ export function FreteCalc() {
 
   const escolher = (b: string) => {
     setQ(b);
-    setRes(calcularFrete(b));
+    setRes(calcular(b));
   };
 
   const wa = `https://wa.me/5581995811306?text=${encodeURIComponent(
@@ -57,7 +67,7 @@ export function FreteCalc() {
 
           <div className="mx-auto mt-4 flex max-w-md justify-center">
             <button
-              onClick={() => setRes(calcularFrete(q))}
+              onClick={() => setRes(calcular(q))}
               disabled={!q}
               className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-primary-foreground transition hover:bg-primary-glow disabled:opacity-50"
             >
