@@ -321,6 +321,26 @@ function CheckoutPage() {
               </div>
 
               <div className="mt-10 pt-8 border-t border-rose-tea/10">
+                {erros.length > 0 && (
+                  <div
+                    id="checkout-erros"
+                    role="alert"
+                    className="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 flex items-start gap-3"
+                  >
+                    <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-xs font-black uppercase tracking-widest text-red-700">
+                        Não foi possível finalizar
+                      </p>
+                      <p className="mt-1 text-xs text-red-700 leading-relaxed">
+                        Preencha os campos obrigatórios antes de enviar pelo WhatsApp:
+                      </p>
+                      <ul className="mt-2 list-disc list-inside text-xs text-red-700 font-semibold space-y-0.5">
+                        {erros.map((e) => <li key={e}>{e}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                )}
                 <button 
                   onClick={handleFinalize}
                   className="w-full flex items-center justify-center gap-3 rounded-full bg-primary py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow"
