@@ -25,7 +25,7 @@ export function FreteCalc() {
 
   const escolher = (b: string) => {
     setQ(b);
-    setRes(calcularFrete(b));
+    setRes(calcular(b));
   };
 
   const wa = `https://wa.me/5581995811306?text=${encodeURIComponent(
@@ -67,7 +67,7 @@ export function FreteCalc() {
 
           <div className="mx-auto mt-4 flex max-w-md justify-center">
             <button
-              onClick={() => setRes(calcularFrete(q))}
+              onClick={() => setRes(calcular(q))}
               disabled={!q}
               className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-primary-foreground transition hover:bg-primary-glow disabled:opacity-50"
             >
