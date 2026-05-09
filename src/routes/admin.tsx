@@ -212,6 +212,17 @@ function AdminPage() {
     else toast.success("Pedido atualizado com sucesso!");
   };
 
+  const deletePedido = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir este pedido permanentemente? Esta ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("pedidos").delete().eq("id", id);
+    if (error) {
+      toast.error("Erro ao excluir pedido.");
+    } else {
+      toast.success("Pedido excluído com sucesso!");
+      setPedidos((current) => current.filter(p => p.id !== id));
+    }
+  };
+
   const addEvidence = async (id: string, url: string) => {
     const pedido = pedidos.find(p => p.id === id);
     const newEvidencias = [...(pedido?.evidencias || []), url];
