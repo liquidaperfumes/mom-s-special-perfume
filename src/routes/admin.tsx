@@ -94,11 +94,14 @@ function AdminPage() {
       }
     });
 
+    const totalVendas = delivered.reduce((acc, p) => acc + (p.total || 0), 0);
+
     return {
-      totalVendas: delivered.reduce((acc, p) => acc + (p.total || 0), 0),
+      totalVendas,
       valorPendente: pending.reduce((acc, p) => acc + (p.total || 0), 0),
       totalPedidos: counts.todos || 0,
-      maisPedido: mostOrdered
+      maisPedido: mostOrdered,
+      ticketMedio: delivered.length > 0 ? totalVendas / delivered.length : 0
     };
   }, [pedidos, counts]);
 
@@ -307,7 +310,7 @@ function AdminPage() {
       <main className="mx-auto max-w-7xl px-4 py-8">
         {/* Stats Row */}
         <div className="mb-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard icon={<TrendingUp className="text-emerald-500" />} label="Vendas Entregues" value={formatBRL(stats.totalVendas)} />
+          <StatCard icon={<DollarSign className="text-emerald-500" />} label="Ticket Médio" value={formatBRL(stats.ticketMedio)} />
           <StatCard icon={<Clock className="text-amber-500" />} label="Valor em Aberto" value={formatBRL(stats.valorPendente)} />
           <StatCard icon={<Package className="text-blue-500" />} label="Total Pedidos" value={stats.totalPedidos.toString()} />
           <div className="relative group">
