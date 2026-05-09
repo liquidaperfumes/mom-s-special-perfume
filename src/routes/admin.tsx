@@ -372,7 +372,7 @@ function AdminPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredPedidos.map((p) => (
-              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} onSave={updatePedido} />
+              <PedidoCard key={p.id} pedido={p} onUpdate={updateStatus} onAddEvidence={addEvidence} onSave={updatePedido} onDelete={deletePedido} />
             ))}
           </div>
         )}
