@@ -68,7 +68,7 @@ function AdminPage() {
   }, []);
 
   const stats = useMemo(() => {
-    const delivered = pedidos.filter(p => p.status === "entregue");
+    const vendas = pedidos.filter(p => p.status === "entregue" || p.status === "vendido");
     const pending = pedidos.filter(p => p.status === "pendente" || p.status === "vendido");
     
     // Most ordered product logic
@@ -93,7 +93,7 @@ function AdminPage() {
       }
     });
 
-    const totalVendas = delivered.reduce((acc, p) => acc + (p.total || 0), 0);
+    const totalVendas = vendas.reduce((acc, p) => acc + (p.total || 0), 0);
     
     const counts: Record<string, number> = { todos: pedidos.length };
     pedidos.forEach(p => {
@@ -105,7 +105,7 @@ function AdminPage() {
       valorPendente: pending.reduce((acc, p) => acc + (p.total || 0), 0),
       totalPedidos: counts.todos || 0,
       maisPedido: mostOrdered,
-      ticketMedio: delivered.length > 0 ? totalVendas / delivered.length : 0,
+      ticketMedio: vendas.length > 0 ? totalVendas / vendas.length : 0,
       counts
     };
   }, [pedidos]);
