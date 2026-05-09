@@ -488,6 +488,13 @@ function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave, onDelete }: { 
             >
               {isEditing ? <Save className="h-3.5 w-3.5" /> : <Edit2 className="h-3.5 w-3.5" />}
             </button>
+            <button
+              onClick={() => onDelete(p.id)}
+              className="p-2 rounded-full hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-premium"
+              title="Excluir pedido"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
             <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">#{p.id.slice(0, 5)}</span>
           </div>
           <span className="text-[9px] font-medium text-muted-foreground/70">{dataFormatada}</span>
