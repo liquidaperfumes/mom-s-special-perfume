@@ -94,6 +94,7 @@ function AdminPage() {
     });
 
     const totalVendas = vendas.reduce((acc, p) => acc + (p.total || 0), 0);
+    const valorPendente = pending.reduce((acc, p) => acc + (p.total || 0), 0);
     
     const counts: Record<string, number> = { todos: pedidos.length };
     pedidos.forEach(p => {
@@ -102,10 +103,10 @@ function AdminPage() {
 
     return {
       totalVendas,
-      valorPendente: pending.reduce((acc, p) => acc + (p.total || 0), 0),
+      valorPendente,
       totalPedidos: counts.todos || 0,
       maisPedido: mostOrdered,
-      ticketMedio: vendas.length > 0 ? totalVendas / vendas.length : 0,
+      ticketMedio: pending.length > 0 ? valorPendente / pending.length : 0,
       counts
     };
   }, [pedidos]);
