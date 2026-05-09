@@ -70,15 +70,27 @@ function CheckoutPage() {
   }, [items, step, navigate]);
 
   const handleFinalize = async () => {
-    if (!nome || !whatsapp) {
-      toast.error("Por favor, preencha nome e whatsapp.");
+    const faltando: string[] = [];
+    if (!nome.trim()) faltando.push("Nome completo");
+    if (!whatsapp.trim()) faltando.push("WhatsApp");
+    if (modo === "entrega") {
+      if (!cep.trim()) faltando.push("CEP");
+      if (!bairro.trim()) faltando.push("Bairro");
+      if (!rua.trim()) faltando.push("Rua / Logradouro");
+      if (!numero.trim()) faltando.push("Número");
+    }
+
+    if (faltando.length > 0) {
+      setErros(faltando);
+      toast.error(`Preencha: ${faltando.join(", ")}`, { duration: 6000 });
+      // Scroll to top of form so the error banner is visible
+      setTimeout(() => {
+        document.getElementById("checkout-erros")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
       return;
     }
 
-    if (modo === "entrega" && (!bairro || !rua || !numero)) {
-      toast.error("Por favor, preencha o endereço completo.");
-      return;
-    }
+    setErros([]);
 
     const toastId = toast.loading("Finalizando seu pedido...");
 
