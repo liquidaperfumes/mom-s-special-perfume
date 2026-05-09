@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseUrl } from "@/lib/supabase";
 import { formatBRL, KITS } from "@/lib/kits";
 import { 
   Check, Package, User, Phone, MapPin, RefreshCw, Lock, Truck, 
@@ -194,7 +194,10 @@ function AdminPage() {
     });
     
     if (error) {
-      toast.error("E-mail ou senha incorretos", { id: toastId });
+      toast.error(`Erro no login: ${error.message}`, { 
+        id: toastId,
+        description: "Verifique se o usuário foi criado no Supabase correto."
+      });
     } else {
       toast.success("Acesso liberado", { id: toastId });
     }
@@ -760,7 +763,7 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
         
         if (uploadError) throw uploadError;
         
-        imageUrl = `https://uycsoeqqbayjroetmsai.supabase.co/storage/v1/object/public/evidencias/evidencias/produto_${id}.jpg`;
+        imageUrl = `${supabaseUrl}/storage/v1/object/public/evidencias/evidencias/produto_${id}.jpg`;
       }
 
       // 2. Create product record
