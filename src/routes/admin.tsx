@@ -52,7 +52,6 @@ function AdminPage() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(true);
-  const [counts, setCounts] = useState<Record<string, number>>({});
   const [isSynced, setIsSynced] = useState(false);
 
   useEffect(() => {
@@ -95,56 +94,52 @@ function AdminPage() {
     });
 
     const totalVendas = delivered.reduce((acc, p) => acc + (p.total || 0), 0);
+    
+    const counts: Record<string, number> = { todos: pedidos.length };
+    pedidos.forEach(p => {
+      counts[p.status] = (counts[p.status] || 0) + 1;
+    });
 
     return {
       totalVendas,
       valorPendente: pending.reduce((acc, p) => acc + (p.total || 0), 0),
       totalPedidos: counts.todos || 0,
       maisPedido: mostOrdered,
-      ticketMedio: delivered.length > 0 ? totalVendas / delivered.length : 0
+      ticketMedio: delivered.length > 0 ? totalVendas / delivered.length : 0,
+      counts
     };
-  }, [pedidos, counts]);
+  }, [pedidos]);
 
   const filteredPedidos = useMemo(() => {
-    return pedidos.filter(p => 
-      (p.cliente_nome || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (p.cliente_whatsapp || "").includes(searchTerm) ||
-      (p.id || "").includes(searchTerm)
-    );
-  }, [pedidos, searchTerm]);
+    return pedidos.filter(p => {
+      const search = searchTerm.toLowerCase();
+      const matchesSearch = 
+        (p.cliente_nome || "").toLowerCase().includes(search) ||
+        (p.cliente_whatsapp || "").includes(search) ||
+        (p.id || "").toLowerCase().includes(search);
+      
+      const matchesFilter = filter === "todos" || filter === "catalogo" || p.status === filter;
+      
+      return matchesSearch && matchesFilter;
+    });
+  }, [pedidos, searchTerm, filter]);
 
-  const fetchCounts = async () => {
-    const { data: allData } = await supabase.from("pedidos").select("status");
-    if (allData) {
-      const c: Record<string, number> = { todos: allData.length };
-      allData.forEach((p: any) => { c[p.status] = (c[p.status] || 0) + 1; });
-      setCounts(c);
-    }
-  };
+
 
   const fetchPedidos = async () => {
     if (!session) return;
     setLoading(true);
 
-    let query = supabase.from("pedidos").select("*").order("created_at", { ascending: false });
-    
-    // If searching, ignore status filter to allow global search
-    if (searchTerm) {
-      // Searching by name, whatsapp or ID using DB filters for efficiency
-      query = query.or(`cliente_nome.ilike.%${searchTerm}%,cliente_whatsapp.ilike.%${searchTerm}%,id.ilike.%${searchTerm}%`);
-    } else if (filter !== "todos") {
-      query = query.eq("status", filter);
-    }
-
-    const { data, error } = await query;
+    const { data, error } = await supabase
+      .from("pedidos")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
       toast.error("Erro ao carregar pedidos.");
     } else {
       setPedidos(data || []);
     }
-    
-    await fetchCounts();
     setLoading(false);
   };
 
@@ -163,24 +158,17 @@ function AdminPage() {
             setPedidos((current) => {
               const exists = current.find(p => p.id === newPedido.id);
               if (exists) return current;
-              if (filter === "todos" || filter === newPedido.status) return [newPedido, ...current];
-              return current;
+              return [newPedido, ...current];
             });
             toast.info(`Novo pedido de ${newPedido.cliente_nome}! 💝`, { position: "top-right" });
           } else if (payload.eventType === "UPDATE") {
             const updated = payload.new as Pedido;
             setPedidos((current) => {
-              const exists = current.find(p => p.id === updated.id);
-              if (filter === "todos" || filter === updated.status) {
-                if (exists) return current.map(p => p.id === updated.id ? updated : p);
-                return [updated, ...current].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-              }
-              return current.filter(p => p.id !== updated.id);
+              return current.map(p => p.id === updated.id ? updated : p);
             });
           } else if (payload.eventType === "DELETE") {
             setPedidos((current) => current.filter(p => p.id !== payload.old.id));
           }
-          fetchCounts();
         }
       )
       .subscribe((status) => setIsSynced(status === "SUBSCRIBED"));
@@ -361,7 +349,7 @@ function AdminPage() {
                 }`}
               >
                 {f === "todos" ? "Ver Todos" : f === "catalogo" ? "📸 Alterar Fotos" : f.charAt(0).toUpperCase() + f.slice(1)}
-                {f !== "catalogo" && counts[f] > 0 && <span className={`rounded-full px-2 py-0.5 text-[8px] ${filter === f ? "bg-white/20" : "bg-secondary text-primary"}`}>{counts[f]}</span>}
+                {f !== "catalogo" && stats.counts[f] > 0 && <span className={`rounded-full px-2 py-0.5 text-[8px] ${filter === f ? "bg-white/20" : "bg-secondary text-primary"}`}>{stats.counts[f]}</span>}
               </button>
             ))}
           </div>
