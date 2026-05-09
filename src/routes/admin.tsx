@@ -403,7 +403,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string
   );
 }
 
-function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void, onSave: (id: string, updates: Partial<Pedido>) => void }) {
+function PedidoCard({ pedido: p, onUpdate, onAddEvidence, onSave, onDelete }: { pedido: Pedido; onUpdate: (id: string, s: PedidoStatus) => void, onAddEvidence: (id: string, url: string) => void, onSave: (id: string, updates: Partial<Pedido>) => void, onDelete: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ nome: p.cliente_nome, whatsapp: p.cliente_whatsapp, bairro: p.endereco?.bairro || "" });
