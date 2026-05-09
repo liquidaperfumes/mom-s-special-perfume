@@ -22,6 +22,7 @@ function CheckoutPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [modo, setModo] = useState<"entrega" | "retirada">("entrega");
   const [formaPagamento, setFormaPagamento] = useState<"pix" | "cartao_online" | "cartao_entrega">("pix");
+  const [erros, setErros] = useState<string[]>([]);
   
   useEffect(() => {
     window.scrollTo(0, 0);
