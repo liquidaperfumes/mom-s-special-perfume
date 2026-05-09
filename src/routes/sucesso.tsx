@@ -17,7 +17,13 @@ const WHATSAPP_CONSULTORA = "5581996498351";
 const WHATSAPP_DISPLAY = "(81) 99649-8351";
 
 function Sucesso() {
+  const search = useSearch({ from: "/sucesso" }) as any;
   const [waUrl] = useState(() => {
+    // 1. Check URL first (highest priority)
+    if (search.msg) {
+      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${search.msg}`;
+    }
+    // 2. Check localStorage
     const localMsg = typeof window !== 'undefined' ? localStorage.getItem('wa_msg') : null;
     if (localMsg) {
       return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(localMsg)}`;

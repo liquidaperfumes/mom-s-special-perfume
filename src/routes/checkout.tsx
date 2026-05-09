@@ -137,7 +137,7 @@ function CheckoutPage() {
       // 3. CLEANUP AND NAVIGATE
       toast.success("Pedido salvo com sucesso!", { id: toastId });
       clear();
-      window.location.href = `/sucesso`;
+      window.location.href = `/sucesso?msg=${encodeURIComponent(fullMessage)}`;
 
     } catch (err) {
       console.error("Critical error in finalize:", err);
