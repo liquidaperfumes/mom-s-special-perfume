@@ -194,13 +194,15 @@ function AdminPage() {
     });
     
     if (error) {
+      console.error("Erro completo do Supabase Auth:", error);
       toast.error(`Erro no login: ${error.message}`, { 
         id: toastId,
-        description: "Verifique se o usuário foi criado no Supabase correto."
+        description: `Status: ${error.status} - Verifique se o usuário existe.`
       });
     } else {
       toast.success("Acesso liberado", { id: toastId });
     }
+
   };
 
   const updateStatus = async (id: string, newStatus: PedidoStatus) => {
