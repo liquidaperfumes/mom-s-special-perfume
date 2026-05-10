@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { KITS, formatBRL, parcelas, type Kit } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
 import { Plus, Check, ArrowUpDown, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
@@ -51,7 +52,7 @@ function KitCard({ kit }: { kit: Kit }) {
         </div>
       )}
 
-      <div className="relative aspect-square overflow-hidden bg-secondary/30">
+      <Link to="/produto/$slug" params={{ slug: kit.slug }} className="relative aspect-square overflow-hidden bg-secondary/30">
         <img
           src={imgError ? `https://dummyimage.com/600x600/bf355d/ffffff.png&text=${kit.nome.replace(/\s+/g, '+')}` : kit.imagem}
           alt={kit.nome}
@@ -60,12 +61,14 @@ function KitCard({ kit }: { kit: Kit }) {
           className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-2 sm:gap-4 p-3 sm:p-6 lg:p-8">
         <div>
           <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60">{kit.marca}</p>
-          <h3 className="mt-1 sm:mt-2 text-sm sm:text-base font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">{kit.nome}</h3>
+          <Link to="/produto/$slug" params={{ slug: kit.slug }}>
+            <h3 className="mt-1 sm:mt-2 text-sm sm:text-base font-semibold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">{kit.nome}</h3>
+          </Link>
         </div>
         <p className="hidden sm:block text-xs leading-relaxed text-muted-foreground/80 line-clamp-2 font-light">{kit.descricao}</p>
 
