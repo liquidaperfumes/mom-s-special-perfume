@@ -163,6 +163,26 @@ function CheckoutPage() {
 
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.4fr]">
+          {/* Summary Mobile First */}
+          <aside className="lg:hidden">
+            <div className="rounded-3xl border border-rose-tea/10 bg-white p-6 shadow-soft">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-secondary text-primary">
+                    <ShoppingBag className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-foreground">{items.length} {items.length === 1 ? 'item' : 'itens'} na sacola</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Resumo do Pedido</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-black text-primary">{formatBRL(totalFinal)}</p>
+                </div>
+              </div>
+            </div>
+          </aside>
+
           <div className="space-y-6">
             {/* Step 1: Info */}
             <section className="rounded-[2rem] border border-rose-tea/10 bg-white p-6 shadow-premium sm:p-10">

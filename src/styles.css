@@ -177,6 +177,17 @@
     display: none;
   }
 
+  /* Mobile-first adjustments */
+  @media (max-width: 640px) {
+    .mobile-text-sm { font-size: 0.875rem; }
+    .mobile-text-xs { font-size: 0.75rem; }
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
   /* Badge rosa-chá */
   .badge-tea {
     background-color: #F7ADAF;

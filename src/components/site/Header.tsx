@@ -35,8 +35,7 @@ export function Header() {
           
           <div className="h-8 w-px bg-border/60 mx-1" />
           
-          {/* Partnership Widget */}
-          <div className="flex flex-col justify-center">
+          <div className="hidden lg:flex flex-col justify-center">
             <div className="h-5 sm:h-7 flex items-center gap-3">
               {boticarioError ? (
                 <span className="text-[10px] font-black uppercase text-foreground/80">O Boticário</span>

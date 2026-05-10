@@ -41,8 +41,8 @@ export function Hero() {
             </motion.span>
           </div>
 
-          <h1 className="text-4xl font-bold leading-[1.05] text-balance sm:text-6xl lg:text-7xl tracking-tight">
-            O presente que <br />
+          <h1 className="text-4xl font-bold leading-[1.1] text-balance sm:text-6xl lg:text-7xl tracking-tight">
+            O presente que <br className="sm:hidden" />
             <span className="font-medium italic" style={{ color: '#F7ADAF' }}>eterniza</span> <br />
             o <span className="text-white font-extrabold">sentimento.</span>
           </h1>

@@ -6,9 +6,10 @@ import { KITS, formatBRL, parcelas, type Kit } from "@/lib/kits";
 import { useCart } from "@/lib/cart";
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Plus, ArrowLeft, Share2, ShieldCheck, Truck, RotateCcw, Heart, ShoppingBag } from "lucide-react";
+import { Check, Plus, ArrowLeft, Share2, ShieldCheck, Truck, RotateCcw, Heart, ShoppingBag, Star, Sparkles, Clock, MapPin, Gift, CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { Countdown } from "@/components/site/Countdown";
 
 export const Route = createFileRoute("/produto/$slug")({
   component: ProductDetail,
@@ -202,19 +203,170 @@ function ProductDetail() {
           </div>
         </div>
 
-        {/* Features / Details */}
-        <section className="bg-secondary/20 py-20 mt-12">
-          <div className="mx-auto max-w-7xl px-4 text-center">
-            <Heart className="mx-auto mb-6 h-10 w-10 text-primary animate-pulse" />
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Presenteie com emoção.</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground font-light leading-relaxed">
-              Cada kit da Líquida Perfumes é selecionado para transmitir carinho e sofisticação. Garantimos a originalidade e a qualidade que sua mãe merece.
+        {/* Scarcity / Urgency */}
+        <section className="bg-primary/5 py-10 border-y border-primary/10">
+          <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col text-center md:text-left">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2">Oferta por tempo limitado</span>
+              <h2 className="text-2xl font-bold text-foreground">Campanha Especial de Dia das Mães</h2>
+              <p className="text-sm text-muted-foreground mt-2">Garanta seu presente antes que o estoque acabe!</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">A oferta encerra em:</p>
+              <Countdown />
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Icons Grid */}
+        <section className="py-20 bg-white">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <BenefitItem 
+                icon={<Sparkles className="h-6 w-6" />} 
+                title="Fragrância Premium" 
+                desc="Notas selecionadas para uma experiência única."
+              />
+              <BenefitItem 
+                icon={<Clock className="h-6 w-6" />} 
+                title="Alta Fixação" 
+                desc="Perfume que acompanha o ritmo do dia dela."
+              />
+              <BenefitItem 
+                icon={<Gift className="h-6 w-6" />} 
+                title="Embalagem de Luxo" 
+                desc="Pronto para presentear com sofisticação."
+              />
+              <BenefitItem 
+                icon={<CreditCard className="h-6 w-6" />} 
+                title="Parcelamento" 
+                desc="Em até 12x sem juros no cartão."
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Emotional Section with Large Image/Background */}
+        <section className="relative h-[600px] flex items-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&q=80&w=2000" 
+              alt="Mãe e filha" 
+              className="h-full w-full object-cover brightness-[0.4]"
+            />
+          </div>
+          <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Heart className="mx-auto mb-6 h-12 w-12 text-primary" />
+              <h2 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">Sua mãe merece o melhor.</h2>
+              <p className="text-xl font-light leading-relaxed opacity-90">
+                O perfume é uma das memórias mais fortes que guardamos. Presentear com uma fragrância da Líquida Perfumes é eternizar um momento de carinho e gratidão.
+              </p>
+              <button 
+                onClick={onAdd}
+                className="mt-10 rounded-full bg-primary px-10 py-5 text-sm font-bold uppercase tracking-widest text-white shadow-premium transition hover:scale-105 active:scale-95"
+              >
+                Garantir este presente
+              </button>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Testimonials / Social Proof */}
+        <section className="py-24 bg-[#FDFBFB]">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="text-center mb-16">
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-4 block">Depoimentos</span>
+              <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Quem já comprou, amou!</h2>
+            </div>
+            
+            <div className="grid gap-8 md:grid-cols-3">
+              <TestimonialCard 
+                name="Carla Mendes" 
+                content="Comprei o kit para minha mãe e ela ficou encantada! A entrega foi super rápida em Olinda e o perfume é maravilhoso."
+              />
+              <TestimonialCard 
+                name="Rodrigo Silva" 
+                content="Excelente atendimento. O kit vem muito bem embalado, perfeito para presente. Minha esposa adorou a surpresa."
+              />
+              <TestimonialCard 
+                name="Juliana Costa" 
+                content="Qualidade impecável e preço justo. É difícil encontrar kits tão completos assim. Recomendo muito!"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Shipping info */}
+        <section className="py-20 bg-white border-t border-rose-tea/10">
+          <div className="mx-auto max-w-4xl px-4 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-2 text-[10px] font-black uppercase tracking-widest text-primary mb-6">
+              <MapPin className="h-3 w-3" /> Frete Grátis para Olinda e Recife*
+            </div>
+            <h2 className="text-3xl font-bold text-foreground">Receba hoje mesmo.</h2>
+            <p className="mt-4 text-muted-foreground leading-relaxed">
+              Realizamos entregas expressas via motoboy para que seu presente chegue a tempo. Consulte as condições para sua região no checkout.
             </p>
           </div>
         </section>
+
+        {/* Sticky Mobile CTA */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 lg:hidden pointer-events-none">
+          <motion.div 
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            className="pointer-events-auto flex items-center justify-between gap-4 rounded-3xl bg-white/80 p-4 shadow-elegant backdrop-blur-xl border border-white/20"
+          >
+            <div className="flex flex-col">
+              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Valor do Kit</span>
+              <span className="text-lg font-bold text-primary">{formatBRL(kit.preco)}</span>
+            </div>
+            <button 
+              onClick={onAdd}
+              className="flex-1 rounded-2xl bg-primary py-4 text-[10px] font-black uppercase tracking-widest text-white shadow-soft active:scale-95 transition-transform"
+            >
+              Comprar Agora
+            </button>
+          </motion.div>
+        </div>
       </main>
 
       <Footer />
+    </div>
+  );
+}
+
+function BenefitItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="flex flex-col items-center text-center group">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/5 text-primary transition-premium group-hover:bg-primary group-hover:text-white group-hover:rotate-6">
+        {icon}
+      </div>
+      <h3 className="text-sm font-bold text-foreground mb-2">{title}</h3>
+      <p className="text-xs text-muted-foreground/80 leading-relaxed max-w-[200px]">{desc}</p>
+    </div>
+  );
+}
+
+function TestimonialCard({ name, content }: { name: string, content: string }) {
+  return (
+    <div className="rounded-[2rem] bg-white p-8 shadow-soft border border-rose-tea/5 flex flex-col gap-4">
+      <div className="flex gap-1">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
+        ))}
+      </div>
+      <p className="text-sm text-muted-foreground italic font-light leading-relaxed">"{content}"</p>
+      <div className="flex items-center gap-3 mt-2">
+        <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold text-primary">
+          {name.charAt(0)}
+        </div>
+        <span className="text-xs font-bold text-foreground">{name}</span>
+      </div>
     </div>
   );
 }
