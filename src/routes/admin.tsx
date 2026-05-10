@@ -882,7 +882,7 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
       }
 
       // 2. Create product record
-      const { error } = await supabase.from('produtos').insert({
+      const payload: any = {
         id,
         slug,
         nome: form.nome,
@@ -892,11 +892,28 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
         badge: form.badge,
         imagem: imageUrl,
         ativo: true
-      });
+      };
 
-      if (error) throw error;
+      if (form.precoOriginal) {
+        payload.precoOriginal = parseFloat(form.precoOriginal);
+      }
+
+      const { error } = await supabase.from('produtos').insert(payload);
+
+      if (error) {
+        // Fallback se a coluna precoOriginal não existir
+        if (error.message?.includes('precoOriginal')) {
+          delete payload.precoOriginal;
+          const { error: retryError } = await supabase.from('produtos').insert(payload);
+          if (retryError) throw retryError;
+          toast.warning("Produto criado sem Preço Original (coluna ausente no banco).");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Produto criado com sucesso!");
+      }
       
-      toast.success("Produto criado com sucesso!");
       onSuccess();
     } catch (err: any) {
       console.error("Erro detalhado:", err);

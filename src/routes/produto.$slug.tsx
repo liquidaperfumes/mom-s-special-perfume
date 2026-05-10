@@ -240,22 +240,23 @@ function ProductDetail() {
               <BenefitItem 
                 icon={<CreditCard className="h-6 w-6" />} 
                 title="Parcelamento" 
-                desc="Em até 12x sem juros no cartão."
+                desc="Em até 12x no cartão de crédito."
               />
             </div>
           </div>
         </section>
 
         {/* Emotional Section with Large Image/Background */}
-        <section className="relative h-[600px] flex items-center overflow-hidden">
+        <section className="relative min-h-[600px] flex items-center overflow-hidden bg-rose-deep">
           <div className="absolute inset-0 z-0">
             <img 
               src="https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&q=80&w=2000" 
               alt="Mãe e filha" 
-              className="h-full w-full object-cover brightness-[0.4]"
+              className="h-full w-full object-cover brightness-[0.3]"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-rose-deep/80 via-transparent to-rose-deep/40" />
           </div>
-          <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
+          <div className="relative z-10 mx-auto max-w-4xl px-4 py-20 text-center text-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
