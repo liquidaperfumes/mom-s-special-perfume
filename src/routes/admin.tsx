@@ -7,7 +7,7 @@ import {
   ShoppingBag, MessageCircle, X, ChevronDown, Instagram, 
   Camera, FileText, Image as ImageIcon, ExternalLink, Paperclip, Clock,
   Wifi, WifiOff, AlertCircle, Search, Copy, DollarSign, TrendingUp, Filter,
-  Edit2, Save, Undo, Sparkles, Eye, EyeOff, Plus, Trash2
+  Edit2, Save, Undo, Sparkles, Eye, EyeOff, Plus, Trash2, Calendar
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
