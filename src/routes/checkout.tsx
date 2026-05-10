@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { 
   ArrowLeft, ShoppingBag, Truck, Store, MapPin, 
   MessageCircle, ShieldCheck, AlertCircle, Check,
-  ChevronRight, CreditCard, Wallet
+  ChevronRight, CreditCard, Wallet, Instagram
 } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/kits";
@@ -353,7 +353,7 @@ function CheckoutPage() {
                         Não foi possível finalizar
                       </p>
                       <p className="mt-1 text-xs text-red-700 leading-relaxed">
-                        Preencha os campos obrigatórios antes de enviar pelo WhatsApp:
+                        Preencha os campos obrigatórios para continuar:
                       </p>
                       <ul className="mt-2 list-disc list-inside text-xs text-red-700 font-semibold space-y-0.5">
                         {erros.map((e) => <li key={e}>{e}</li>)}
@@ -365,8 +365,8 @@ function CheckoutPage() {
                   onClick={handleFinalize}
                   className="w-full flex items-center justify-center gap-3 rounded-full bg-primary py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-soft transition-premium hover:scale-[1.02] active:scale-[0.98] hover:bg-primary-glow"
                 >
-                  <MessageCircle className="h-5 w-5" />
-                  Finalizar via WhatsApp
+                  <Instagram className="h-5 w-5" />
+                  Finalizar no Instagram
                 </button>
                 <p className="mt-4 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
                   Seu pedido será enviado diretamente para uma consultora.
