@@ -118,8 +118,9 @@ function AdminPage() {
     const totalVendas = vendas.reduce((acc, p) => acc + (p.total || 0), 0);
     const valorPendente = pending.reduce((acc, p) => acc + (p.total || 0), 0);
     
-    const counts: Record<string, number> = { todos: pedidos.length };
-    pedidos.forEach(p => {
+    // Calcula contagens baseadas APENAS no filtro de data selecionado
+    const counts: Record<string, number> = { todos: filteredByDate.length };
+    filteredByDate.forEach(p => {
       counts[p.status] = (counts[p.status] || 0) + 1;
     });
 
