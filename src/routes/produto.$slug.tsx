@@ -46,8 +46,16 @@ function ProductDetail() {
   }, [slug]);
 
   const kit = useMemo(() => {
-    if (dbProduct) return dbProduct;
-    return KITS.find(k => k.slug === slug);
+    const codeKit = KITS.find(k => k.slug === slug);
+    if (dbProduct) {
+      return {
+        ...codeKit,
+        ...dbProduct,
+        // Mantém o preço original do código se o do banco for nulo/ausente
+        precoOriginal: dbProduct.precoOriginal || codeKit?.precoOriginal
+      } as Kit;
+    }
+    return codeKit;
   }, [dbProduct, slug]);
 
   const onAdd = () => {

@@ -151,12 +151,26 @@ export function KitsGrid() {
   }, []);
 
   const sorted = useMemo(() => {
-    // Se o produto existe no banco de dados, ele sobrescreve a versão fixa do KITS
-    const dbProductIds = new Set(dbProducts.map(p => p.id));
-    const uniqueKits = KITS.filter(k => !dbProductIds.has(k.id));
+    // Mescla dados do banco com dados fixos, priorizando o banco mas mantendo o precoOriginal do código se o banco não tiver
+    const all = KITS.map(k => {
+      const dbMatch = dbProducts.find(p => p.id === k.id);
+      if (dbMatch) {
+        return {
+          ...k,
+          ...dbMatch,
+          // Mantém o preço original do código se o do banco for nulo/ausente
+          precoOriginal: dbMatch.precoOriginal || k.precoOriginal
+        };
+      }
+      return k;
+    });
+
+    // Adiciona produtos que existem APENAS no banco
+    const kitIds = new Set(KITS.map(k => k.id));
+    const onlyInDb = dbProducts.filter(p => !kitIds.has(p.id));
     
-    const all = [...dbProducts, ...uniqueKits];
-    const list = all.filter(k => !hiddenIds.includes(k.id));
+    const combined = [...all, ...onlyInDb];
+    const list = combined.filter(k => !hiddenIds.includes(k.id));
     
     if (sort === "menor") list.sort((a, b) => a.preco - b.preco);
     if (sort === "maior") list.sort((a, b) => b.preco - a.preco);
