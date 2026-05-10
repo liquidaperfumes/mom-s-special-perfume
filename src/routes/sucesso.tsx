@@ -14,7 +14,7 @@ export const Route = createFileRoute("/sucesso")({
   component: Sucesso,
 });
 
-const INSTAGRAM_URL = "https://www.instagram.com/liquida.perfumes/";
+const INSTAGRAM_DIRECT_URL = "https://ig.me/m/liquida.perfumes";
 
 function Sucesso() {
   const search = useSearch({ from: "/sucesso" }) as any;
@@ -65,7 +65,7 @@ function Sucesso() {
           </button>
 
           <motion.a
-            href={INSTAGRAM_URL}
+            href={INSTAGRAM_DIRECT_URL}
             target="_blank"
             rel="noopener"
             initial={{ scale: 1 }}
