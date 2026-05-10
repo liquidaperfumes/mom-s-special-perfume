@@ -14,7 +14,7 @@ export const Route = createFileRoute("/sucesso")({
   component: Sucesso,
 });
 
-const INSTAGRAM_DIRECT_URL = "https://ig.me/m/liquida.perfumes";
+const INSTAGRAM_URL = "https://www.instagram.com/liquida.perfumes/";
 
 function Sucesso() {
   const search = useSearch({ from: "/sucesso" }) as any;
@@ -55,7 +55,7 @@ function Sucesso() {
 
         <div className="mt-8 space-y-4">
           <motion.a
-            href={INSTAGRAM_DIRECT_URL}
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener"
             onClick={handleCopy}
@@ -72,13 +72,18 @@ function Sucesso() {
             style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
           >
             <Instagram className="h-6 w-6" /> 
-            Finalizar no Instagram
+            Ir para o Direct
             <Sparkles className="h-4 w-4 text-white/50" />
           </motion.a>
 
-          <p className="text-[10px] text-muted-foreground leading-relaxed px-4">
-            Ao clicar, o resumo do pedido será <span className="font-bold text-primary">copiado automaticamente</span>. Basta colar na mensagem para a loja.
-          </p>
+          <div className="bg-amber-50 border border-amber-100 p-4 rounded-2xl text-left">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-800 mb-2">Atenção ao passo final:</p>
+            <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
+              1. O resumo foi <span className="font-bold underline text-primary">copiado automaticamente</span>.<br />
+              2. No Instagram, clique em <span className="font-bold">"Mensagem"</span>.<br />
+              3. <span className="font-bold">Cole o texto</span> e envie para confirmar!
+            </p>
+          </div>
           
           <div className="flex flex-col items-center gap-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
