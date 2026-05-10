@@ -255,16 +255,7 @@ function ProductDetail() {
         </section>
 
         {/* Emotional Section with Large Image/Background */}
-        <section className="relative min-h-[500px] sm:min-h-[600px] flex items-center overflow-hidden bg-rose-deep">
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&q=80&w=2000" 
-              alt="" 
-              className="h-full w-full object-cover brightness-[0.3]"
-              onError={(e) => e.currentTarget.style.opacity = '0'}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-rose-deep/80 via-transparent to-rose-deep/40" />
-          </div>
+        <section className="relative min-h-[400px] sm:min-h-[500px] flex items-center overflow-hidden bg-rose-deep">
           <div className="relative z-10 mx-auto max-w-4xl px-4 py-16 sm:py-20 text-center text-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
