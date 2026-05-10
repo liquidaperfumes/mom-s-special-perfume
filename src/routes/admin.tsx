@@ -765,7 +765,6 @@ function CatalogoGrid() {
           marca: kit.marca,
           descricao: kit.descricao,
           preco: newPrice,
-          precoOriginal: kit.precoOriginal || null,
           badge: kit.badge || null,
           imagem: kit.imagem,
           ativo: true
@@ -876,7 +875,6 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
         marca: form.marca,
         descricao: form.descricao,
         preco: parseFloat(form.preco),
-        precoOriginal: form.precoOriginal ? parseFloat(form.precoOriginal) : null,
         badge: form.badge,
         imagem: imageUrl,
         ativo: true
