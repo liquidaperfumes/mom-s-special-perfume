@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { CheckCircle2, MessageCircle, Sparkles } from "lucide-react";
+import { CheckCircle2, Instagram, Copy, Check, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/sucesso")({
   head: () => ({
@@ -13,23 +14,21 @@ export const Route = createFileRoute("/sucesso")({
   component: Sucesso,
 });
 
-const WHATSAPP_CONSULTORA = "5581995100851";
-const WHATSAPP_DISPLAY = "(81) 99510-0851";
+const INSTAGRAM_URL = "https://www.instagram.com/liquida.perfumes/";
 
 function Sucesso() {
   const search = useSearch({ from: "/sucesso" }) as any;
-  const [waUrl] = useState(() => {
-    // 1. Check URL first (highest priority)
-    if (search.msg) {
-      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${search.msg}`;
-    }
-    // 2. Check localStorage
-    const localMsg = typeof window !== 'undefined' ? localStorage.getItem('wa_msg') : null;
-    if (localMsg) {
-      return `https://wa.me/${WHATSAPP_CONSULTORA}?text=${encodeURIComponent(localMsg)}`;
-    }
-    return `https://wa.me/${WHATSAPP_CONSULTORA}`;
-  });
+  const [copied, setCopied] = useState(false);
+  
+  const orderMsg = decodeURIComponent(search.msg || localStorage.getItem('wa_msg') || "");
+
+  const handleCopy = () => {
+    if (!orderMsg) return;
+    navigator.clipboard.writeText(orderMsg);
+    setCopied(true);
+    toast.success("Resumo do pedido copiado!");
+    setTimeout(() => setCopied(false), 3000);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -46,27 +45,32 @@ function Sucesso() {
           <CheckCircle2 className="h-10 w-10 text-white" />
         </div>
         
-        <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Pedido Salvo! 💝</h1>
+        <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Quase lá! 💝</h1>
         
-        <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100/50">
-          <p className="text-sm leading-relaxed text-emerald-800 font-medium">
-            Falta apenas um passo! Para <span className="font-bold underline">garantir seu presente</span>, clique no botão abaixo para nos enviar os dados pelo WhatsApp.
+        <div className="mt-6 p-5 rounded-2xl bg-primary/5 border border-primary/10">
+          <p className="text-sm leading-relaxed text-foreground/80">
+            Seu pedido foi registrado. Agora, <span className="font-bold">copie o resumo abaixo</span> e envie no nosso <span className="font-bold">Direct do Instagram</span> para finalizar!
           </p>
         </div>
 
         <div className="mt-8 space-y-4">
+          <button
+            onClick={handleCopy}
+            className={`flex items-center justify-center gap-3 w-full rounded-full py-5 text-sm font-black uppercase tracking-wider transition-all shadow-soft active:scale-95 ${
+              copied ? "bg-emerald-500 text-white" : "bg-secondary text-primary hover:bg-rose-tea/10"
+            }`}
+          >
+            {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
+            {copied ? "Resumo Copiado!" : "1. Copiar Resumo"}
+          </button>
+
           <motion.a
-            href={waUrl}
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener"
             initial={{ scale: 1 }}
             animate={{ 
-              scale: [1, 1.05, 1],
-              boxShadow: [
-                "0 0 0 0px rgba(37, 211, 102, 0.4)",
-                "0 0 0 15px rgba(37, 211, 102, 0)",
-                "0 0 0 0px rgba(37, 211, 102, 0)"
-              ]
+              scale: [1, 1.02, 1],
             }}
             transition={{ 
               duration: 2, 
@@ -74,16 +78,16 @@ function Sucesso() {
               ease: "easeInOut"
             }}
             className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all"
-            style={{ background: '#25D366' }}
+            style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
           >
-            <MessageCircle className="h-6 w-6" /> 
-            Finalizar no WhatsApp
+            <Instagram className="h-6 w-6" /> 
+            2. Enviar no Direct
             <Sparkles className="h-4 w-4 text-white/50" />
           </motion.a>
           
           <div className="flex flex-col items-center gap-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Consultora Oficial</p>
-            <p className="text-xs font-black text-gray-600">{WHATSAPP_DISPLAY}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
+            <p className="text-xs font-black text-gray-600">@liquida.perfumes</p>
           </div>
 
           <div className="pt-6 border-t border-gray-100">
