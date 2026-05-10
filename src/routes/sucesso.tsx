@@ -63,48 +63,70 @@ function Sucesso() {
         
         <h1 className="mt-8 text-3xl font-bold tracking-tight text-primary">Pedido Registrado! 💝</h1>
         
-        <div className="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3 text-left">
-          <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
-            O Instagram não permite o envio automático. Você precisará <span className="font-bold underline">COLAR</span> o resumo do pedido no chat da loja para finalizar sua compra.
-          </p>
+        <div className="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-100 text-left">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-amber-800 leading-relaxed font-bold uppercase tracking-tight">
+              Atenção: Você precisa seguir os 2 passos abaixo!
+            </p>
+          </div>
         </div>
 
-        <div className="mt-8 space-y-6">
-          <div className="text-left">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-3 ml-2">Resumo do seu Pedido:</p>
+        <div className="mt-8 space-y-8">
+          {/* Passo 1 */}
+          <div className="text-left space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-white">1</div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Copie o Resumo do Pedido:</p>
+            </div>
+            
             <div className="relative rounded-3xl bg-secondary/20 p-5 border border-rose-tea/10">
-              <div className="max-h-[200px] overflow-y-auto pr-2 text-[11px] font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed scrollbar-hide">
+              <div className="max-h-[150px] overflow-y-auto pr-2 text-[11px] font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed scrollbar-hide">
                 {orderMsg || "Carregando resumo..."}
               </div>
               <button 
                 onClick={handleCopy}
-                className="absolute right-4 bottom-4 flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-[10px] font-bold shadow-soft transition hover:scale-105 active:scale-95"
+                className={`mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-xs font-black uppercase tracking-widest transition-all shadow-soft active:scale-95 ${
+                  copied ? "bg-emerald-500 text-white" : "bg-white text-primary border border-primary/10 hover:bg-primary/5"
+                }`}
               >
-                {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3 text-primary" />}
-                {copied ? "Copiado!" : "Copiar Texto"}
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Resumo Copiado!" : "Clique para Copiar Resumo"}
               </button>
             </div>
           </div>
 
-          <div className="space-y-4 pt-4">
-            <motion.a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener"
-              onClick={handleCopy}
-              className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
-            >
-              <Instagram className="h-6 w-6" /> 
-              Finalizar no Instagram
-              <Sparkles className="h-4 w-4 text-white/50" />
-            </motion.a>
+          {/* Passo 2 */}
+          <AnimatePresence>
+            {copied && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-4 pt-2"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-white">2</div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-left">Agora envie no Instagram:</p>
+                </div>
 
-            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
-              Ao clicar, o texto será copiado e o Instagram abrirá.
-            </p>
-          </div>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener"
+                  className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
+                >
+                  <Instagram className="h-6 w-6" /> 
+                  Finalizar no Instagram
+                  <Sparkles className="h-4 w-4 text-white/50" />
+                </a>
+
+                <p className="text-[10px] font-bold text-primary uppercase tracking-[0.15em] animate-pulse">
+                  Não esqueça de COLAR a mensagem no chat!
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="pt-8 border-t border-gray-100">
             <Link
