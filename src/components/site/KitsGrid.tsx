@@ -148,8 +148,13 @@ export function KitsGrid() {
   }, []);
 
   const sorted = useMemo(() => {
-    const all = [...dbProducts, ...KITS];
+    // Se o produto existe no banco de dados, ele sobrescreve a versão fixa do KITS
+    const dbProductIds = new Set(dbProducts.map(p => p.id));
+    const uniqueKits = KITS.filter(k => !dbProductIds.has(k.id));
+    
+    const all = [...dbProducts, ...uniqueKits];
     const list = all.filter(k => !hiddenIds.includes(k.id));
+    
     if (sort === "menor") list.sort((a, b) => a.preco - b.preco);
     if (sort === "maior") list.sort((a, b) => b.preco - a.preco);
     return list;

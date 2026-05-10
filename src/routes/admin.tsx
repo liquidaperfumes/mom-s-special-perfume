@@ -53,6 +53,11 @@ function AdminPage() {
   const [pass, setPass] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [isSynced, setIsSynced] = useState(false);
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+    end: new Date(new Date().setHours(23, 59, 59, 999)).toISOString()
+  });
+  const [useDateFilter, setUseDateFilter] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -68,12 +73,16 @@ function AdminPage() {
   }, []);
 
   const stats = useMemo(() => {
-    const vendas = pedidos.filter(p => p.status === "entregue" || p.status === "vendido");
-    const pending = pedidos.filter(p => p.status === "pendente" || p.status === "vendido");
+    const filteredByDate = useDateFilter 
+      ? pedidos.filter(p => p.created_at >= dateRange.start && p.created_at <= dateRange.end)
+      : pedidos;
+
+    const vendas = filteredByDate.filter(p => p.status === "entregue" || p.status === "vendido");
+    const pending = filteredByDate.filter(p => p.status === "pendente" || p.status === "vendido");
     
     // Most ordered product logic
     const productCounts: Record<string, number> = {};
-    pedidos.forEach(p => {
+    filteredByDate.forEach(p => {
       if (p.status !== "cancelado" && Array.isArray(p.itens)) {
         p.itens.forEach((it: any) => {
           const name = it?.kit?.nome;
@@ -109,7 +118,7 @@ function AdminPage() {
       ticketMedio: pending.length > 0 ? valorPendente / pending.length : 0,
       counts
     };
-  }, [pedidos]);
+  }, [pedidos, dateRange, useDateFilter]);
 
   const filteredPedidos = useMemo(() => {
     return pedidos.filter(p => {
@@ -121,9 +130,11 @@ function AdminPage() {
       
       const matchesFilter = filter === "todos" || filter === "catalogo" || p.status === filter;
       
-      return matchesSearch && matchesFilter;
+      const matchesDate = !useDateFilter || (p.created_at >= dateRange.start && p.created_at <= dateRange.end);
+      
+      return matchesSearch && matchesFilter && matchesDate;
     });
-  }, [pedidos, searchTerm, filter]);
+  }, [pedidos, searchTerm, filter, dateRange, useDateFilter]);
 
 
 
@@ -312,7 +323,78 @@ function AdminPage() {
               <p className="text-sm font-bold text-primary truncate" title={stats.maisPedido}>{stats.maisPedido}</p>
             </div>
           </div>
+        </div>
 
+        {/* Date Filter */}
+        <div className="mb-8 flex flex-col sm:flex-row items-center gap-4 p-6 rounded-[2rem] border border-rose-tea/10 bg-white shadow-soft">
+          <div className="flex items-center gap-2 mr-auto">
+            <Filter className="h-4 w-4 text-primary" />
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar por Data</p>
+          </div>
+          
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex-1 sm:flex-initial">
+              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Início</p>
+              <input 
+                type="datetime-local" 
+                value={dateRange.start.slice(0, 16)} 
+                onChange={(e) => setDateRange(prev => ({ ...prev, start: new Date(e.target.value).toISOString() }))}
+                className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+            <div className="flex-1 sm:flex-initial">
+              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Fim</p>
+              <input 
+                type="datetime-local" 
+                value={dateRange.end.slice(0, 16)} 
+                onChange={(e) => setDateRange(prev => ({ ...prev, end: new Date(e.target.value).toISOString() }))}
+                className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+            <button 
+              onClick={() => setUseDateFilter(!useDateFilter)}
+              className={`mt-4 sm:mt-0 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-premium ${useDateFilter ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground hover:bg-rose-tea/10'}`}
+            >
+              {useDateFilter ? "Filtro Ativo" : "Ativar Filtro"}
+            </button>
+          </div>
+          
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                const now = new Date();
+                setDateRange({
+                  start: new Date(now.setHours(0, 0, 0, 0)).toISOString(),
+                  end: new Date(now.setHours(23, 59, 59, 999)).toISOString()
+                });
+                setUseDateFilter(true);
+              }}
+              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+            >
+              Hoje
+            </button>
+            <button 
+              onClick={() => {
+                const now = new Date();
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                setDateRange({
+                  start: new Date(yesterday.setHours(0, 0, 0, 0)).toISOString(),
+                  end: new Date(yesterday.setHours(23, 59, 59, 999)).toISOString()
+                });
+                setUseDateFilter(true);
+              }}
+              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+            >
+              Ontem
+            </button>
+            <button 
+              onClick={() => setUseDateFilter(false)}
+              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+            >
+              Tudo
+            </button>
+          </div>
         </div>
 
         <div className="mb-8 flex flex-col gap-6">
@@ -321,12 +403,6 @@ function AdminPage() {
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">Gestão de Pedidos 🌸</h1>
                 <p className="text-sm text-muted-foreground mt-1">Localize e gerencie as vendas do dia.</p>
               </div>
-              <button 
-                onClick={clearHistory}
-                className="flex items-center justify-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-red-100 transition-premium"
-              >
-                <Trash2 className="h-3 w-3" /> Limpar Histórico de Testes
-              </button>
             </div>
             <div className="relative w-full sm:w-80">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -675,13 +751,44 @@ function CatalogoGrid() {
     }
   };
 
+  const updateProductPrice = async (id: string, newPrice: number, kit: any) => {
+    try {
+      if (kit.isDynamic) {
+        const { error } = await supabase.from('produtos').update({ preco: newPrice }).eq('id', id);
+        if (error) throw error;
+      } else {
+        // Para kits fixos, criamos um registro no banco para sobrescrever o preço
+        const { error } = await supabase.from('produtos').upsert({
+          id,
+          slug: kit.slug,
+          nome: kit.nome,
+          marca: kit.marca,
+          descricao: kit.descricao,
+          preco: newPrice,
+          precoOriginal: kit.precoOriginal || null,
+          badge: kit.badge || null,
+          imagem: kit.imagem,
+          ativo: true
+        });
+        if (error) throw error;
+      }
+      toast.success("Preço atualizado!");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao atualizar preço.");
+    }
+  };
+
   const allProducts = useMemo(() => {
-    // Map db products to match the Kit type
+    const dbProductIds = new Set(dbProducts.map(p => p.id));
     const mappedDb = dbProducts.map(p => ({
       ...p,
       isDynamic: true
     }));
-    return [...mappedDb, ...KITS];
+    // Se o kit já existe no DB, ele é ignorado na lista de KITS fixos para evitar duplicidade
+    const uniqueKits = KITS.filter(k => !dbProductIds.has(k.id));
+    return [...mappedDb, ...uniqueKits];
   }, [dbProducts]);
 
   if (loading) return <div className="p-12 text-center text-muted-foreground uppercase font-bold tracking-widest animate-pulse">Carregando catálogo...</div>;
@@ -710,6 +817,7 @@ function CatalogoGrid() {
             ativo={statusMap[kit.id] !== false} 
             onToggle={() => toggleStatus(kit.id, statusMap[kit.id] !== false)}
             onDelete={kit.isDynamic ? () => deleteProduct(kit.id) : undefined}
+            onUpdatePrice={(newPrice) => updateProductPrice(kit.id, newPrice, kit)}
           />
         ))}
       </div>
@@ -916,8 +1024,10 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
   );
 }
 
-function CatalogoCard({ kit, ativo, onToggle, onDelete }: { kit: any, ativo: boolean, onToggle: () => void, onDelete?: () => void }) {
+function CatalogoCard({ kit, ativo, onToggle, onDelete, onUpdatePrice }: { kit: any, ativo: boolean, onToggle: () => void, onDelete?: () => void, onUpdatePrice: (price: number) => void }) {
   const [uploading, setUploading] = useState(false);
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [tempPrice, setTempPrice] = useState(kit.preco.toString());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -960,7 +1070,44 @@ function CatalogoCard({ kit, ativo, onToggle, onDelete }: { kit: any, ativo: boo
       </div>
       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">{kit.marca}</p>
       <h3 className="mt-1 text-sm font-semibold leading-tight text-foreground truncate">{kit.nome}</h3>
-      <p className="text-xs text-muted-foreground/80 font-bold mt-1 mb-4">{formatBRL(kit.preco)}</p>
+      
+      <div className="mt-2 mb-4">
+        {isEditingPrice ? (
+          <div className="flex items-center gap-2">
+            <input 
+              type="number" 
+              step="0.01"
+              value={tempPrice}
+              onChange={(e) => setTempPrice(e.target.value)}
+              className="w-24 rounded-lg border border-primary/20 bg-secondary/20 px-2 py-1 text-xs font-bold outline-none"
+              autoFocus
+            />
+            <button 
+              onClick={() => {
+                onUpdatePrice(parseFloat(tempPrice));
+                setIsEditingPrice(false);
+              }}
+              className="p-1.5 rounded-lg bg-primary text-white hover:bg-primary-glow transition-colors"
+            >
+              <Check className="h-3 w-3" />
+            </button>
+            <button 
+              onClick={() => {
+                setTempPrice(kit.preco.toString());
+                setIsEditingPrice(false);
+              }}
+              className="p-1.5 rounded-lg bg-secondary text-muted-foreground hover:bg-rose-tea/10 transition-colors"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 group/price cursor-pointer" onClick={() => setIsEditingPrice(true)}>
+            <p className="text-xs text-muted-foreground/80 font-bold">{formatBRL(kit.preco)}</p>
+            <Edit2 className="h-3 w-3 text-primary/40 opacity-0 group-hover/price:opacity-100 transition-opacity" />
+          </div>
+        )}
+      </div>
       
       <div className="mt-auto pt-4 border-t border-rose-tea/10 space-y-2">
         <div className="flex items-center justify-between mb-2 px-1">
