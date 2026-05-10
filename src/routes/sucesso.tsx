@@ -45,12 +45,28 @@ function Sucesso() {
           <CheckCircle2 className="h-10 w-10 text-white" />
         </div>
         
-        <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Quase lá! 💝</h1>
+        <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Pedido Salvo! 💝</h1>
         
-        <div className="mt-6 p-5 rounded-2xl bg-primary/5 border border-primary/10">
-          <p className="text-sm leading-relaxed text-foreground/80">
-            Seu pedido foi registrado. Agora, <span className="font-bold">copie o resumo abaixo</span> e envie no nosso <span className="font-bold">Direct do Instagram</span> para finalizar!
-          </p>
+        <div className="mt-6 space-y-6 text-left border-y border-gray-100 py-8">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-4">Siga estes 3 passos:</p>
+          
+          <div className="flex gap-4 items-start">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">1</div>
+            <p className="text-sm text-foreground/80 leading-tight">Clique no botão colorido abaixo (o resumo será <b>copiado</b>).</p>
+          </div>
+
+          <div className="flex gap-4 items-start">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">2</div>
+            <p className="text-sm text-foreground/80 leading-tight">O Instagram abrirá automaticamente no chat da loja.</p>
+          </div>
+
+          <div className="flex gap-4 items-start">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">3</div>
+            <div>
+              <p className="text-sm font-black text-primary uppercase tracking-tight">Você deve COLAR e ENVIAR no chat!</p>
+              <p className="text-[10px] text-muted-foreground mt-1">O Instagram não permite o envio automático como o WhatsApp.</p>
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 space-y-4">
@@ -72,18 +88,9 @@ function Sucesso() {
             style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
           >
             <Instagram className="h-6 w-6" /> 
-            Ir para o Direct
+            Finalizar no Instagram
             <Sparkles className="h-4 w-4 text-white/50" />
           </motion.a>
-
-          <div className="bg-amber-50 border border-amber-100 p-4 rounded-2xl text-left">
-            <p className="text-[10px] font-black uppercase tracking-widest text-amber-800 mb-2">Atenção ao passo final:</p>
-            <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
-              1. O resumo foi <span className="font-bold underline text-primary">copiado automaticamente</span>.<br />
-              2. No Instagram, clique em <span className="font-bold">"Mensagem"</span>.<br />
-              3. <span className="font-bold">Cole o texto</span> e envie para confirmar!
-            </p>
-          </div>
           
           <div className="flex flex-col items-center gap-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
