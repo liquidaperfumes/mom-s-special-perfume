@@ -13,8 +13,8 @@ export const Route = createFileRoute("/sucesso")({
   component: Sucesso,
 });
 
-const WHATSAPP_CONSULTORA = "5581996498351";
-const WHATSAPP_DISPLAY = "(81) 99649-8351";
+const WHATSAPP_CONSULTORA = "5581981233581";
+const WHATSAPP_DISPLAY = "(81) 98123-3581";
 
 function Sucesso() {
   const search = useSearch({ from: "/sucesso" }) as any;

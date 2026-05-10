@@ -36,7 +36,7 @@ export function Loja() {
                 <InfoCard 
                   icon={<Phone className="h-5 w-5" />}
                   title="Atendimento & Suporte"
-                  content="(81) 9.9581-1306 · WhatsApp"
+                  content="(81) 98123-3581 · WhatsApp"
                 />
               </div>
             </div>

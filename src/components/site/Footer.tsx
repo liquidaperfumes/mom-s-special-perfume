@@ -59,7 +59,7 @@ export function Footer() {
           <ul className="mt-6 space-y-4 text-sm text-background/60 font-light">
             <li className="leading-relaxed">Estrada do Caenga, 235<br />São Benedito · Olinda – PE</li>
             <li className="flex items-center gap-2 text-background/90 font-medium">
-              <MessageCircle className="h-4 w-4" /> (81) 9.9581-1306
+              <MessageCircle className="h-4 w-4" /> (81) 98123-3581
             </li>
             <li>contato@liquidaperfumes.com.br</li>
           </ul>
@@ -70,7 +70,7 @@ export function Footer() {
           <p className="mt-6 text-sm text-background/60 font-light mb-6">Siga-nos para acompanhar novidades e promoções exclusivas.</p>
           <div className="flex gap-4">
             <a href="https://instagram.com/liquida.perfumes" target="_blank" rel="noopener" className="flex h-12 w-12 items-center justify-center rounded-full bg-background/5 border border-background/10 hover:bg-primary transition-all duration-300"><Instagram className="h-5 w-5" /></a>
-            <a href="https://wa.me/5581995811306" target="_blank" rel="noopener" className="flex h-12 w-12 items-center justify-center rounded-full bg-background/5 border border-background/10 hover:bg-[#25D366] transition-all duration-300"><MessageCircle className="h-5 w-5" /></a>
+            <a href="https://wa.me/5581981233581" target="_blank" rel="noopener" className="flex h-12 w-12 items-center justify-center rounded-full bg-background/5 border border-background/10 hover:bg-[#25D366] transition-all duration-300"><MessageCircle className="h-5 w-5" /></a>
           </div>
           <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-background/30">
             <ShieldCheck className="h-4 w-4" /> Site 100% Seguro
