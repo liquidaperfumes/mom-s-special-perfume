@@ -28,7 +28,7 @@ export function FreteCalc() {
     setRes(calcular(b));
   };
 
-  const wa = `https://wa.me/5581981233581?text=${encodeURIComponent(
+  const wa = `https://wa.me/5581995100851?text=${encodeURIComponent(
     `Olá! Meu bairro é "${q}" e gostaria de saber sobre entrega.`
   )}`;
 
