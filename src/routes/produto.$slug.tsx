@@ -305,7 +305,7 @@ function ProductDetail() {
         <section className="py-20 bg-white border-t border-rose-tea/10">
           <div className="mx-auto max-w-4xl px-4 text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-2 text-[10px] font-black uppercase tracking-widest text-primary mb-6">
-              <MapPin className="h-3 w-3" /> Frete Grátis para Olinda e Recife*
+              <MapPin className="h-3 w-3" /> Entrega em Olinda e Recife*
             </div>
             <h2 className="text-3xl font-bold text-foreground">Receba hoje mesmo.</h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">

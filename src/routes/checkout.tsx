@@ -296,7 +296,7 @@ function CheckoutPage() {
                     <div className="flex items-start gap-4">
                       <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white text-emerald-600 shadow-soft"><MapPin className="h-5 w-5" /></div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800">Retirada Grátis em Olinda</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800">Retirada em Olinda</p>
                         <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
                           Estrada do Caenga, 235 — São Benedito, Olinda - PE.<br />
                           <span className="font-bold">Pronto para retirar hoje mesmo!</span>
@@ -401,8 +401,8 @@ function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-medium">Entrega</span>
-                  <span className={modo === "retirada" ? "text-emerald-500 font-bold" : "font-bold"}>
-                    {modo === "retirada" ? "Grátis" : formatBRL(valorEntrega)}
+                  <span className="font-bold">
+                    {modo === "retirada" ? "Sem custo" : formatBRL(valorEntrega)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-4 border-t border-rose-tea/5">
