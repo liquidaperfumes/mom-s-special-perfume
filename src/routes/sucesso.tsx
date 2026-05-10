@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { CheckCircle2, Instagram, Copy, Check, Sparkles } from "lucide-react";
+import { CheckCircle2, Instagram, Copy, Check, Sparkles, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -20,14 +20,30 @@ function Sucesso() {
   const search = useSearch({ from: "/sucesso" }) as any;
   const [copied, setCopied] = useState(false);
   
-  const orderMsg = decodeURIComponent(search.msg || localStorage.getItem('wa_msg') || "");
+  const orderMsg = decodeURIComponent(search.msg || (typeof window !== 'undefined' ? localStorage.getItem('wa_msg') : "") || "");
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!orderMsg) return;
-    navigator.clipboard.writeText(orderMsg);
-    setCopied(true);
-    toast.success("Resumo do pedido copiado!");
-    setTimeout(() => setCopied(false), 3000);
+    try {
+      await navigator.clipboard.writeText(orderMsg);
+      setCopied(true);
+      toast.success("Resumo copiado com sucesso!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // Fallback para navegadores antigos
+      const textArea = document.createElement("textarea");
+      textArea.value = orderMsg;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopied(true);
+        toast.success("Resumo copiado!");
+      } catch (e) {
+        toast.error("Não foi possível copiar automaticamente. Por favor, selecione e copie o texto manualmente.");
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   useEffect(() => {
@@ -35,74 +51,67 @@ function Sucesso() {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: '#FDF2F3' }}>
+    <div className="flex min-h-screen items-center justify-center px-4 py-12" style={{ background: '#FDF2F3' }}>
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md rounded-[2.5rem] bg-white p-8 sm:p-12 text-center shadow-[0_25px_60px_-20px_rgba(191,53,93,0.20)] border border-white"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-lg rounded-[2.5rem] bg-white p-8 sm:p-12 text-center shadow-premium border border-white"
       >
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full shadow-lg" style={{ background: 'linear-gradient(135deg, #BF355D, #D4456E)' }}>
           <CheckCircle2 className="h-10 w-10 text-white" />
         </div>
         
-        <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: '#BF355D' }}>Pedido Salvo! 💝</h1>
+        <h1 className="mt-8 text-3xl font-bold tracking-tight text-primary">Pedido Registrado! 💝</h1>
         
-        <div className="mt-6 space-y-6 text-left border-y border-gray-100 py-8">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-4">Siga estes 3 passos:</p>
-          
-          <div className="flex gap-4 items-start">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">1</div>
-            <p className="text-sm text-foreground/80 leading-tight">Clique no botão colorido abaixo (o resumo será <b>copiado</b>).</p>
-          </div>
-
-          <div className="flex gap-4 items-start">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">2</div>
-            <p className="text-sm text-foreground/80 leading-tight">O Instagram abrirá automaticamente no chat da loja.</p>
-          </div>
-
-          <div className="flex gap-4 items-start">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">3</div>
-            <div>
-              <p className="text-sm font-black text-primary uppercase tracking-tight">Você deve COLAR e ENVIAR no chat!</p>
-              <p className="text-[10px] text-muted-foreground mt-1">O Instagram não permite o envio automático como o WhatsApp.</p>
-            </div>
-          </div>
+        <div className="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3 text-left">
+          <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
+            O Instagram não permite o envio automático. Você precisará <span className="font-bold underline">COLAR</span> o resumo do pedido no chat da loja para finalizar sua compra.
+          </p>
         </div>
 
-        <div className="mt-8 space-y-4">
-          <motion.a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener"
-            onClick={handleCopy}
-            initial={{ scale: 1 }}
-            animate={{ 
-              scale: [1, 1.02, 1],
-            }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all"
-            style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
-          >
-            <Instagram className="h-6 w-6" /> 
-            Finalizar no Instagram
-            <Sparkles className="h-4 w-4 text-white/50" />
-          </motion.a>
-          
-          <div className="flex flex-col items-center gap-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
-            <p className="text-xs font-black text-gray-600">@liquida.perfumes</p>
+        <div className="mt-8 space-y-6">
+          <div className="text-left">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-3 ml-2">Resumo do seu Pedido:</p>
+            <div className="relative rounded-3xl bg-secondary/20 p-5 border border-rose-tea/10">
+              <div className="max-h-[200px] overflow-y-auto pr-2 text-[11px] font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed scrollbar-hide">
+                {orderMsg || "Carregando resumo..."}
+              </div>
+              <button 
+                onClick={handleCopy}
+                className="absolute right-4 bottom-4 flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-[10px] font-bold shadow-soft transition hover:scale-105 active:scale-95"
+              >
+                {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3 text-primary" />}
+                {copied ? "Copiado!" : "Copiar Texto"}
+              </button>
+            </div>
           </div>
 
-          <div className="pt-6 border-t border-gray-100">
+          <div className="space-y-4 pt-4">
+            <motion.a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener"
+              onClick={handleCopy}
+              className="flex items-center justify-center gap-3 w-full rounded-full py-5 text-base font-black uppercase tracking-wider text-white shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
+            >
+              <Instagram className="h-6 w-6" /> 
+              Finalizar no Instagram
+              <Sparkles className="h-4 w-4 text-white/50" />
+            </motion.a>
+
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+              Ao clicar, o texto será copiado e o Instagram abrirá.
+            </p>
+          </div>
+
+          <div className="pt-8 border-t border-gray-100">
             <Link
               to="/"
-              className="block w-full rounded-full border border-gray-200 py-4 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-primary hover:border-primary/20 transition-all"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all"
             >
-              ← Voltar para a loja
+              ← Voltar para o início
             </Link>
           </div>
         </div>
