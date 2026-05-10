@@ -116,32 +116,32 @@ function ProductDetail() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       
-      <main className="flex-1">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+      <main className="flex-1 pb-24 sm:pb-0">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:py-12">
           {/* Breadcrumbs / Back button */}
-          <Link to="/" className="mb-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Voltar para a vitrine
+          <Link to="/" className="mb-6 inline-flex items-center gap-2 text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Voltar
           </Link>
 
-          <div className="grid gap-12 lg:grid-cols-2">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Product Image */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-secondary/30 shadow-premium border border-rose-tea/10"
+              className="relative aspect-square overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-secondary/30 shadow-premium border border-rose-tea/10"
             >
               <img 
                 src={kit.imagem} 
                 alt={kit.nome} 
-                className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
+                className="h-full w-full object-contain p-4 sm:p-8 transition-transform duration-1000 hover:scale-105"
               />
               {kit.badge && (
-                <span className="absolute left-6 top-6 z-10 rounded-full bg-foreground/90 px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-background backdrop-blur-md shadow-soft">
+                <span className="absolute left-4 top-4 sm:left-6 sm:top-6 z-10 rounded-full bg-foreground/90 px-4 py-1.5 sm:px-6 sm:py-2 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-background backdrop-blur-md shadow-soft">
                   {kit.badge}
                 </span>
               )}
               {hasDiscount && (
-                <div className="absolute right-6 top-6 z-10 rounded-full bg-emerald-500 px-4 py-2 text-xs font-black text-white shadow-soft">
+                <div className="absolute right-4 top-4 sm:right-6 sm:top-6 z-10 rounded-full bg-emerald-500 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-black text-white shadow-soft">
                   -{discountPercent}% OFF
                 </div>
               )}
@@ -154,39 +154,39 @@ function ProductDetail() {
               className="flex flex-col"
             >
               <div className="mb-6">
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-primary mb-2">{kit.marca}</p>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">{kit.nome}</h1>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2">{kit.marca}</p>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-5xl">{kit.nome}</h1>
               </div>
 
-              <div className="mb-8 flex items-end gap-4">
+              <div className="mb-8 flex flex-wrap items-end gap-3 sm:gap-4">
                 <div className="flex flex-col">
                   {hasDiscount && (
-                    <span className="text-sm text-muted-foreground line-through decoration-primary/30">
+                    <span className="text-[11px] sm:text-sm text-muted-foreground line-through decoration-primary/30">
                       De {formatBRL(kit.precoOriginal!)}
                     </span>
                   )}
-                  <span className="text-4xl font-bold text-primary sm:text-5xl">
+                  <span className="text-3xl font-bold text-primary sm:text-5xl leading-none">
                     {formatBRL(kit.preco)}
                   </span>
                 </div>
-                <div className="mb-1 rounded-xl bg-primary/5 px-4 py-2 border border-primary/10">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary">Em até 12x de</p>
-                  <p className="text-lg font-bold text-primary">{formatBRL(p.valor)}</p>
+                <div className="rounded-xl bg-primary/5 px-3 py-1.5 sm:px-4 sm:py-2 border border-primary/10">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary">Em até 12x de</p>
+                  <p className="text-base sm:text-lg font-bold text-primary">{formatBRL(p.valor)}</p>
                 </div>
               </div>
 
-              <div className="mb-10 space-y-4">
+              <div className="mb-10 space-y-3">
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">O que vem no kit:</h3>
-                <p className="text-base leading-relaxed text-muted-foreground/80 font-light italic">
+                <p className="text-sm sm:text-base leading-relaxed text-muted-foreground/80 font-light italic">
                   "{kit.descricao}"
                 </p>
               </div>
 
-              <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <button 
                   onClick={onAdd}
                   disabled={added}
-                  className={`flex flex-1 items-center justify-center gap-3 rounded-full py-5 text-sm font-bold uppercase tracking-[0.2em] transition-premium shadow-soft hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`flex flex-1 items-center justify-center gap-3 rounded-full py-4 sm:py-5 text-xs font-bold uppercase tracking-[0.2em] transition-premium shadow-soft hover:scale-[1.02] active:scale-[0.98] ${
                     added ? "bg-emerald-500 text-white" : "bg-primary text-white hover:bg-primary-glow"
                   }`}
                 >
@@ -195,14 +195,14 @@ function ProductDetail() {
                 </button>
                 <button 
                   onClick={handleShare}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-primary transition-premium hover:bg-rose-tea/10 hover:scale-105 active:scale-95 shadow-soft"
+                  className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-secondary text-primary transition-premium hover:bg-rose-tea/10 hover:scale-105 active:scale-95 shadow-soft"
                 >
                   <Share2 className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Trust Badges */}
-              <div className="mt-12 grid grid-cols-2 gap-6 border-t border-rose-tea/10 pt-10 sm:grid-cols-3">
+              <div className="mt-8 grid grid-cols-2 gap-4 border-t border-rose-tea/10 pt-8 sm:mt-12 sm:grid-cols-3 sm:gap-6 sm:pt-10">
                 <Badge icon={<ShieldCheck className="h-4 w-4" />} text="Produto Original" />
                 <Badge icon={<Truck className="h-4 w-4" />} text="Entrega Expressa" />
                 <Badge icon={<RotateCcw className="h-4 w-4" />} text="Troca Garantida" />
@@ -212,41 +212,41 @@ function ProductDetail() {
         </div>
 
         {/* Scarcity / Urgency */}
-        <section className="bg-primary/5 py-10 border-y border-primary/10">
-          <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+        <section className="bg-primary/5 py-8 sm:py-10 border-y border-primary/10">
+          <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
             <div className="flex flex-col text-center md:text-left">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-2">Oferta por tempo limitado</span>
-              <h2 className="text-2xl font-bold text-foreground">Campanha Especial de Dia das Mães</h2>
-              <p className="text-sm text-muted-foreground mt-2">Garanta seu presente antes que o estoque acabe!</p>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-1">Oferta por tempo limitado</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">Campanha Especial de Dia das Mães</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Garanta seu presente antes que o estoque acabe!</p>
             </div>
             <div className="flex flex-col items-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">A oferta encerra em:</p>
+              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">A oferta encerra em:</p>
               <Countdown />
             </div>
           </div>
         </section>
 
         {/* Benefits Icons Grid */}
-        <section className="py-20 bg-white">
+        <section className="py-16 sm:py-20 bg-white">
           <div className="mx-auto max-w-7xl px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
               <BenefitItem 
-                icon={<Sparkles className="h-6 w-6" />} 
+                icon={<Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />} 
                 title="Fragrância Premium" 
                 desc="Notas selecionadas para uma experiência única."
               />
               <BenefitItem 
-                icon={<Clock className="h-6 w-6" />} 
+                icon={<Clock className="h-5 w-5 sm:h-6 sm:w-6" />} 
                 title="Alta Fixação" 
                 desc="Perfume que acompanha o ritmo do dia dela."
               />
               <BenefitItem 
-                icon={<Gift className="h-6 w-6" />} 
+                icon={<Gift className="h-5 w-5 sm:h-6 sm:w-6" />} 
                 title="Embalagem de Luxo" 
                 desc="Pronto para presentear com sofisticação."
               />
               <BenefitItem 
-                icon={<CreditCard className="h-6 w-6" />} 
+                icon={<CreditCard className="h-5 w-5 sm:h-6 sm:w-6" />} 
                 title="Parcelamento" 
                 desc="Em até 12x no cartão de crédito."
               />
@@ -255,7 +255,7 @@ function ProductDetail() {
         </section>
 
         {/* Emotional Section with Large Image/Background */}
-        <section className="relative min-h-[600px] flex items-center overflow-hidden bg-rose-deep">
+        <section className="relative min-h-[500px] sm:min-h-[600px] flex items-center overflow-hidden bg-rose-deep">
           <div className="absolute inset-0 z-0">
             <img 
               src="https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&q=80&w=2000" 
@@ -264,20 +264,20 @@ function ProductDetail() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-rose-deep/80 via-transparent to-rose-deep/40" />
           </div>
-          <div className="relative z-10 mx-auto max-w-4xl px-4 py-20 text-center text-white">
+          <div className="relative z-10 mx-auto max-w-4xl px-4 py-16 sm:py-20 text-center text-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <Heart className="mx-auto mb-6 h-12 w-12 text-primary" />
-              <h2 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">Sua mãe merece o melhor.</h2>
-              <p className="text-xl font-light leading-relaxed opacity-90">
+              <Heart className="mx-auto mb-6 h-10 w-10 sm:h-12 sm:w-12 text-primary" />
+              <h2 className="text-3xl font-bold tracking-tight sm:text-6xl mb-6">Sua mãe merece o melhor.</h2>
+              <p className="text-lg sm:text-xl font-light leading-relaxed opacity-90">
                 O perfume é uma das memórias mais fortes que guardamos. Presentear com uma fragrância da Líquida Perfumes é eternizar um momento de carinho e gratidão.
               </p>
               <button 
                 onClick={onAdd}
-                className="mt-10 rounded-full bg-primary px-10 py-5 text-sm font-bold uppercase tracking-widest text-white shadow-premium transition hover:scale-105 active:scale-95"
+                className="mt-8 sm:mt-10 rounded-full bg-primary px-8 py-4 sm:px-10 sm:py-5 text-[10px] sm:text-sm font-bold uppercase tracking-widest text-white shadow-premium transition hover:scale-105 active:scale-95"
               >
                 Garantir este presente
               </button>
@@ -286,14 +286,14 @@ function ProductDetail() {
         </section>
 
         {/* Testimonials / Social Proof */}
-        <section className="py-24 bg-[#FDFBFB]">
+        <section className="py-16 sm:py-24 bg-[#FDFBFB]">
           <div className="mx-auto max-w-7xl px-4">
-            <div className="text-center mb-16">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-4 block">Depoimentos</span>
-              <h2 className="text-3xl font-bold text-foreground sm:text-4xl">Quem já comprou, amou!</h2>
+            <div className="text-center mb-10 sm:mb-16">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-3 block">Depoimentos</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground sm:text-4xl">Quem já comprou, amou!</h2>
             </div>
             
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
               <TestimonialCard 
                 name="Carla Mendes" 
                 content="Comprei o kit para minha mãe e ela ficou encantada! A entrega foi super rápida em Olinda e o perfume é maravilhoso."
@@ -311,13 +311,13 @@ function ProductDetail() {
         </section>
 
         {/* Shipping info */}
-        <section className="py-20 bg-white border-t border-rose-tea/10">
+        <section className="py-16 sm:py-20 bg-white border-t border-rose-tea/10">
           <div className="mx-auto max-w-4xl px-4 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-2 text-[10px] font-black uppercase tracking-widest text-primary mb-6">
+            <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary mb-6">
               <MapPin className="h-3 w-3" /> Entrega em Olinda e Recife*
             </div>
-            <h2 className="text-3xl font-bold text-foreground">Receba hoje mesmo.</h2>
-            <p className="mt-4 text-muted-foreground leading-relaxed">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Receba hoje mesmo.</h2>
+            <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
               Realizamos entregas expressas via motoboy para que seu presente chegue a tempo. Consulte as condições para sua região no checkout.
             </p>
           </div>
@@ -328,11 +328,11 @@ function ProductDetail() {
           <motion.div 
             initial={{ y: 100 }}
             animate={{ y: 0 }}
-            className="pointer-events-auto flex items-center justify-between gap-4 rounded-3xl bg-white/80 p-4 shadow-elegant backdrop-blur-xl border border-white/20"
+            className="pointer-events-auto flex items-center justify-between gap-4 rounded-3xl bg-white/95 p-3 sm:p-4 shadow-elegant backdrop-blur-xl border border-rose-tea/10"
           >
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Valor do Kit</span>
-              <span className="text-lg font-bold text-primary">{formatBRL(kit.preco)}</span>
+            <div className="flex flex-col pl-2">
+              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Preço Especial</span>
+              <span className="text-lg font-bold text-primary leading-none mt-1">{formatBRL(kit.preco)}</span>
             </div>
             <button 
               onClick={onAdd}
