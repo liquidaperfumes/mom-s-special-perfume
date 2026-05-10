@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/sucesso")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    msg: (search.msg as string) || "",
+  }),
   head: () => ({
     meta: [
       { title: "Pedido enviado! — Líquida Perfumes" },
@@ -28,7 +31,6 @@ function Sucesso() {
       await navigator.clipboard.writeText(orderMsg);
       setCopied(true);
       toast.success("Resumo copiado com sucesso!");
-      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       // Fallback para navegadores antigos
       const textArea = document.createElement("textarea");
