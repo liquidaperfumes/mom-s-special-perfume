@@ -53,9 +53,22 @@ function AdminPage() {
   const [pass, setPass] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [isSynced, setIsSynced] = useState(false);
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-    end: new Date(new Date().setHours(23, 59, 59, 999)).toISOString()
+  
+  // Helper to get local ISO string for datetime-local input
+  const toLocalISO = (date: Date) => {
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(date.getTime() - tzOffset)).toISOString().slice(0, 16);
+    return localISOTime;
+  };
+
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>(() => {
+    const now = new Date();
+    const start = new Date(now.setHours(0, 0, 0, 0));
+    const end = new Date(now.setHours(23, 59, 59, 999));
+    return {
+      start: start.toISOString(),
+      end: end.toISOString()
+    };
   });
   const [useDateFilter, setUseDateFilter] = useState(true);
 
@@ -326,40 +339,41 @@ function AdminPage() {
         </div>
 
         {/* Date Filter */}
-        <div className="mb-8 flex flex-col sm:flex-row items-center gap-4 p-6 rounded-[2rem] border border-rose-tea/10 bg-white shadow-soft">
-          <div className="flex items-center gap-2 mr-auto">
-            <Filter className="h-4 w-4 text-primary" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtrar por Data</p>
+        <div className="mb-8 flex flex-wrap items-end gap-3 rounded-[2rem] bg-white p-6 shadow-soft border border-rose-tea/10">
+          <div className="space-y-1 flex-1 min-w-[140px]">
+            <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
+              <Calendar className="h-3 w-3" /> Data/Hora Início
+            </label>
+            <input 
+              type="datetime-local" 
+              value={toLocalISO(new Date(dateRange.start))}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                setDateRange(prev => ({ ...prev, start: new Date(val).toISOString() }));
+                setUseDateFilter(true);
+              }}
+              className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div className="space-y-1 flex-1 min-w-[140px]">
+            <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
+              <Clock className="h-3 w-3" /> Data/Hora Fim
+            </label>
+            <input 
+              type="datetime-local" 
+              value={toLocalISO(new Date(dateRange.end))}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                setDateRange(prev => ({ ...prev, end: new Date(val).toISOString() }));
+                setUseDateFilter(true);
+              }}
+              className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
+            />
           </div>
           
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="flex-1 sm:flex-initial">
-              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Início</p>
-              <input 
-                type="datetime-local" 
-                value={dateRange.start.slice(0, 16)} 
-                onChange={(e) => setDateRange(prev => ({ ...prev, start: new Date(e.target.value).toISOString() }))}
-                className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div className="flex-1 sm:flex-initial">
-              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Fim</p>
-              <input 
-                type="datetime-local" 
-                value={dateRange.end.slice(0, 16)} 
-                onChange={(e) => setDateRange(prev => ({ ...prev, end: new Date(e.target.value).toISOString() }))}
-                className="w-full rounded-xl border border-rose-tea/10 bg-secondary/10 px-3 py-2 text-[10px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <button 
-              onClick={() => setUseDateFilter(!useDateFilter)}
-              className={`mt-4 sm:mt-0 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-premium ${useDateFilter ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground hover:bg-rose-tea/10'}`}
-            >
-              {useDateFilter ? "Filtro Ativo" : "Ativar Filtro"}
-            </button>
-          </div>
-          
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <button 
               onClick={() => {
                 const now = new Date();
@@ -369,7 +383,7 @@ function AdminPage() {
                 });
                 setUseDateFilter(true);
               }}
-              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+              className={`px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest transition-colors ${useDateFilter && new Date(dateRange.start).getDate() === new Date().getDate() ? 'bg-primary text-white' : 'bg-secondary/50 text-muted-foreground hover:bg-rose-tea/20'}`}
             >
               Hoje
             </button>
@@ -384,13 +398,28 @@ function AdminPage() {
                 });
                 setUseDateFilter(true);
               }}
-              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:bg-rose-tea/20 transition-colors"
             >
               Ontem
             </button>
             <button 
+              onClick={() => {
+                const now = new Date();
+                const sevenDaysAgo = new Date(now);
+                sevenDaysAgo.setDate(now.getDate() - 7);
+                setDateRange({
+                  start: new Date(sevenDaysAgo.setHours(0, 0, 0, 0)).toISOString(),
+                  end: new Date(now.setHours(23, 59, 59, 999)).toISOString()
+                });
+                setUseDateFilter(true);
+              }}
+              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:bg-rose-tea/20 transition-colors"
+            >
+              7 Dias
+            </button>
+            <button 
               onClick={() => setUseDateFilter(false)}
-              className="px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest bg-secondary/50 text-muted-foreground hover:text-primary transition-colors"
+              className={`px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest transition-colors ${!useDateFilter ? 'bg-primary text-white' : 'bg-secondary/50 text-muted-foreground hover:bg-rose-tea/20'}`}
             >
               Tudo
             </button>
