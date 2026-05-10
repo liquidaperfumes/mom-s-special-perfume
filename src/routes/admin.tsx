@@ -751,10 +751,13 @@ function CatalogoGrid() {
     }
   };
 
-  const updateProductPrice = async (id: string, newPrice: number, kit: any) => {
+  const updateProductPrice = async (id: string, newPrice: number, kit: any, originalPrice?: number) => {
     try {
+      const payload: any = { preco: newPrice };
+      if (originalPrice !== undefined) payload.precoOriginal = originalPrice;
+
       if (kit.isDynamic) {
-        const { error } = await supabase.from('produtos').update({ preco: newPrice }).eq('id', id);
+        const { error } = await supabase.from('produtos').update(payload).eq('id', id);
         if (error) throw error;
       } else {
         // Para kits fixos, criamos um registro no banco para sobrescrever o preço
@@ -765,17 +768,28 @@ function CatalogoGrid() {
           marca: kit.marca,
           descricao: kit.descricao,
           preco: newPrice,
+          precoOriginal: originalPrice ?? kit.precoOriginal ?? null,
           badge: kit.badge || null,
           imagem: kit.imagem,
           ativo: true
         });
         if (error) throw error;
       }
-      toast.success("Preço atualizado!");
+      toast.success("Preços atualizados!");
       fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error("Erro ao atualizar preço.");
+      if (err.message?.includes('precoOriginal')) {
+        toast.error("Erro: Coluna 'precoOriginal' não encontrada no banco de dados.", {
+          description: "O preço promocional foi salvo, mas o original requer atualização do esquema do banco."
+        });
+        // Tenta salvar sem o precoOriginal se falhou por causa dele
+        if (originalPrice !== undefined) {
+           updateProductPrice(id, newPrice, kit, undefined);
+        }
+      } else {
+        toast.error("Erro ao atualizar preço.");
+      }
     }
   };
 
@@ -1022,10 +1036,11 @@ function AddProductForm({ onCancel, onSuccess }: { onCancel: () => void, onSucce
   );
 }
 
-function CatalogoCard({ kit, ativo, onToggle, onDelete, onUpdatePrice }: { kit: any, ativo: boolean, onToggle: () => void, onDelete?: () => void, onUpdatePrice: (price: number) => void }) {
+function CatalogoCard({ kit, ativo, onToggle, onDelete, onUpdatePrice }: { kit: any, ativo: boolean, onToggle: () => void, onDelete?: () => void, onUpdatePrice: (price: number, originalPrice?: number) => void }) {
   const [uploading, setUploading] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
   const [tempPrice, setTempPrice] = useState(kit.preco.toString());
+  const [tempOriginalPrice, setTempOriginalPrice] = useState(kit.precoOriginal?.toString() || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1071,38 +1086,58 @@ function CatalogoCard({ kit, ativo, onToggle, onDelete, onUpdatePrice }: { kit: 
       
       <div className="mt-2 mb-4">
         {isEditingPrice ? (
-          <div className="flex items-center gap-2">
-            <input 
-              type="number" 
-              step="0.01"
-              value={tempPrice}
-              onChange={(e) => setTempPrice(e.target.value)}
-              className="w-24 rounded-lg border border-primary/20 bg-secondary/20 px-2 py-1 text-xs font-bold outline-none"
-              autoFocus
-            />
-            <button 
-              onClick={() => {
-                onUpdatePrice(parseFloat(tempPrice));
-                setIsEditingPrice(false);
-              }}
-              className="p-1.5 rounded-lg bg-primary text-white hover:bg-primary-glow transition-colors"
-            >
-              <Check className="h-3 w-3" />
-            </button>
-            <button 
-              onClick={() => {
-                setTempPrice(kit.preco.toString());
-                setIsEditingPrice(false);
-              }}
-              className="p-1.5 rounded-lg bg-secondary text-muted-foreground hover:bg-rose-tea/10 transition-colors"
-            >
-              <X className="h-3 w-3" />
-            </button>
+          <div className="space-y-3 p-3 rounded-2xl bg-secondary/10 border border-rose-tea/5">
+            <div>
+              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Preço Promo (R$)</p>
+              <input 
+                type="number" 
+                step="0.01"
+                value={tempPrice}
+                onChange={(e) => setTempPrice(e.target.value)}
+                className="w-full rounded-lg border border-primary/20 bg-white px-2 py-1.5 text-xs font-bold outline-none"
+                autoFocus
+              />
+            </div>
+            <div>
+              <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-1 ml-1">Preço Original (R$)</p>
+              <input 
+                type="number" 
+                step="0.01"
+                value={tempOriginalPrice}
+                onChange={(e) => setTempOriginalPrice(e.target.value)}
+                className="w-full rounded-lg border border-primary/20 bg-white px-2 py-1.5 text-xs font-bold outline-none"
+                placeholder="Ex: 159.90"
+              />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button 
+                onClick={() => {
+                  onUpdatePrice(parseFloat(tempPrice), tempOriginalPrice ? parseFloat(tempOriginalPrice) : undefined);
+                  setIsEditingPrice(false);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary py-2 text-[9px] font-black uppercase tracking-widest text-white hover:bg-primary-glow transition-colors"
+              >
+                <Check className="h-3 w-3" /> Salvar
+              </button>
+              <button 
+                onClick={() => {
+                  setTempPrice(kit.preco.toString());
+                  setTempOriginalPrice(kit.precoOriginal?.toString() || "");
+                  setIsEditingPrice(false);
+                }}
+                className="px-3 rounded-lg bg-secondary text-muted-foreground hover:bg-rose-tea/10 transition-colors"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2 group/price cursor-pointer" onClick={() => setIsEditingPrice(true)}>
-            <p className="text-xs text-muted-foreground/80 font-bold">{formatBRL(kit.preco)}</p>
-            <Edit2 className="h-3 w-3 text-primary/40 opacity-0 group-hover/price:opacity-100 transition-opacity" />
+          <div className="flex flex-col gap-1 group/price cursor-pointer" onClick={() => setIsEditingPrice(true)}>
+            {kit.precoOriginal && <p className="text-[10px] text-muted-foreground/60 line-through">De {formatBRL(kit.precoOriginal)}</p>}
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-primary font-bold">Por {formatBRL(kit.preco)}</p>
+              <Edit2 className="h-3 w-3 text-primary/40 opacity-0 group-hover/price:opacity-100 transition-opacity" />
+            </div>
           </div>
         )}
       </div>
