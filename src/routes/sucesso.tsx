@@ -54,20 +54,11 @@ function Sucesso() {
         </div>
 
         <div className="mt-8 space-y-4">
-          <button
-            onClick={handleCopy}
-            className={`flex items-center justify-center gap-3 w-full rounded-full py-5 text-sm font-black uppercase tracking-wider transition-all shadow-soft active:scale-95 ${
-              copied ? "bg-emerald-500 text-white" : "bg-secondary text-primary hover:bg-rose-tea/10"
-            }`}
-          >
-            {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-            {copied ? "Resumo Copiado!" : "1. Copiar Resumo"}
-          </button>
-
           <motion.a
             href={INSTAGRAM_DIRECT_URL}
             target="_blank"
             rel="noopener"
+            onClick={handleCopy}
             initial={{ scale: 1 }}
             animate={{ 
               scale: [1, 1.02, 1],
@@ -81,9 +72,13 @@ function Sucesso() {
             style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}
           >
             <Instagram className="h-6 w-6" /> 
-            2. Enviar no Direct
+            Finalizar no Instagram
             <Sparkles className="h-4 w-4 text-white/50" />
           </motion.a>
+
+          <p className="text-[10px] text-muted-foreground leading-relaxed px-4">
+            Ao clicar, o resumo do pedido será <span className="font-bold text-primary">copiado automaticamente</span>. Basta colar na mensagem para a loja.
+          </p>
           
           <div className="flex flex-col items-center gap-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Perfil Oficial</p>
